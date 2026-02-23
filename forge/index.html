@@ -76,6 +76,8 @@
             background: #0d0d0d;
             border: 1px solid var(--border);
             margin-bottom: 10px;
+            position: relative;
+            z-index: 10;
         }
         
         .module-header {
@@ -128,6 +130,8 @@
             padding: 10px;
             font-family: inherit;
             font-size: 0.8rem;
+            position: relative;
+            z-index: 20;
         }
         
         .input-group textarea { min-height: 60px; resize: vertical; }
@@ -149,6 +153,8 @@
             font-size: 0.75rem;
             cursor: pointer;
             letter-spacing: 2px;
+            position: relative;
+            z-index: 20;
         }
         
         button:hover {
@@ -305,7 +311,12 @@
     </div>
     
     <script>
-        console.log('FORGE loaded');
+        console.log('FORGE script loaded');
+        
+        // Test immediately
+        document.addEventListener('click', function(e) {
+            console.log('Click detected on:', e.target.tagName, e.target.className);
+        });
         
         const PROMPTS = {
             content: `You are an expert content writer. Generate engaging, high-quality content.`,
