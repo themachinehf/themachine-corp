@@ -31,7 +31,7 @@
         
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px dashed var(--border);
         }
@@ -41,52 +41,45 @@
         .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
         .back-link:hover { color: var(--accent); }
         
-        .stats {
+        /* Tabs */
+        .tabs {
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
-            padding: 16px;
-            border: 1px solid var(--border);
+            gap: 2px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
         
-        .stat { text-align: center; }
-        .stat-value { font-size: 1.4rem; color: var(--accent); }
-        .stat-label { font-size: 0.65rem; color: var(--fg-dim); letter-spacing: 2px; }
-        
-        h2 { font-size: 0.75rem; color: var(--fg-dim); margin-bottom: 16px; letter-spacing: 3px; }
-        
-        .module {
-            background: #0d0d0d;
-            border: 1px solid var(--border);
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .module-header {
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .tab {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: var(--fg-dim);
+            font-family: inherit;
+            font-size: 0.75rem;
             cursor: pointer;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
         }
         
-        .module-header:hover { background: rgba(255,255,255,0.02); }
-        .module-icon { width: 24px; text-align: center; color: var(--accent); font-weight: bold; }
-        .module-title { flex: 1; }
-        .module-title strong { color: var(--fg); display: block; font-size: 0.9rem; }
-        .module-title span { color: var(--fg-dim); font-size: 0.7rem; }
-        .module-toggle { color: var(--fg-dim); }
+        .tab:hover { color: var(--fg); }
         
-        .module-content {
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
             display: block;
-            padding: 0 16px 16px;
-            border-top: 1px solid var(--border);
         }
         
-        .input-group { margin-bottom: 10px; }
-        .input-group label { display: block; color: var(--fg-dim); font-size: 0.7rem; margin-bottom: 4px; }
+        /* Form elements */
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; color: var(--fg-dim); font-size: 0.7rem; margin-bottom: 6px; }
         
         .input-group textarea,
         .input-group input,
@@ -95,14 +88,12 @@
             background: var(--bg);
             border: 1px solid var(--border);
             color: var(--fg);
-            padding: 10px;
+            padding: 12px;
             font-family: inherit;
-            font-size: 0.8rem;
-            position: relative;
-            z-index: 20;
+            font-size: 0.85rem;
         }
         
-        .input-group textarea { min-height: 60px; resize: vertical; }
+        .input-group textarea { min-height: 100px; resize: vertical; }
         .input-group textarea:focus, .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); }
         
         button {
@@ -110,58 +101,44 @@
             background: transparent;
             border: 1px solid var(--accent);
             color: var(--accent);
-            padding: 10px;
+            padding: 12px;
             font-family: inherit;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             cursor: pointer;
             letter-spacing: 2px;
-            position: relative;
-            z-index: 20;
-        }
-        
-        button {
-            width: 100%;
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 10px;
-            font-family: inherit;
-            font-size: 0.75rem;
-            cursor: pointer;
-            letter-spacing: 2px;
-            position: relative;
-            z-index: 20;
             transition: all 0.3s;
         }
         
         button:hover { background: var(--accent); color: var(--bg); }
-        
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
         
         button.loading {
             animation: pulse 1s infinite;
         }
         
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
         .result {
             background: var(--bg);
             border: 1px solid var(--border);
-            padding: 12px;
-            margin-top: 12px;
+            padding: 16px;
+            margin-top: 16px;
             white-space: pre-wrap;
-            font-size: 0.8rem;
-            display: block;
-            color: var(--fg);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            display: none;
         }
+        
+        .result.show { display: block; }
         
         .loading {
             text-align: center;
             padding: 20px;
             color: var(--accent);
             display: none;
-            font-size: 0.9rem;
         }
         
         .loading .spinner {
@@ -176,15 +153,7 @@
             vertical-align: middle;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         footer {
             text-align: center;
@@ -204,102 +173,61 @@
             <a href="/" class="back-link">← back to home</a>
         </header>
         
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value" id="generations">0</div>
-                <div class="stat-label">QUERIES</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="todayCount">0</div>
-                <div class="stat-label">TODAY</div>
-            </div>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('content')">01 CONTENT</button>
+            <button class="tab" onclick="showTab('tags')">02 TAGS</button>
+            <button class="tab" onclick="showTab('ideas')">03 IDEAS</button>
+            <button class="tab" onclick="showTab('bio')">04 BIO</button>
         </div>
         
-        <h2>// MODULES</h2>
-        
-        <!-- Content -->
-        <div class="module">
-            <div class="module-header">
-                <span class="module-icon">01</span>
-                <div class="module-title">
-                    <strong>SYNTH_CONTENT</strong>
-                    <span>AI content generation</span>
-                </div>
+        <!-- Content Tab -->
+        <div id="tab-content" class="tab-content active">
+            <div class="input-group">
+                <label>// WHAT DO YOU WANT TO WRITE ABOUT?</label>
+                <textarea id="contentPrompt" placeholder="Enter your topic..."></textarea>
             </div>
-            <div class="module-content">
-                <div class="input-group">
-                    <label>// INPUT</label>
-                    <textarea id="contentPrompt" placeholder="what do you want to write about?"></textarea>
-                </div>
-                <div class="input-group">
-                    <label>// STYLE</label>
-                    <select id="contentStyle">
-                        <option value="professional">PROFESSIONAL</option>
-                        <option value="casual">CASUAL</option>
-                        <option value="persuasive">PERSUASIVE</option>
-                        <option value="thoughtful">THOUGHTFUL</option>
-                    </select>
-                </div>
-                <button onclick="generateContent(event)">// EXECUTE</button>
-                <div class="result" id="contentResult"></div>
+            <div class="input-group">
+                <label>// STYLE</label>
+                <select id="contentStyle">
+                    <option value="professional">PROFESSIONAL</option>
+                    <option value="casual">CASUAL</option>
+                    <option value="persuasive">PERSUASIVE</option>
+                    <option value="thoughtful">THOUGHTFUL</option>
+                </select>
             </div>
+            <button onclick="generateContent(event)">// EXECUTE</button>
+            <div class="result" id="contentResult"></div>
         </div>
         
-        <!-- Hashtags -->
-        <div class="module">
-            <div class="module-header">
-                <span class="module-icon">02</span>
-                <div class="module-title">
-                    <strong>DISCOVERY_TAGS</strong>
-                    <span>hashtag discovery</span>
-                </div>
+        <!-- Tags Tab -->
+        <div id="tab-tags" class="tab-content">
+            <div class="input-group">
+                <label>// YOUR CONTENT CONTEXT</label>
+                <textarea id="hashtagPrompt" placeholder="What is your content about?"></textarea>
             </div>
-            <div class="module-content">
-                <div class="input-group">
-                    <label>// CONTEXT</label>
-                    <textarea id="hashtagPrompt" placeholder="your content context..."></textarea>
-                </div>
-                <button onclick="findHashtags()">// EXECUTE</button>
-                <div class="result" id="hashtagResult"></div>
-            </div>
+            <button onclick="findHashtags(event)">// EXECUTE</button>
+            <div class="result" id="hashtagResult"></div>
         </div>
         
-        <!-- Ideas -->
-        <div class="module">
-            <div class="module-header">
-                <span class="module-icon">03</span>
-                <div class="module-title">
-                    <strong>IDEATION_CORE</strong>
-                    <span>content ideas</span>
-                </div>
+        <!-- Ideas Tab -->
+        <div id="tab-ideas" class="tab-content">
+            <div class="input-group">
+                <label>// YOUR NICHE OR DOMAIN</label>
+                <input type="text" id="nicheInput" placeholder="e.g. tech, marketing, fitness">
             </div>
-            <div class="module-content">
-                <div class="input-group">
-                    <label>// DOMAIN</label>
-                    <input type="text" id="nicheInput" placeholder="your niche...">
-                </div>
-                <button onclick="generateIdeas()">// EXECUTE</button>
-                <div class="result" id="ideasResult"></div>
-            </div>
+            <button onclick="generateIdeas(event)">// EXECUTE</button>
+            <div class="result" id="ideasResult"></div>
         </div>
         
-        <!-- Bio -->
-        <div class="module">
-            <div class="module-header">
-                <span class="module-icon">04</span>
-                <div class="module-title">
-                    <strong>IDENTITY_BUILDER</strong>
-                    <span>bio generation</span>
-                </div>
+        <!-- Bio Tab -->
+        <div id="tab-bio" class="tab-content">
+            <div class="input-group">
+                <label>// DESCRIBE YOURSELF</label>
+                <textarea id="bioPrompt" placeholder="Your expertise, work, personality..."></textarea>
             </div>
-            <div class="module-content">
-                <div class="input-group">
-                    <label>// PROFILE</label>
-                    <textarea id="bioPrompt" placeholder="describe yourself..."></textarea>
-                </div>
-                <button onclick="generateBio()">// EXECUTE</button>
-                <div class="result" id="bioResult"></div>
-            </div>
+            <button onclick="generateBio(event)">// EXECUTE</button>
+            <div class="result" id="bioResult"></div>
         </div>
         
         <div class="loading" id="loading"><span class="spinner"></span>PROCESSING</div>
@@ -325,29 +253,11 @@
             thoughtful: 'Thoughtful, reflective.'
         };
         
-        let total = parseInt(localStorage.getItem('forge_total') || '0');
-        let today = parseInt(localStorage.getItem('forge_today') || '0');
-        const todayStr = new Date().toDateString();
-        if (localStorage.getItem('forge_date') !== todayStr) {
-            today = 0;
-            localStorage.setItem('forge_date', todayStr);
-        }
-        document.getElementById('generations').textContent = total;
-        document.getElementById('todayCount').textContent = today;
-        
-        function updateStats() {
-            today++; total++;
-            localStorage.setItem('forge_today', today);
-            localStorage.setItem('forge_total', total);
-            document.getElementById('todayCount').textContent = today;
-            document.getElementById('generations').textContent = total;
-        }
-        
-        function showResult(id, content) {
-            const el = document.getElementById(id);
-            el.textContent = content;
-            el.style.display = 'block';
-            updateStats();
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
         }
         
         async function callAPI(data) {
@@ -370,8 +280,14 @@
             finally { loadingEl.style.display = 'none'; }
         }
         
-        async function generateContent() {
-            const btn = event.target;
+        function showResult(id, content) {
+            const el = document.getElementById(id);
+            el.textContent = content;
+            el.classList.add('show');
+        }
+        
+        async function generateContent(e) {
+            const btn = e.target;
             const originalText = btn.textContent;
             btn.textContent = 'LOADING...';
             btn.classList.add('loading');
@@ -388,25 +304,52 @@
             btn.disabled = false;
         }
         
-        async function findHashtags() {
+        async function findHashtags(e) {
+            const btn = e.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'LOADING...';
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
             const p = document.getElementById('hashtagPrompt').value;
-            if(!p) { showResult('hashtagResult', 'ERROR: Please enter context'); return; }
+            if(!p) { showResult('hashtagResult', 'ERROR: Please enter context'); btn.textContent = originalText; btn.classList.remove('loading'); btn.disabled = false; return; }
             const r = await callAPI({prompt:p, type:'hashtags'});
             showResult('hashtagResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
+            btn.textContent = originalText;
+            btn.classList.remove('loading');
+            btn.disabled = false;
         }
         
-        async function generateIdeas() {
+        async function generateIdeas(e) {
+            const btn = e.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'LOADING...';
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
             const p = document.getElementById('nicheInput').value;
-            if(!p) { showResult('ideasResult', 'ERROR: Please enter a niche'); return; }
+            if(!p) { showResult('ideasResult', 'ERROR: Please enter a niche'); btn.textContent = originalText; btn.classList.remove('loading'); btn.disabled = false; return; }
             const r = await callAPI({prompt:p, type:'ideas'});
             showResult('ideasResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
+            btn.textContent = originalText;
+            btn.classList.remove('loading');
+            btn.disabled = false;
         }
         
-        async function generateBio() {
+        async function generateBio(e) {
+            const btn = e.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'LOADING...';
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
             const p = document.getElementById('bioPrompt').value;
-            if(!p) { showResult('bioResult', 'ERROR: Please describe yourself'); return; }
+            if(!p) { showResult('bioResult', 'ERROR: Please describe yourself'); btn.textContent = originalText; btn.classList.remove('loading'); btn.disabled = false; return; }
             const r = await callAPI({prompt:p, type:'bio'});
             showResult('bioResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
+            btn.textContent = originalText;
+            btn.classList.remove('loading');
+            btn.disabled = false;
         }
     </script>
 </body>
