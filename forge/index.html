@@ -229,9 +229,8 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="showTab('content')">01 CONTENT</button>
-            <button class="tab" onclick="showTab('tags')">02 TAGS</button>
-            <button class="tab" onclick="showTab('ideas')">03 IDEAS</button>
-            <button class="tab" onclick="showTab('bio')">04 BIO</button>
+            <button class="tab" onclick="showTab('ideas')">02 IDEAS</button>
+            <button class="tab" onclick="showTab('bio')">03 BIO</button>
         </div>
         
         <!-- Content Tab -->
@@ -251,16 +250,6 @@
             </div>
             <button onclick="generateContent(event)">// EXECUTE</button>
             <div class="result" id="contentResult"></div>
-        </div>
-        
-        <!-- Tags Tab -->
-        <div id="tab-tags" class="tab-content">
-            <div class="input-group">
-                <label>// YOUR CONTENT CONTEXT</label>
-                <textarea id="hashtagPrompt" placeholder="What is your content about?"></textarea>
-            </div>
-            <button onclick="findHashtags(event)">// EXECUTE</button>
-            <div class="result" id="hashtagResult"></div>
         </div>
         
         <!-- Ideas Tab -->
