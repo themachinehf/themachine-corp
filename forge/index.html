@@ -119,7 +119,31 @@
             z-index: 20;
         }
         
+        button {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 20;
+            transition: all 0.3s;
+        }
+        
         button:hover { background: var(--accent); color: var(--bg); }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        button.loading {
+            animation: pulse 1s infinite;
+        }
         
         .result {
             background: var(--bg);
@@ -155,6 +179,11 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         footer {
@@ -211,7 +240,7 @@
                         <option value="thoughtful">THOUGHTFUL</option>
                     </select>
                 </div>
-                <button onclick="generateContent()">// EXECUTE</button>
+                <button onclick="generateContent(event)">// EXECUTE</button>
                 <div class="result" id="contentResult"></div>
             </div>
         </div>
@@ -323,8 +352,10 @@
         
         async function callAPI(data) {
             const loadingEl = document.getElementById('loading');
-            loadingEl.style.display = 'block';
-            loadingEl.textContent = 'PROCESSING';
+            loadingEl.style.display = 'inline-flex';
+            loadingEl.style.alignItems = 'center';
+            loadingEl.style.justifyContent = 'center';
+            loadingEl.style.gap = '10px';
             try {
                 const res = await fetch('https://themachine-corp.vercel.app/api/generate', {
                     method: 'POST',
@@ -340,12 +371,21 @@
         }
         
         async function generateContent() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'LOADING...';
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
             const p = document.getElementById('contentPrompt').value;
             const s = document.getElementById('contentStyle').value;
-            if(!p) { showResult('contentResult', 'ERROR: Please enter a prompt'); return; }
+            if(!p) { showResult('contentResult', 'ERROR: Please enter a prompt'); btn.textContent = originalText; btn.classList.remove('loading'); btn.disabled = false; return; }
             const prompt = `${PROMPTS.content} ${STYLES[s]}\n\n${p}`;
             const r = await callAPI({prompt, type:'content'});
             showResult('contentResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
+            btn.textContent = originalText;
+            btn.classList.remove('loading');
+            btn.disabled = false;
         }
         
         async function findHashtags() {
