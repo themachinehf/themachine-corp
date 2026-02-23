@@ -236,10 +236,11 @@
                     </select>
                 </div>
                 <button onclick="testAPI()">// EXECUTE</button>
+                <div id="testResult" style="margin-top:10px;padding:10px;background:#111;border:1px solid #333;word-break:break-all;"></div>
         
         <script>
         async function testAPI() {
-            alert('Testing API...');
+            document.getElementById('testResult').innerText = 'Loading...';
             try {
                 const res = await fetch('/api/generate', {
                     method: 'POST',
@@ -247,9 +248,9 @@
                     body: JSON.stringify({prompt:'hello',type:'content'})
                 });
                 const data = await res.json();
-                alert('Result: ' + JSON.stringify(data));
+                document.getElementById('testResult').innerText = JSON.stringify(data, null, 2);
             } catch(e) {
-                alert('Error: ' + e.message);
+                document.getElementById('testResult').innerText = 'Error: ' + e.message;
             }
         }
         </script>
