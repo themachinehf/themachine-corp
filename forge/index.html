@@ -235,7 +235,24 @@
                         <option value="thoughtful">THOUGHTFUL</option>
                     </select>
                 </div>
-                <button onclick="alert('Test!'); generateContent(event)">// EXECUTE</button>
+                <button onclick="testAPI()">// EXECUTE</button>
+        
+        <script>
+        async function testAPI() {
+            alert('Testing API...');
+            try {
+                const res = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({prompt:'hello',type:'content'})
+                });
+                const data = await res.json();
+                alert('Result: ' + JSON.stringify(data));
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+        </script>
                 <div class="result" id="contentResult"></div>
             </div>
         </div>
