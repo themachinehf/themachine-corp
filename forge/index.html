@@ -139,6 +139,17 @@
             display: none;
         }
         
+        .loading::after {
+            content: '';
+            animation: dots 1s infinite;
+        }
+        
+        @keyframes dots {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
+        
         footer {
             text-align: center;
             margin-top: 40px;
@@ -304,16 +315,21 @@
         }
         
         async function callAPI(data) {
-            document.getElementById('loading').style.display = 'block';
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.display = 'block';
+            loadingEl.textContent = 'PROCESSING';
             try {
-                const res = await fetch('/api/generate', {
+                const res = await fetch('https://themachine-corp.vercel.app/api/generate', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
                 return await res.json();
-            } catch(e) { return {error:e.message}; }
-            finally { document.getElementById('loading').style.display = 'none'; }
+            } catch(e) { 
+                console.error(e);
+                return {error: 'Failed to fetch: ' + e.message};
+            }
+            finally { loadingEl.style.display = 'none'; }
         }
         
         async function generateContent() {
