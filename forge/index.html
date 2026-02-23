@@ -104,12 +104,10 @@
         .module-toggle { color: var(--fg-dim); }
         
         .module-content {
-            display: none;
+            display: block;
             padding: 0 16px 16px;
             border-top: 1px solid var(--border);
         }
-        
-        .module.active .module-content { display: block; }
         
         .input-group { margin-bottom: 10px; }
         
@@ -212,12 +210,6 @@
         </div>
         
         <h2>// MODULES</h2>
-        
-        <!-- Content -->
-        <div class="module" id="testModule" style="background:red;padding:20px;color:white;margin:20px;">
-            <h3 style="color:white">TEST MODULE - CLICK ME</h3>
-            <button onclick="alert('MODULE CLICKED!')" style="background:white;color:black;padding:10px;margin:10px;">TEST BUTTON</button>
-        </div>
         
         <!-- Content -->
         <div class="module" onclick="toggle(this)">
