@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
             },
             body: JSON.stringify({
                 model: 'MiniMax-M2.1',
-                tokens_to_generate: 500,
+                tokens_to_generate: 200,
                 temperature: 0.8,
                 messages: [
                     { role: 'system', content: fullPrompt },
