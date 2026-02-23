@@ -134,20 +134,27 @@
         
         .loading {
             text-align: center;
-            padding: 16px;
+            padding: 20px;
             color: var(--accent);
             display: none;
+            font-size: 0.9rem;
         }
         
-        .loading::after {
-            content: '';
-            animation: dots 1s infinite;
+        .loading .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
         }
         
-        @keyframes dots {
-            0% { content: '.'; }
-            33% { content: '..'; }
-            66% { content: '...'; }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         footer {
@@ -266,7 +273,7 @@
             </div>
         </div>
         
-        <div class="loading" id="loading">PROCESSING</div>
+        <div class="loading" id="loading"><span class="spinner"></span>PROCESSING</div>
         
         <footer>
             <p>// <a href="/">THEMACHINE CORP</a></p>
