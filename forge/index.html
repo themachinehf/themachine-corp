@@ -23,18 +23,6 @@
             line-height: 1.6;
         }
         
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -204,8 +192,6 @@
         <header>
             <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">THEMACHINE</a> <span>//</span> FORGE</div>
             <a href="/" class="back-link">← back to home</a>
-            <br><br>
-            <button onclick="alert('JS works!')" style="width:auto;padding:8px 16px;">TEST JS</button>
         </header>
         
         <div class="stats">
