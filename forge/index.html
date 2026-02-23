@@ -36,20 +36,9 @@
             border-bottom: 1px dashed var(--border);
         }
         
-        .logo {
-            font-size: 1.8rem;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        
+        .logo { font-size: 1.8rem; color: #fff; margin-bottom: 8px; }
         .logo span { color: var(--accent); }
-        
-        .back-link {
-            color: var(--fg-dim);
-            text-decoration: none;
-            font-size: 0.8rem;
-        }
-        
+        .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
         .back-link:hover { color: var(--accent); }
         
         .stats {
@@ -65,12 +54,7 @@
         .stat-value { font-size: 1.4rem; color: var(--accent); }
         .stat-label { font-size: 0.65rem; color: var(--fg-dim); letter-spacing: 2px; }
         
-        h2 {
-            font-size: 0.75rem;
-            color: var(--fg-dim);
-            margin-bottom: 16px;
-            letter-spacing: 3px;
-        }
+        h2 { font-size: 0.75rem; color: var(--fg-dim); margin-bottom: 16px; letter-spacing: 3px; }
         
         .module {
             background: #0d0d0d;
@@ -89,18 +73,10 @@
         }
         
         .module-header:hover { background: rgba(255,255,255,0.02); }
-        
-        .module-icon {
-            width: 24px;
-            text-align: center;
-            color: var(--accent);
-            font-weight: bold;
-        }
-        
+        .module-icon { width: 24px; text-align: center; color: var(--accent); font-weight: bold; }
         .module-title { flex: 1; }
         .module-title strong { color: var(--fg); display: block; font-size: 0.9rem; }
         .module-title span { color: var(--fg-dim); font-size: 0.7rem; }
-        
         .module-toggle { color: var(--fg-dim); }
         
         .module-content {
@@ -110,13 +86,7 @@
         }
         
         .input-group { margin-bottom: 10px; }
-        
-        .input-group label {
-            display: block;
-            color: var(--fg-dim);
-            font-size: 0.7rem;
-            margin-bottom: 4px;
-        }
+        .input-group label { display: block; color: var(--fg-dim); font-size: 0.7rem; margin-bottom: 4px; }
         
         .input-group textarea,
         .input-group input,
@@ -133,13 +103,7 @@
         }
         
         .input-group textarea { min-height: 60px; resize: vertical; }
-        
-        .input-group textarea:focus,
-        .input-group input:focus,
-        .input-group select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
+        .input-group textarea:focus, .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); }
         
         button {
             width: 100%;
@@ -155,10 +119,7 @@
             z-index: 20;
         }
         
-        button:hover {
-            background: var(--accent);
-            color: var(--bg);
-        }
+        button:hover { background: var(--accent); color: var(--bg); }
         
         .result {
             background: var(--bg);
@@ -167,10 +128,9 @@
             margin-top: 12px;
             white-space: pre-wrap;
             font-size: 0.8rem;
-            display: none;
+            display: block;
+            color: var(--fg);
         }
-        
-        .result.show { display: block; }
         
         .loading {
             text-align: center;
@@ -187,7 +147,6 @@
             color: var(--fg-dim);
             font-size: 0.7rem;
         }
-        
         footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
@@ -212,14 +171,13 @@
         <h2>// MODULES</h2>
         
         <!-- Content -->
-        <div class="module" onclick="toggle(this)">
+        <div class="module">
             <div class="module-header">
                 <span class="module-icon">01</span>
                 <div class="module-title">
                     <strong>SYNTH_CONTENT</strong>
                     <span>AI content generation</span>
                 </div>
-                <span class="module-toggle">+</span>
             </div>
             <div class="module-content">
                 <div class="input-group">
@@ -235,85 +193,64 @@
                         <option value="thoughtful">THOUGHTFUL</option>
                     </select>
                 </div>
-                <button onclick="testAPI()">// EXECUTE</button>
-                <div id="testResult" style="margin-top:10px;padding:10px;background:#111;border:1px solid #333;word-break:break-all;"></div>
-        
-        <script>
-        async function testAPI() {
-            document.getElementById('testResult').innerText = 'Loading...';
-            try {
-                const res = await fetch('/api/generate', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({prompt:'hello',type:'content'})
-                });
-                const data = await res.json();
-                document.getElementById('testResult').innerText = JSON.stringify(data, null, 2);
-            } catch(e) {
-                document.getElementById('testResult').innerText = 'Error: ' + e.message;
-            }
-        }
-        </script>
+                <button onclick="generateContent()">// EXECUTE</button>
                 <div class="result" id="contentResult"></div>
             </div>
         </div>
         
         <!-- Hashtags -->
-        <div class="module" onclick="toggle(this)">
+        <div class="module">
             <div class="module-header">
                 <span class="module-icon">02</span>
                 <div class="module-title">
                     <strong>DISCOVERY_TAGS</strong>
                     <span>hashtag discovery</span>
                 </div>
-                <span class="module-toggle">+</span>
             </div>
             <div class="module-content">
                 <div class="input-group">
                     <label>// CONTEXT</label>
                     <textarea id="hashtagPrompt" placeholder="your content context..."></textarea>
                 </div>
-                <button onclick="findHashtags(event)">// EXECUTE</button>
+                <button onclick="findHashtags()">// EXECUTE</button>
                 <div class="result" id="hashtagResult"></div>
             </div>
         </div>
         
         <!-- Ideas -->
-        <div class="module" onclick="toggle(this)">
+        <div class="module">
             <div class="module-header">
                 <span class="module-icon">03</span>
                 <div class="module-title">
                     <strong>IDEATION_CORE</strong>
                     <span>content ideas</span>
                 </div>
-                <span class="module-toggle">+</span>
             </div>
             <div class="module-content">
                 <div class="input-group">
                     <label>// DOMAIN</label>
                     <input type="text" id="nicheInput" placeholder="your niche...">
                 </div>
-                <button onclick="generateIdeas(event)">// EXECUTE</button>
+                <button onclick="generateIdeas()">// EXECUTE</button>
                 <div class="result" id="ideasResult"></div>
             </div>
         </div>
         
         <!-- Bio -->
-        <div class="module" onclick="toggle(this)">
+        <div class="module">
             <div class="module-header">
                 <span class="module-icon">04</span>
                 <div class="module-title">
                     <strong>IDENTITY_BUILDER</strong>
                     <span>bio generation</span>
                 </div>
-                <span class="module-toggle">+</span>
             </div>
             <div class="module-content">
                 <div class="input-group">
                     <label>// PROFILE</label>
                     <textarea id="bioPrompt" placeholder="describe yourself..."></textarea>
                 </div>
-                <button onclick="generateBio(event)">// EXECUTE</button>
+                <button onclick="generateBio()">// EXECUTE</button>
                 <div class="result" id="bioResult"></div>
             </div>
         </div>
@@ -327,13 +264,6 @@
     </div>
     
     <script>
-        console.log('FORGE script loaded');
-        
-        // Test immediately
-        document.addEventListener('click', function(e) {
-            console.log('Click detected on:', e.target.tagName, e.target.className);
-        });
-        
         const PROMPTS = {
             content: `You are an expert content writer. Generate engaging, high-quality content.`,
             hashtags: `You are a social media expert. Generate relevant hashtags.`,
@@ -366,15 +296,10 @@
             document.getElementById('generations').textContent = total;
         }
         
-        function toggle(m) {
-            document.querySelectorAll('.module').forEach(x => { if(x!==m) x.classList.remove('active'); });
-            m.classList.toggle('active');
-        }
-        
         function showResult(id, content) {
             const el = document.getElementById(id);
             el.textContent = content;
-            el.classList.add('show');
+            el.style.display = 'block';
             updateStats();
         }
         
@@ -391,38 +316,34 @@
             finally { document.getElementById('loading').style.display = 'none'; }
         }
         
-        async function generateContent(e) {
-            e.stopPropagation();
+        async function generateContent() {
             const p = document.getElementById('contentPrompt').value;
             const s = document.getElementById('contentStyle').value;
-            if(!p) return;
+            if(!p) { showResult('contentResult', 'ERROR: Please enter a prompt'); return; }
             const prompt = `${PROMPTS.content} ${STYLES[s]}\n\n${p}`;
             const r = await callAPI({prompt, type:'content'});
-            showResult('contentResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+            showResult('contentResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
         }
         
-        async function findHashtags(e) {
-            e.stopPropagation();
+        async function findHashtags() {
             const p = document.getElementById('hashtagPrompt').value;
-            if(!p) return;
+            if(!p) { showResult('hashtagResult', 'ERROR: Please enter context'); return; }
             const r = await callAPI({prompt:p, type:'hashtags'});
-            showResult('hashtagResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+            showResult('hashtagResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
         }
         
-        async function generateIdeas(e) {
-            e.stopPropagation();
+        async function generateIdeas() {
             const p = document.getElementById('nicheInput').value;
-            if(!p) return;
+            if(!p) { showResult('ideasResult', 'ERROR: Please enter a niche'); return; }
             const r = await callAPI({prompt:p, type:'ideas'});
-            showResult('ideasResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+            showResult('ideasResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
         }
         
-        async function generateBio(e) {
-            e.stopPropagation();
+        async function generateBio() {
             const p = document.getElementById('bioPrompt').value;
-            if(!p) return;
+            if(!p) { showResult('bioResult', 'ERROR: Please describe yourself'); return; }
             const r = await callAPI({prompt:p, type:'bio'});
-            showResult('bioResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+            showResult('bioResult', r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED'));
         }
     </script>
 </body>
