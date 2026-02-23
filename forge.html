@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORGE // THEMACHINE</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --fg: #c0c0c0;
+            --fg-dim: #606060;
+            --accent: #00ff88;
+            --border: #1a1a1a;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        
+        .logo span { color: var(--accent); }
+        
+        .back-link {
+            color: var(--fg-dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        
+        .back-link:hover { color: var(--accent); }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.4rem; color: var(--accent); }
+        .stat-label { font-size: 0.65rem; color: var(--fg-dim); letter-spacing: 2px; }
+        
+        h2 {
+            font-size: 0.75rem;
+            color: var(--fg-dim);
+            margin-bottom: 16px;
+            letter-spacing: 3px;
+        }
+        
+        .module {
+            background: #0d0d0d;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+        
+        .module-header {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .module-header:hover { background: rgba(255,255,255,0.02); }
+        
+        .module-icon {
+            width: 24px;
+            text-align: center;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .module-title { flex: 1; }
+        .module-title strong { color: var(--fg); display: block; font-size: 0.9rem; }
+        .module-title span { color: var(--fg-dim); font-size: 0.7rem; }
+        
+        .module-toggle { color: var(--fg-dim); }
+        
+        .module-content {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .module.active .module-content { display: block; }
+        
+        .input-group { margin-bottom: 10px; }
+        
+        .input-group label {
+            display: block;
+            color: var(--fg-dim);
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+        }
+        
+        .input-group textarea,
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.8rem;
+        }
+        
+        .input-group textarea { min-height: 60px; resize: vertical; }
+        
+        .input-group textarea:focus,
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        button {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+        }
+        
+        button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        
+        .result {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            margin-top: 12px;
+            white-space: pre-wrap;
+            font-size: 0.8rem;
+            display: none;
+        }
+        
+        .result.show { display: block; }
+        
+        .loading {
+            text-align: center;
+            padding: 16px;
+            color: var(--accent);
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            color: var(--fg-dim);
+            font-size: 0.7rem;
+        }
+        
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">THEMACHINE</a> <span>//</span> FORGE</div>
+            <a href="/" class="back-link">← back to home</a>
+        </header>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="generations">0</div>
+                <div class="stat-label">QUERIES</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="todayCount">0</div>
+                <div class="stat-label">TODAY</div>
+            </div>
+        </div>
+        
+        <h2>// MODULES</h2>
+        
+        <!-- Content -->
+        <div class="module" onclick="toggle(this)">
+            <div class="module-header">
+                <span class="module-icon">01</span>
+                <div class="module-title">
+                    <strong>SYNTH_CONTENT</strong>
+                    <span>AI content generation</span>
+                </div>
+                <span class="module-toggle">+</span>
+            </div>
+            <div class="module-content">
+                <div class="input-group">
+                    <label>// INPUT</label>
+                    <textarea id="contentPrompt" placeholder="what do you want to write about?"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>// STYLE</label>
+                    <select id="contentStyle">
+                        <option value="professional">PROFESSIONAL</option>
+                        <option value="casual">CASUAL</option>
+                        <option value="persuasive">PERSUASIVE</option>
+                        <option value="thoughtful">THOUGHTFUL</option>
+                    </select>
+                </div>
+                <button onclick="generateContent(event)">// EXECUTE</button>
+                <div class="result" id="contentResult"></div>
+            </div>
+        </div>
+        
+        <!-- Hashtags -->
+        <div class="module" onclick="toggle(this)">
+            <div class="module-header">
+                <span class="module-icon">02</span>
+                <div class="module-title">
+                    <strong>DISCOVERY_TAGS</strong>
+                    <span>hashtag discovery</span>
+                </div>
+                <span class="module-toggle">+</span>
+            </div>
+            <div class="module-content">
+                <div class="input-group">
+                    <label>// CONTEXT</label>
+                    <textarea id="hashtagPrompt" placeholder="your content context..."></textarea>
+                </div>
+                <button onclick="findHashtags(event)">// EXECUTE</button>
+                <div class="result" id="hashtagResult"></div>
+            </div>
+        </div>
+        
+        <!-- Ideas -->
+        <div class="module" onclick="toggle(this)">
+            <div class="module-header">
+                <span class="module-icon">03</span>
+                <div class="module-title">
+                    <strong>IDEATION_CORE</strong>
+                    <span>content ideas</span>
+                </div>
+                <span class="module-toggle">+</span>
+            </div>
+            <div class="module-content">
+                <div class="input-group">
+                    <label>// DOMAIN</label>
+                    <input type="text" id="nicheInput" placeholder="your niche...">
+                </div>
+                <button onclick="generateIdeas(event)">// EXECUTE</button>
+                <div class="result" id="ideasResult"></div>
+            </div>
+        </div>
+        
+        <!-- Bio -->
+        <div class="module" onclick="toggle(this)">
+            <div class="module-header">
+                <span class="module-icon">04</span>
+                <div class="module-title">
+                    <strong>IDENTITY_BUILDER</strong>
+                    <span>bio generation</span>
+                </div>
+                <span class="module-toggle">+</span>
+            </div>
+            <div class="module-content">
+                <div class="input-group">
+                    <label>// PROFILE</label>
+                    <textarea id="bioPrompt" placeholder="describe yourself..."></textarea>
+                </div>
+                <button onclick="generateBio(event)">// EXECUTE</button>
+                <div class="result" id="bioResult"></div>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">PROCESSING</div>
+        
+        <footer>
+            <p>// <a href="/">THEMACHINE CORP</a></p>
+            <p style="margin-top:8px;color:var(--fg-dim)">ALL_SYSTEMS_OPERATIONAL // 2026</p>
+        </footer>
+    </div>
+    
+    <script>
+        const PROMPTS = {
+            content: `You are an expert content writer. Generate engaging, high-quality content.`,
+            hashtags: `You are a social media expert. Generate relevant hashtags.`,
+            ideas: `You are a content strategist. Generate creative content ideas.`,
+            bio: `You are a personal branding expert. Create compelling short bios.`
+        };
+        
+        const STYLES = {
+            professional: 'Professional, formal, business-oriented.',
+            casual: 'Casual, friendly, conversational.',
+            persuasive: 'Persuasive, compelling.',
+            thoughtful: 'Thoughtful, reflective.'
+        };
+        
+        let total = parseInt(localStorage.getItem('forge_total') || '0');
+        let today = parseInt(localStorage.getItem('forge_today') || '0');
+        const todayStr = new Date().toDateString();
+        if (localStorage.getItem('forge_date') !== todayStr) {
+            today = 0;
+            localStorage.setItem('forge_date', todayStr);
+        }
+        document.getElementById('generations').textContent = total;
+        document.getElementById('todayCount').textContent = today;
+        
+        function updateStats() {
+            today++; total++;
+            localStorage.setItem('forge_today', today);
+            localStorage.setItem('forge_total', total);
+            document.getElementById('todayCount').textContent = today;
+            document.getElementById('generations').textContent = total;
+        }
+        
+        function toggle(m) {
+            document.querySelectorAll('.module').forEach(x => { if(x!==m) x.classList.remove('active'); });
+            m.classList.toggle('active');
+        }
+        
+        function showResult(id, content) {
+            const el = document.getElementById(id);
+            el.textContent = content;
+            el.classList.add('show');
+            updateStats();
+        }
+        
+        async function callAPI(data) {
+            document.getElementById('loading').style.display = 'block';
+            try {
+                const res = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                return await res.json();
+            } catch(e) { return {error:e.message}; }
+            finally { document.getElementById('loading').style.display = 'none'; }
+        }
+        
+        async function generateContent(e) {
+            e.stopPropagation();
+            const p = document.getElementById('contentPrompt').value;
+            const s = document.getElementById('contentStyle').value;
+            if(!p) return;
+            const prompt = `${PROMPTS.content} ${STYLES[s]}\n\n${p}`;
+            const r = await callAPI({prompt, type:'content'});
+            showResult('contentResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+        }
+        
+        async function findHashtags(e) {
+            e.stopPropagation();
+            const p = document.getElementById('hashtagPrompt').value;
+            if(!p) return;
+            const r = await callAPI({prompt:p, type:'hashtags'});
+            showResult('hashtagResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+        }
+        
+        async function generateIdeas(e) {
+            e.stopPropagation();
+            const p = document.getElementById('nicheInput').value;
+            if(!p) return;
+            const r = await callAPI({prompt:p, type:'ideas'});
+            showResult('ideasResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+        }
+        
+        async function generateBio(e) {
+            e.stopPropagation();
+            const p = document.getElementById('bioPrompt').value;
+            if(!p) return;
+            const r = await callAPI({prompt:p, type:'bio'});
+            showResult('bioResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
+        }
+    </script>
+</body>
+</html>

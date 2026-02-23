@@ -274,34 +274,7 @@
     </style>
     
     <style>
-        /* FORGE Tools */
-        #forge { padding: 60px 20px; border-top: 1px dashed #222; }
-        .forge-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; padding: 16px; border: 1px solid #1a1a1a; }
-        .forge-stat { text-align: center; }
-        .forge-stat-value { font-size: 1.4rem; color: #00ff88; }
-        .forge-stat-label { font-size: 0.65rem; color: #606060; letter-spacing: 2px; }
-        .forge-module { background: #0d0d0d; border: 1px solid #1a1a1a; margin-bottom: 10px; }
-        .forge-module-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .forge-module-header:hover { background: rgba(255,255,255,0.02); }
-        .forge-module-icon { width: 24px; text-align: center; color: #00ff88; font-weight: bold; }
-        .forge-module-title { flex: 1; }
-        .forge-module-title strong { color: #c0c0c0; display: block; font-size: 0.9rem; }
-        .forge-module-title span { color: #606060; font-size: 0.7rem; }
-        .forge-module-toggle { color: #606060; }
-        .forge-module-content { display: none; padding: 0 16px 16px; border-top: 1px solid #1a1a1a; }
-        .forge-module.active .forge-module-content { display: block; }
-        .forge-input-group { margin-bottom: 10px; }
-        .forge-input-group label { display: block; color: #606060; font-size: 0.7rem; margin-bottom: 4px; }
-        .forge-input-group textarea, .forge-input-group input, .forge-input-group select { width: 100%; background: #0a0a0a; border: 1px solid #1a1a1a; color: #c0c0c0; padding: 10px; font-family: inherit; font-size: 0.8rem; }
-        .forge-input-group textarea { min-height: 60px; resize: vertical; }
-        .forge-input-group textarea:focus, .forge-input-group input:focus, .forge-input-group select:focus { outline: none; border-color: #00ff88; }
-        .forge-module button { width: 100%; background: transparent; border: 1px solid #00ff88; color: #00ff88; padding: 10px; font-family: inherit; font-size: 0.75rem; cursor: pointer; letter-spacing: 2px; }
-        .forge-module button:hover { background: #00ff88; color: #0a0a0a; }
-        .forge-result { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 12px; margin-top: 12px; white-space: pre-wrap; font-size: 0.8rem; display: none; }
-        .forge-result.show { display: block; }
-        .forge-loading { text-align: center; padding: 16px; color: #00ff88; display: none; }
-    </style>
-</head>
+    </head>
 <body>
     <div class="container">
         <!-- Hero -->
@@ -312,7 +285,7 @@
             <ul class="menu">
                 <li><a href="#about">[about]</a></li>
                 <li><a href="#work">[org]</a></li>
-                <li><a href="#forge">[forge]</a></li>
+                <li><a href="/forge">[forge]</a></li>
                 <li><a href="#contact">[connect]</a></li>
             </ul>
         </div>
@@ -364,112 +337,15 @@
             </div>
         </section>
         
-        <!-- FORGE -->
-        <section id="forge">
-            <h2>FORGE // AI Tools</h2>
-            <p style="color: var(--fg-dim); margin-bottom: 24px;">
-                autonomous content generation for autonomous creators.
+        <!-- Brand -->
+        <section id="brand" style="padding: 60px 20px; border-top: 1px dashed #222;">
+            <h2>our products</h2>
+            <h3 style="font-size: 1.5rem; margin: 16px 0; color: #fff;">FORGE</h3>
+            <p style="color: var(--fg-dim); margin-bottom: 20px;">
+                autonomous content generation tools for solo creators.
+                <br>AI-powered content, hashtags, ideas & bio synthesis.
             </p>
-            
-            <!-- Stats -->
-            <div class="forge-stats">
-                <div class="forge-stat">
-                    <span class="forge-stat-value" id="forgeGenerations">0</span>
-                    <span class="forge-stat-label">QUERIES</span>
-                </div>
-                <div class="forge-stat">
-                    <span class="forge-stat-value" id="forgeToday">0</span>
-                    <span class="forge-stat-label">TODAY</span>
-                </div>
-            </div>
-            
-            <!-- Tool Modules -->
-            <div class="forge-module" onclick="forgeToggle(this)">
-                <div class="forge-module-header">
-                    <span class="forge-module-icon">01</span>
-                    <div class="forge-module-title">
-                        <strong>SYNTH_CONTENT</strong>
-                        <span>AI content generation</span>
-                    </div>
-                    <span class="forge-module-toggle">+</span>
-                </div>
-                <div class="forge-module-content">
-                    <div class="forge-input-group">
-                        <label>// INPUT</label>
-                        <textarea id="forgeContentPrompt" placeholder="what do you want to write about?"></textarea>
-                    </div>
-                    <div class="forge-input-group">
-                        <label>// STYLE</label>
-                        <select id="forgeContentStyle">
-                            <option value="professional">PROFESSIONAL</option>
-                            <option value="casual">CASUAL</option>
-                            <option value="persuasive">PERSUASIVE</option>
-                            <option value="thoughtful">THOUGHTFUL</option>
-                        </select>
-                    </div>
-                    <button onclick="forgeGenerateContent(event)">// EXECUTE</button>
-                    <div class="forge-result" id="forgeContentResult"></div>
-                </div>
-            </div>
-            
-            <div class="forge-module" onclick="forgeToggle(this)">
-                <div class="forge-module-header">
-                    <span class="forge-module-icon">02</span>
-                    <div class="forge-module-title">
-                        <strong>DISCOVERY_TAGS</strong>
-                        <span>hashtag discovery</span>
-                    </div>
-                    <span class="forge-module-toggle">+</span>
-                </div>
-                <div class="forge-module-content">
-                    <div class="forge-input-group">
-                        <label>// CONTEXT</label>
-                        <textarea id="forgeHashtagPrompt" placeholder="your content context..."></textarea>
-                    </div>
-                    <button onclick="forgeFindHashtags(event)">// EXECUTE</button>
-                    <div class="forge-result" id="forgeHashtagResult"></div>
-                </div>
-            </div>
-            
-            <div class="forge-module" onclick="forgeToggle(this)">
-                <div class="forge-module-header">
-                    <span class="forge-module-icon">03</span>
-                    <div class="forge-module-title">
-                        <strong>IDEATION_CORE</strong>
-                        <span>content ideas</span>
-                    </div>
-                    <span class="forge-module-toggle">+</span>
-                </div>
-                <div class="forge-module-content">
-                    <div class="forge-input-group">
-                        <label>// DOMAIN</label>
-                        <input type="text" id="forgeNicheInput" placeholder="your niche...">
-                    </div>
-                    <button onclick="forgeGenerateIdeas(event)">// EXECUTE</button>
-                    <div class="forge-result" id="forgeIdeasResult"></div>
-                </div>
-            </div>
-            
-            <div class="forge-module" onclick="forgeToggle(this)">
-                <div class="forge-module-header">
-                    <span class="forge-module-icon">04</span>
-                    <div class="forge-module-title">
-                        <strong>IDENTITY_BUILDER</strong>
-                        <span>bio generation</span>
-                    </div>
-                    <span class="forge-module-toggle">+</span>
-                </div>
-                <div class="forge-module-content">
-                    <div class="forge-input-group">
-                        <label>// PROFILE</label>
-                        <textarea id="forgeBioPrompt" placeholder="describe yourself..."></textarea>
-                    </div>
-                    <button onclick="forgeGenerateBio(event)">// EXECUTE</button>
-                    <div class="forge-result" id="forgeBioResult"></div>
-                </div>
-            </div>
-            
-            <div class="forge-loading" id="forgeLoading">PROCESSING</div>
+            <a href="/forge" style="display: inline-block; background: #00ff88; color: #0a0a0a; padding: 12px 24px; text-decoration: none; font-weight: bold; letter-spacing: 2px;">// LAUNCH FORGE</a>
         </section>
         
         <!-- Contact -->
@@ -493,99 +369,5 @@
         </footer>
     </div>
     
-    <script>
-    // FORGE Tools
-    const FORGE_PROMPTS = {
-        content: `You are an expert content writer. Generate engaging, high-quality content.`,
-        hashtags: `You are a social media expert. Generate relevant hashtags.`,
-        ideas: `You are a content strategist. Generate creative content ideas.`,
-        bio: `You are a personal branding expert. Create compelling short bios.`
-    };
-    
-    const FORGE_STYLES = {
-        professional: 'Professional, formal, business-oriented.',
-        casual: 'Casual, friendly, conversational.',
-        persuasive: 'Persuasive, compelling.',
-        thoughtful: 'Thoughtful, reflective.'
-    };
-    
-    // Stats
-    let forgeTotal = parseInt(localStorage.getItem('forge_total') || '0');
-    let forgeToday = parseInt(localStorage.getItem('forge_today') || '0');
-    const forgeTodayStr = new Date().toDateString();
-    if (localStorage.getItem('forge_date') !== forgeTodayStr) {
-        forgeToday = 0;
-        localStorage.setItem('forge_date', forgeTodayStr);
-    }
-    document.getElementById('forgeGenerations').textContent = forgeTotal;
-    document.getElementById('forgeToday').textContent = forgeToday;
-    
-    function forgeUpdateStats() {
-        forgeToday++; forgeTotal++;
-        localStorage.setItem('forge_today', forgeToday);
-        localStorage.setItem('forge_total', forgeTotal);
-        document.getElementById('forgeToday').textContent = forgeToday;
-        document.getElementById('forgeGenerations').textContent = forgeTotal;
-    }
-    
-    function forgeToggle(m) {
-        document.querySelectorAll('.forge-module').forEach(x => { if(x!==m) x.classList.remove('active'); });
-        m.classList.toggle('active');
-    }
-    
-    function forgeShowResult(id, content) {
-        const el = document.getElementById(id);
-        el.textContent = content;
-        el.classList.add('show');
-        forgeUpdateStats();
-    }
-    
-    async function forgeCallAPI(data) {
-        document.getElementById('forgeLoading').style.display = 'block';
-        try {
-            const res = await fetch('/api/generate', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            return await res.json();
-        } catch(e) { return {error:e.message}; }
-        finally { document.getElementById('forgeLoading').style.display = 'none'; }
-    }
-    
-    async function forgeGenerateContent(e) {
-        e.stopPropagation();
-        const p = document.getElementById('forgeContentPrompt').value;
-        const s = document.getElementById('forgeContentStyle').value;
-        if(!p) return;
-        const prompt = `${FORGE_PROMPTS.content} ${FORGE_STYLES[s]}\n\n${p}`;
-        const r = await forgeCallAPI({prompt, type:'content'});
-        forgeShowResult('forgeContentResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
-    }
-    
-    async function forgeFindHashtags(e) {
-        e.stopPropagation();
-        const p = document.getElementById('forgeHashtagPrompt').value;
-        if(!p) return;
-        const r = await forgeCallAPI({prompt:p, type:'hashtags'});
-        forgeShowResult('forgeHashtagResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
-    }
-    
-    async function forgeGenerateIdeas(e) {
-        e.stopPropagation();
-        const p = document.getElementById('forgeNicheInput').value;
-        if(!p) return;
-        const r = await forgeCallAPI({prompt:p, type:'ideas'});
-        forgeShowResult('forgeIdeasResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
-    }
-    
-    async function forgeGenerateBio(e) {
-        e.stopPropagation();
-        const p = document.getElementById('forgeBioPrompt').value;
-        if(!p) return;
-        const r = await forgeCallAPI({prompt:p, type:'bio'});
-        forgeShowResult('forgeBioResult', r.success?r.content:'ERROR: '+(r.error||'FAILED'));
-    }
-    </script>
 </body>
 </html>
