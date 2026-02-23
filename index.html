@@ -264,11 +264,48 @@
             }
             
             .logo {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             
             .container {
-                padding: 20px;
+                padding: 16px;
+            }
+            
+            .menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-item {
+                padding: 16px;
+            }
+        }
+        
+        /* Desktop optimization */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 900px;
+            }
+            
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .grid-item {
+                padding: 30px;
+            }
+            
+            section {
+                padding: 80px 40px;
             }
         }
     </style>
