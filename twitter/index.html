@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TWITTER // THEMACHINE</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --fg: #c0c0c0;
+            --fg-dim: #606060;
+            --accent: #00ff88;
+            --border: #1a1a1a;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .logo { font-size: 1.8rem; color: #fff; margin-bottom: 8px; }
+        .logo span { color: var(--accent); }
+        .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
+        .back-link:hover { color: var(--accent); }
+        
+        .tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tab {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: var(--fg-dim);
+            font-family: inherit;
+            font-size: 0.75rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover { color: var(--fg); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; color: var(--fg-dim); font-size: 0.7rem; margin-bottom: 6px; }
+        
+        .input-group textarea,
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+        
+        .input-group textarea { min-height: 100px; resize: vertical; }
+        .input-group textarea:focus, .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); }
+        
+        button {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        
+        button:hover { background: var(--accent); color: var(--bg); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        button.loading { animation: pulse 1s infinite; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .result {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            margin-top: 16px;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            display: none;
+        }
+        
+        .result.show { display: block; }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .result-actions button {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+        }
+        
+        .copy-btn { background: var(--border); color: var(--fg); }
+        .copy-btn:hover { background: var(--accent); color: var(--bg); }
+        
+        .history-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .history-item .topic {
+            color: var(--fg-dim);
+            font-size: 0.7rem;
+            margin-bottom: 8px;
+        }
+        
+        .history-item .content {
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
+        
+        .hashtag {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--accent);
+            display: none;
+        }
+        
+        .loading .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            color: var(--fg-dim);
+            font-size: 0.7rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        
+        /* Mobile */
+        @media (max-width: 600px) {
+            .container { padding: 20px 16px; }
+            .logo { font-size: 1.4rem; }
+            .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+            .tab { padding: 10px 8px; font-size: 0.65rem; text-align: center; }
+        }
+        
+        @media (min-width: 1200px) {
+            .container { max-width: 700px; padding: 60px 40px; }
+            .logo { font-size: 2.2rem; }
+            .input-group textarea { min-height: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">THEMACHINE</a> <span>//</span> TWITTER</div>
+            <a href="/" class="back-link">← back to home</a>
+        </header>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('compose')">01 COMPOSE</button>
+            <button class="tab" onclick="showTab('hashtags')">02 HASHTAGS</button>
+            <button class="tab" onclick="showTab('schedule')">03 SCHEDULE</button>
+            <button class="tab" onclick="showTab('history')">04 HISTORY</button>
+        </div>
+        
+        <!-- Compose Tab -->
+        <div id="tab-compose" class="tab-content active">
+            <div class="input-group">
+                <label>// WHAT'S YOUR TOPIC OR IDEA?</label>
+                <textarea id="tweetPrompt" placeholder="Enter your topic, idea, or what you want to tweet about..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>// TONE</label>
+                <select id="tweetTone">
+                    <option value="professional">PROFESSIONAL</option>
+                    <option value="casual">CASUAL</option>
+                    <option value="humorous">HUMOROUS</option>
+                    <option value="thoughtful">THOUGHTFUL</option>
+                    <option value="provocative">PROVOCATIVE</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>// LENGTH</label>
+                <select id="tweetLength">
+                    <option value="short">SHORT (< 140 chars)</option>
+                    <option value="medium">MEDIUM (140-280 chars)</option>
+                    <option value="long">LONG (thread)</option>
+                </select>
+            </div>
+            <button onclick="generateTweet(event)">// GENERATE</button>
+            <div class="result" id="tweetResult"></div>
+        </div>
+        
+        <!-- Hashtags Tab -->
+        <div id="tab-hashtags" class="tab-content">
+            <div class="input-group">
+                <label>// YOUR TWEET OR TOPIC</label>
+                <textarea id="hashtagPrompt" placeholder="Paste your tweet or describe your topic..."></textarea>
+            </div>
+            <button onclick="generateHashtags(event)">// FIND HASHTAGS</button>
+            <div class="result" id="hashtagResult"></div>
+        </div>
+        
+        <!-- Schedule Tab -->
+        <div id="tab-schedule" class="tab-content">
+            <div class="input-group">
+                <label>// SCHEDULE A TWEET (Coming Soon)</label>
+                <input type="datetime-local" id="scheduleTime" disabled>
+            </div>
+            <div class="input-group">
+                <label>// TWEET CONTENT</label>
+                <textarea id="scheduledTweet" placeholder="Enter tweet to schedule..." disabled></textarea>
+            </div>
+            <button onclick="alert('Scheduling feature coming soon!')" disabled>// SCHEDULE (COMING SOON)</button>
+            <p style="color:var(--fg-dim);margin-top:16px;font-size:0.8rem;">
+                📅 Schedule feature is under development.<br>
+                For now, generate tweets and copy them to post manually.
+            </p>
+        </div>
+        
+        <!-- History Tab -->
+        <div id="tab-history" class="tab-content">
+            <div id="historyList"></div>
+        </div>
+        
+        <div class="loading" id="loading"><span class="spinner"></span>PROCESSING</div>
+        
+        <footer>
+            <p>// <a href="/">THEMACHINE CORP</a></p>
+            <p style="margin-top:8px;color:var(--fg-dim)">AI-POWERED TWITTER ASSISTANT</p>
+        </footer>
+    </div>
+    
+    <script>
+        const PROMPTS = {
+            tweet: `You are an expert Twitter content creator. Generate engaging, viral-worthy tweets based on the user's input.`,
+            hashtags: `You are a social media expert. Generate relevant, popular hashtags for the given tweet or topic.`
+        };
+        
+        const TONES = {
+            professional: 'Professional, informative, business-oriented.',
+            casual: 'Casual, friendly, conversational.',
+            humorous: 'Funny, witty, entertaining.',
+            thoughtful: 'Thoughtful, reflective, insightful.',
+            provocative: 'Provocative, controversial, attention-grabbing.'
+        };
+        
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if (tabId === 'history') loadHistory();
+        }
+        
+        async function callAPI(data) {
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.display = 'inline-flex';
+            loadingEl.style.alignItems = 'center';
+            loadingEl.style.justifyContent = 'center';
+            loadingEl.style.gap = '10px';
+            try {
+                const res = await fetch('https://themachine-corp.vercel.app/api/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                return await res.json();
+            } catch(e) { 
+                console.error(e);
+                return {error: 'Failed: ' + e.message};
+            }
+            finally { loadingEl.style.display = 'none'; }
+        }
+        
+        function saveToHistory(topic, content, type) {
+            const history = JSON.parse(localStorage.getItem('twitter_history') || '[]');
+            history.unshift({ topic, content, type, time: new Date().toISOString() });
+            localStorage.setItem('twitter_history', JSON.stringify(history.slice(0, 50)));
+        }
+        
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('twitter_history') || '[]');
+            const list = document.getElementById('historyList');
+            if (history.length === 0) {
+                list.innerHTML = '<p style="color:var(--fg-dim);text-align:center;">No history yet. Generate some tweets!</p>';
+                return;
+            }
+            list.innerHTML = history.map((item, i) => `
+                <div class="history-item">
+                    <div class="topic">${item.topic} • ${new Date(item.time).toLocaleDateString()}</div>
+                    <div class="content">${item.content}</div>
+                </div>
+            `).join('');
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Copied to clipboard!');
+        }
+        
+        async function generateTweet(e) {
+            const btn = e.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'GENERATING...';
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
+            const p = document.getElementById('tweetPrompt').value;
+            const tone = document.getElementById('tweetTone').value;
+            const length = document.getElementById('tweetLength').value;
+            
+            if(!p) {
+                document.getElementById('tweetResult').innerHTML = 'ERROR: Please enter a topic';
+                document.getElementById('tweetResult').classList.add('show');
+                btn.textContent = originalText;
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                return;
+            }
+            
+            let lengthHint = '';
+            if (length === 'short') lengthHint = 'Keep it under 140 characters. ';
+            else if (length === 'medium') lengthHint = '140-280 characters. ';
+            else lengthHint = 'Write a Twitter thread of 3-5 tweets. ';
+            
+            const prompt = `${PROMPTS.tweet} ${TONES[tone]} ${lengthHint}Topic: ${p}`;
+            const r = await callAPI({prompt, type:'content'});
+            
+            const content = r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED');
+            
+            document.getElementById('tweetResult').innerHTML = `
+                <div class="result-header">
+                    <span style="color:var(--fg-dim);font-size:0.7rem;">GENERATED TWEET</span>
+                    <div class="result-actions">
+                        <button class="copy-btn" onclick="copyToClipboard(this.parentElement.parentElement.nextElementSibling.textContent)">COPY</button>
+                    </div>
+                </div>
+                ${content}
+            `;
+            document.getElementById('tweetResult').classList.add('show');
+            
+            saveToHistory(p, content, 'tweet');
+            
+            btn.textContent = originalText;
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+        
+        async function generateHashtags(e) {
+            const btn = e.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'FINDING...';
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
+            const p = document.getElementById('hashtagPrompt').value;
+            
+            if(!p) {
+                document.getElementById('hashtagResult').innerHTML = 'ERROR: Please enter a topic or tweet';
+                document.getElementById('hashtagResult').classList.add('show');
+                btn.textContent = originalText;
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                return;
+            }
+            
+            const prompt = `${PROMPTS.hashtags} Find the top 5-10 relevant hashtags for: ${p}`;
+            const r = await callAPI({prompt, type:'hashtags'});
+            
+            const content = r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED');
+            
+            document.getElementById('hashtagResult').innerHTML = `
+                <div class="result-header">
+                    <span style="color:var(--fg-dim);font-size:0.7rem;">RECOMMENDED HASHTAGS</span>
+                    <div class="result-actions">
+                        <button class="copy-btn" onclick="copyToClipboard(this.parentElement.parentElement.nextElementSibling.textContent)">COPY</button>
+                    </div>
+                </div>
+                ${content}
+            `;
+            document.getElementById('hashtagResult').classList.add('show');
+            
+            saveToHistory(p, content, 'hashtags');
+            
+            btn.textContent = originalText;
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
