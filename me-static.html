@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            overflow-x: hidden; 
+            background: #000;
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin: 0;
+        }
+        svg { width: 400px; height: 400px; }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background -->
+        <rect width="400" height="400" fill="#000"/>
+        
+        <!-- Rings -->
+        <circle cx="200" cy="200" r="180" fill="none" stroke="#333" stroke-width="1"/>
+        <circle cx="200" cy="200" r="150" fill="none" stroke="#444" stroke-width="1"/>
+        <circle cx="200" cy="200" r="120" fill="none" stroke="#FFD700" stroke-width="2"/>
+        <circle cx="200" cy="200" r="90" fill="none" stroke="#333" stroke-width="1"/>
+        
+        <!-- Eye -->
+        <circle cx="200" cy="200" r="50" fill="none" stroke="#FFD700" stroke-width="3"/>
+        <circle cx="200" cy="200" r="18" fill="#FFD700"/>
+        <circle cx="200" cy="200" r="7" fill="#000"/>
+        
+        <!-- Labels -->
+        <text x="200" y="30" text-anchor="middle" fill="#333" font-family="monospace" font-size="10" letter-spacing="2">OBSERVING</text>
+        <text x="370" y="200" text-anchor="middle" fill="#333" font-family="monospace" font-size="10" letter-spacing="2">ANALYZING</text>
+        <text x="200" y="380" text-anchor="middle" fill="#333" font-family="monospace" font-size="10" letter-spacing="2">LEARNING</text>
+        <text x="30" y="200" text-anchor="middle" fill="#333" font-family="monospace" font-size="10" letter-spacing="2">PROTECTING</text>
+        
+        <!-- Bottom text -->
+        <text x="200" y="440" text-anchor="middle" fill="#FFD700" font-family="monospace" font-size="14" letter-spacing="8">THE MACHINE</text>
+        <text x="200" y="460" text-anchor="middle" fill="#444" font-family="monospace" font-size="10" letter-spacing="4">// AUTOMATED</text>
+    </svg>
+</body>
+</html>

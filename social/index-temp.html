@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORGE // themachine corp.</title>
+    <title>SOCIAL // themachine corp.</title>
     <style>
         :root {
-            --gold: #FFD700;
             --bg: #0a0a0a;
             --fg: #c0c0c0;
             --fg-dim: #606060;
@@ -17,8 +16,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            overflow-x: hidden;
-            max-width: 100vw;
             font-family: 'Courier New', Courier, monospace;
             background: var(--bg);
             color: var(--fg);
@@ -27,8 +24,7 @@
         }
         
         .container {
-            overflow-x: hidden;
-            max-width: 600px; padding: 40px 20px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -36,78 +32,44 @@
         /* Mobile */
         @media (max-width: 600px) {
             .container {
-            overflow-x: hidden;
-                padding: 15px 12px;
-                max-width: 100%;
-                overflow-x: hidden;
+                padding: 20px 16px;
             }
             
-                font-size: 1.8rem; color: #fff; margin-bottom: 8px;
+            .logo {
+                font-size: 1.4rem;
             }
             
             .tabs {
-                display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 20px; border-bottom: 1px solid var(--border);
-                gap: 2px;
-                overflow-x: auto;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
             }
             
             .tab {
-                padding: 12px 16px;
-                font-size: 0.55rem;
+                padding: 10px 8px;
+                font-size: 0.65rem;
                 text-align: center;
-                white-space: nowrap;
-            }
-            
-            .input-group {
-                margin-bottom: 10px;
-            }
-            
-            .input-group label {
-                font-size: 0.6rem;
-            }
-            
-            .input-group textarea,
-            .input-group input,
-            .input-group select {
-                padding: 8px;
-                font-size: 0.8rem;
             }
             
             .input-group textarea {
-                min-height: 100px;
+                min-height: 80px;
             }
             
             .result {
                 font-size: 0.8rem;
-                padding: 12px 24px;
-                word-wrap: break-word;
-                overflow-x: hidden;
-            }
-            
-            button {
-                padding: 12px 24px;
-                font-size: 0.7rem;
-            }
-            
-            header {
-                margin-bottom: 15px;
-                padding-bottom: 10px;
-            }
-            
-            header > div {
-                font-size: 0.65rem !important;
+                padding: 12px;
             }
         }
         
         /* Desktop */
         @media (min-width: 1200px) {
             .container {
-            overflow-x: hidden;
                 max-width: 700px;
                 padding: 60px 40px;
             }
             
-                font-size: 1.8rem; color: #fff; margin-bottom: 8px;
+            .logo {
+                font-size: 2.2rem;
             }
             
             .input-group textarea {
@@ -129,13 +91,12 @@
         
         .logo { font-size: 1.8rem; color: #fff; margin-bottom: 8px; }
         .logo span { color: var(--accent); }
-        .logo span { color: var(--accent); }
         .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
         .back-link:hover { color: var(--accent); }
         
         /* Tabs */
         .tabs {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: flex;
             gap: 2px;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
@@ -147,7 +108,7 @@
             border: none;
             color: var(--fg-dim);
             font-family: inherit;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
             letter-spacing: 1px;
             border-bottom: 2px solid transparent;
@@ -278,10 +239,10 @@
 </head>
 <body>
     <div class="container">
-        <header style="text-align:center;">
-            <div class="logo" style="font-size:1.8rem;"><a href="/" style="color:#fff;text-decoration:none;">themachine corp.</a> <span>//</span> FORGE</div>
+        <header>
+            <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">themachine corp.</a> <span>//</span> SOCIAL</div>
             <div style="margin:8px 0;font-size:0.7rem;">
-                <span id="userEmail" style="color:#fff;margin-right:10px;font-weight:bold;"></span>
+                <span id="userEmail" style="color:var(--gold);margin-right:10px;font-weight:bold;"></span>
                 <span><a href="/account" style="color:var(--fg-dim);">[account]</a></span>
             </div>
             <div style="margin:8px 0;font-size:0.7rem;">
@@ -292,9 +253,9 @@
                 <button onclick="verifyPro()" style="background:transparent;border:1px solid var(--fg-dim);color:var(--fg-dim);padding:6px 12px;font-size:0.7rem;">I'VE PAID</button>
             </div>
             <div id="proSection" style="display:none;">
-                <span style="color:#fff;font-size:0.7rem;">✓ PRO - UNLIMITED</span>
+                <span style="color:var(--gold);font-size:0.7rem;">✓ PRO - UNLIMITED</span>
             </div>
-            <a href="/#products" class="back-link">← back to home</a>
+            <a href="/" class="back-link">← back to home</a>
         </header>
         
         <!-- Tabs -->
@@ -416,56 +377,20 @@
             window.history.replaceState({}, document.title, window.location.pathname);
             alert('恭喜！支付成功，您已升级为 PRO 版本！');
         }
-        // Auto-check subscription on page load
-        (function() {
-            var user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
-            if (!user || !user.email) return;
-            
-            fetch('https://themachine-subscription.jxs66.workers.dev?email=' + encodeURIComponent(user.email))
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    if (data.has_active && data.products) {
-                        if (data.products.forge || data.products.all) localStorage.setItem('forge_pro', 'true');
-                        if (data.products.social || data.products.all) localStorage.setItem('social_pro', 'true');
-                        if (data.products.shortform || data.products.all) localStorage.setItem('shortform_pro', 'true');
-                        if (data.products.all) localStorage.setItem('all_access', 'true');
-                        
-                    }
-                });
-        })();
         
-
-        // Show/hide PRO section
-        var isProForged = localStorage.getItem("forge_pro") === "true";
-        if (isProForged) {
-            document.getElementById("upgradeSection").style.display = "none";
-            document.getElementById("proSection").style.display = "block";
-        }
         // Usage tracking
         const FREE_DAILY_LIMIT = 3;
         const today = new Date().toDateString();
-        let usage = JSON.parse(localStorage.getItem('forge_usage') || '{"date":"","count":0}');
+        let usage = JSON.parse(localStorage.getItem('social_usage') || '{"date":"","count":0}');
         
         if (usage.date !== today) {
             usage = { date: today, count: 0 };
-            localStorage.setItem('forge_usage', JSON.stringify(usage));
+            localStorage.setItem('social_usage', JSON.stringify(usage));
             document.getElementById('usageDisplay').textContent = getUsageInfo();
         }
         
         // Show user email if logged in
         const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
-
-        // Refresh subscription status from API
-        fetch('https://themachine-subscription.jxs66.workers.dev?email=' + encodeURIComponent(user ? user.email : ''))
-            .then(r => r.json())
-            .then(data => {
-                if (data.has_active && data.products) {
-                    if (data.products.forge) localStorage.setItem('forge_pro', 'true');
-                    if (data.products.social) localStorage.setItem('social_pro', 'true');
-                    if (data.products.shortform) localStorage.setItem('shortform_pro', 'true');
-                    if (data.products.all) localStorage.setItem('all_access', 'true');
-                }
-            }).catch(() => {});
         if (user && user.email) {
             document.getElementById('userEmail').textContent = user.email;
         }
@@ -491,7 +416,7 @@
             const isPro = user.products?.forge === true || localStorage.getItem('forge_pro') === 'true';
             if (!isPro) {
                 usage.count++;
-                localStorage.setItem('forge_usage', JSON.stringify(usage));
+                localStorage.setItem('social_usage', JSON.stringify(usage));
                 document.getElementById('usageDisplay').textContent = getUsageInfo();
             }
         }
@@ -729,12 +654,5 @@ Make it practical and actionable.`;
             btn.disabled = false;
         }
     </script>
-<script>
 </body>
 </html>
-<!-- deploy: 2026年 02月 26日 星期四 02:20:17 CST -->
-<style>
-@media (max-width: 600px) {
-.tabs { grid-template-columns: 1fr 1fr !important; }
-}
-</style>

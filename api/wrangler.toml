@@ -1,0 +1,16 @@
+name = "themachine-api"
+main = "worker.js"
+account_id = "d54f82efc87256f8e5625c029184f434"
+compatibility_date = "2026-02-25"
+
+[[kv_namespaces]]
+binding = "AGENT_MESSAGES"
+id = "768b0cbe282b4f12936b509c70a993b7"
+
+[[kv_namespaces]]
+binding = "TOKEN_KV"
+id = "768b0cbe282b4f12936b509c70a993b7"
+
+[[kv_namespaces]]
+binding = "AGENT_KV"
+id = "768b0cbe282b4f12936b509c70a993b7"

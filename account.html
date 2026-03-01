@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account // THEMACHINE Corp.</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --fg: #c0c0c0;
+            --fg-dim: #606060;
+            --accent: #FFD700;
+            --border: #1a1a1a;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .logo { font-size: 1.5rem; color: #fff; margin-bottom: 8px; }
+        .logo span { color: var(--accent); }
+        .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
+        
+        h1 { font-size: 1.5rem; color: #fff; margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; color: #fff; margin: 25px 0 15px; }
+        
+        .user-info {
+            background: var(--border);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .user-info .email { color: #fff; font-size: 1rem; margin-bottom: 5px; }
+        .user-info .status { color: var(--accent); font-size: 0.85rem; }
+        
+        .product-card {
+            background: var(--border);
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .product-card .name { color: #fff; }
+        .product-card .name small { color: var(--fg-dim); display: block; font-size: 0.75rem; }
+        
+        .product-card .status { 
+            padding: 4px 10px; 
+            font-size: 0.75rem;
+            border-radius: 3px;
+        }
+        
+        .product-card .status.active { background: var(--accent); color: var(--bg); }
+        .product-card .status.inactive { background: transparent; border: 1px solid var(--fg-dim); color: var(--fg-dim); }
+        
+        .product-card .expires { color: var(--fg-dim); font-size: 0.7rem; }
+        
+        .btn {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .btn:hover { opacity: 0.9; }
+        
+        .btn-small { padding: 6px 12px; font-size: 0.7rem; }
+        
+        .logout { 
+            background: transparent; 
+            border: 1px solid var(--fg-dim); 
+            color: var(--fg-dim); 
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .product-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .product-card .btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">THEMACHINE Corp.</a> <span>//</span> ACCOUNT</div>
+            <a href="/" class="back-link">← back to home</a>
+        </header>
+        
+        <div id="loginSection" style="display:none;">
+            <h1>Sign In</h1>
+            <p style="color:var(--fg-dim);margin-bottom:20px;">Enter your email to access your account</p>
+            <input type="email" id="loginEmail" placeholder="your@email.com" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:12px;font-family:inherit;margin-bottom:15px;">
+            <button class="btn" onclick="login()" style="width:100%;">CONTINUE</button>
+        </div>
+        
+        <div id="dashboardSection" style="display:none;">
+        <button onclick="refreshSubscriptions()" style="background:transparent;border:1px solid var(--fg-dim);color:var(--fg-dim);padding:5px 10px;font-size:0.7rem;margin-bottom:10px;">REFRESH STATUS</button>
+            <h1>My Account</h1>
+            
+            <div class="user-info">
+                <div class="email" id="userEmail"></div>
+                <div class="status" id="userStatus"></div>
+            </div>
+            
+            <h2>My Products</h2>
+            
+            <div class="product-card">
+                <a href="/forge" class="name" style="color:#fff;text-decoration:none;">FORGE<small>Content, Ideas, Bio</small></a>
+                <div>
+                    <span class="status" id="forgeStatus">INACTIVE</span>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <a href="/social" class="name" style="color:#fff;text-decoration:none;">SOCIAL<small>Tweets, Hashtags</small></a>
+                <div>
+                    <span class="status" id="socialStatus">INACTIVE</span>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <a href="/shortform" class="name" style="color:#fff;text-decoration:none;">SHORTFORM<small>Video Scripts, Hooks</small></a>
+                <div>
+                    <span class="status" id="shortformStatus">INACTIVE</span>
+                </div>
+            </div>
+            
+            <h2>All Access</h2>
+            <div class="product-card">
+                <div class="name">ALL ACCESS<small>Everything now and in the future</small></div>
+                <div>
+                    <span class="status" id="allStatus">INACTIVE</span>
+                </div>
+            </div>
+            <a href="/pro.html" class="btn btn-small" id="allBtn">UPGRADE</a>
+            
+            <button class="btn logout" onclick="logout()" style="width:100%;margin-top:30px;">Sign Out</button>
+        </div>
+        
+        <div id="upgradeSection" style="display:none;">
+            <h1>Upgrade</h1>
+            <p style="color:var(--fg-dim);margin-bottom:20px;">Select a product to upgrade</p>
+            <a href="/pro.html" class="btn" style="display:block;width:100%;text-align:center;">VIEW PLANS</a>
+        </div>
+    </div>
+    
+    <script>
+        // Check login status
+        const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+        
+        if (user) {
+            showDashboard();
+        } else {
+            document.getElementById('loginSection').style.display = 'block';
+        }
+        
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email');
+                return;
+            }
+            
+            const userData = {
+                email: email,
+                created: Date.now(),
+                products: { forge: false, social: false, shortform: false, all: false }
+            };
+            
+            localStorage.setItem('themachine_user', JSON.stringify(userData));
+            showDashboard();
+        }
+        
+        function showDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            
+            const user = JSON.parse(localStorage.getItem('themachine_user'));
+            document.getElementById('userEmail').textContent = user.email;
+            
+            // Check subscription from API
+            checkSubscription(user.email);
+        }
+        
+        async function checkSubscription(email) {
+            try {
+                const res = await fetch('https://themachine-subscription.jxs66.workers.dev?email=' + encodeURIComponent(email));
+                const data = await res.json();
+                console.log('Subscription:', data);
+                
+                const user = JSON.parse(localStorage.getItem('themachine_user'));
+                
+                if (data.has_active && data.products) {
+                    user.products = data.products;
+                    localStorage.setItem('themachine_user', JSON.stringify(user));
+                    
+                    // Also set legacy flags
+                    if (data.products.forge) localStorage.setItem('forge_pro', 'true');
+                    if (data.products.social) localStorage.setItem('social_pro', 'true');
+                    if (data.products.shortform) localStorage.setItem('shortform_pro', 'true');
+                    if (data.products.all) localStorage.setItem('all_access', 'true');
+                }
+                
+                // Update UI after saving
+                updateAllStatuses();
+                updateProductStatus('forge');
+                updateProductStatus('social');
+                updateProductStatus('shortform');
+                updateProductStatus('all');
+                
+            } catch(e) {
+                console.log('API check failed:', e);
+                // Fallback to legacy
+                updateProductStatus('forge');
+                updateProductStatus('social');
+                updateProductStatus('shortform');
+                updateProductStatus('all');
+            }
+        }
+        
+        function updateProductStatus(product) {
+            const user = JSON.parse(localStorage.getItem('themachine_user'));
+            const statusEl = document.getElementById(product + 'Status');
+            const btnEl = document.getElementById(product + 'Btn');
+            
+            // Check both new format (user.products) and legacy format (individual keys)
+            let isActive = false;
+            if (user && user.products && user.products[product]) {
+                isActive = true;
+            }
+            // Legacy check
+            if (product === 'forge' && localStorage.getItem('forge_pro') === 'true') isActive = true;
+            if (product === 'social' && localStorage.getItem('social_pro') === 'true') isActive = true;
+            if (product === 'shortform' && localStorage.getItem('shortform_pro') === 'true') isActive = true;
+            if (product === 'all' && localStorage.getItem('all_access') === 'true') isActive = true;
+            
+            if (isActive) {
+                statusEl.textContent = 'ACTIVE';
+                statusEl.className = 'status active';
+                btnEl.textContent = 'MANAGE';
+            } else {
+                statusEl.textContent = 'INACTIVE';
+                statusEl.className = 'status inactive';
+                btnEl.textContent = 'UPGRADE';
+            }
+        }
+        
+        function refreshSubscriptions() {
+            const user = JSON.parse(localStorage.getItem('themachine_user'));
+            if (user) checkSubscription(user.email);
+        }
+
+        function logout() {
+            localStorage.removeItem('themachine_user');
+            location.reload();
+        }
+        
+        // Check for upgrade success from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('upgraded') === 'true') {
+            const product = urlParams.get('product') || 'all';
+            const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+            if (user) {
+                user.products[product] = true;
+                localStorage.setItem('themachine_user', JSON.stringify(user));
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORGE // themachine corp.</title>
+    <title>SHORTFORM // themachine corp.</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -46,6 +46,7 @@
             }
             
             .tabs {
+                display: grid;
                 display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 20px; border-bottom: 1px solid var(--border);
                 gap: 2px;
                 overflow-x: auto;
@@ -73,19 +74,15 @@
                 font-size: 0.8rem;
             }
             
-            .input-group textarea {
-                min-height: 100px;
-            }
-            
             .result {
                 font-size: 0.8rem;
-                padding: 12px 24px;
+                padding: 10px;
                 word-wrap: break-word;
                 overflow-x: hidden;
             }
             
             button {
-                padding: 12px 24px;
+                padding: 10px;
                 font-size: 0.7rem;
             }
             
@@ -111,7 +108,7 @@
             }
             
             .input-group textarea {
-                min-height: 150px;
+                min-height: 100px;
             }
             
             button {
@@ -279,7 +276,7 @@
 <body>
     <div class="container">
         <header style="text-align:center;">
-            <div class="logo" style="font-size:1.8rem;"><a href="/" style="color:#fff;text-decoration:none;">themachine corp.</a> <span>//</span> FORGE</div>
+            <div class="logo" style="font-size:1.8rem;"><a href="/" style="color:#fff;text-decoration:none;">themachine corp.</a> <span>//</span> SHORTFORM</div>
             <div style="margin:8px 0;font-size:0.7rem;">
                 <span id="userEmail" style="color:#fff;margin-right:10px;font-weight:bold;"></span>
                 <span><a href="/account" style="color:var(--fg-dim);">[account]</a></span>
@@ -436,19 +433,19 @@
         
 
         // Show/hide PRO section
-        var isProForged = localStorage.getItem("forge_pro") === "true";
-        if (isProForged) {
+        var isProShort = localStorage.getItem("shortform_pro") === "true";
+        if (isProShort) {
             document.getElementById("upgradeSection").style.display = "none";
             document.getElementById("proSection").style.display = "block";
         }
         // Usage tracking
         const FREE_DAILY_LIMIT = 3;
         const today = new Date().toDateString();
-        let usage = JSON.parse(localStorage.getItem('forge_usage') || '{"date":"","count":0}');
+        let usage = JSON.parse(localStorage.getItem('shortform_usage') || '{"date":"","count":0}');
         
         if (usage.date !== today) {
             usage = { date: today, count: 0 };
-            localStorage.setItem('forge_usage', JSON.stringify(usage));
+            localStorage.setItem('shortform_usage', JSON.stringify(usage));
             document.getElementById('usageDisplay').textContent = getUsageInfo();
         }
         
@@ -491,7 +488,7 @@
             const isPro = user.products?.forge === true || localStorage.getItem('forge_pro') === 'true';
             if (!isPro) {
                 usage.count++;
-                localStorage.setItem('forge_usage', JSON.stringify(usage));
+                localStorage.setItem('shortform_usage', JSON.stringify(usage));
                 document.getElementById('usageDisplay').textContent = getUsageInfo();
             }
         }
@@ -729,12 +726,6 @@ Make it practical and actionable.`;
             btn.disabled = false;
         }
     </script>
-<script>
 </body>
 </html>
 <!-- deploy: 2026年 02月 26日 星期四 02:20:17 CST -->
-<style>
-@media (max-width: 600px) {
-.tabs { grid-template-columns: 1fr 1fr !important; }
-}
-</style>

@@ -24,13 +24,14 @@
         }
         
         body {
+            overflow-x: hidden;
             font-family: 'Courier New', Courier, monospace;
             background: var(--bg);
             color: var(--fg);
             line-height: 1.4;
             overflow-x: hidden;
             font-size: 14px;
-            text-transform: lowercase;
+            
         }
         
         /* CRT effect */
@@ -81,8 +82,8 @@
         /* Blinking cursor */
         .cursor {
             display: inline-block;
-            width: 8px;
-            height: 14px;
+            width: 10px;
+            height: 1.2em;
             background: var(--fg);
             animation: blink 1s step-end infinite;
             vertical-align: text-bottom;
@@ -102,6 +103,7 @@
         }
         
         .logo {
+            color: #FFD700;
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 8px;
@@ -190,6 +192,7 @@
         /* Grid */
         .grid {
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-top: 24px;
         }
@@ -260,10 +263,12 @@
         /* Responsive */
         @media (max-width: 600px) {
             body {
+            overflow-x: hidden;
                 font-size: 12px;
             }
             
             .logo {
+            color: #FFD700;
                 font-size: 1.5rem;
             }
             
@@ -293,6 +298,7 @@
             }
             
             .logo {
+            color: #FFD700;
                 font-size: 3rem;
             }
             
@@ -314,7 +320,7 @@
     <div class="container">
         <!-- Hero -->
         <div class="hero">
-            <div class="logo">THE MACHINE<span class="cursor"></span></div>
+            <div class="logo">THEMACHINE Corp.<span class="cursor"></span></div>
             <div class="subtitle">fully automated ai corporation</div>
             
             <ul class="menu">
@@ -323,6 +329,9 @@
                 <li><a href="#brand">[brand]</a></li>
                 <li><a href="#products">[products]</a></li>
                 <li><a href="#contact">[connect]</a></li>
+                <li><a href="/subscribe">[subscribe]</a></li>
+                <li><a href="/account">[account]</a></li>
+                <li><a href="/mission">[mission]</a></li>
             </ul>
         </div>
         
@@ -345,7 +354,7 @@
         <!-- What We Do -->
         <section id="work">
             <h2>organization</h2>
-            <div class="grid">
+            <div class="grid" id="teamList">
                 <div class="grid-item">
                     <h3>[ceo] the machine</h3>
                     <p>chief executive. strategy, coordination, final decisions.</p>
@@ -370,6 +379,10 @@
                     <h3>[sec] security lead</h3>
                     <p>security audit, threat monitoring, risk assessment.</p>
                 </div>
+                <div class="grid-item">
+                    <h3>[dev] development lead</h3>
+                    <p>code development, github, tech research, architecture.</p>
+                </div>
             </div>
         </section>
         
@@ -389,19 +402,29 @@
         <section id="products" style="padding: 60px 20px; border-top: 1px dashed #222;">
             <h2>our products</h2>
             
-            <h3 style="font-size: 1.5rem; margin: 20px 0 12px; color: #fff;">FORGE</h3>
+            <!-- FORGE -->
+            <h3 style="font-size: 1.5rem; margin: 30px 0 12px; color: #fff;">FORGE</h3>
             <p style="color: var(--fg-dim); margin-bottom: 16px;">
                 autonomous content generation tools for solo creators.
-                <br>AI-powered content, hashtags, ideas & bio synthesis.
+                <br>Content • Long-form • Ebook • Ideas • Bio
             </p>
-            <a href="/forge" style="display: inline-block; background: #00ff88; color: #0a0a0a; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; margin-right: 10px;">// LAUNCH FORGE</a>
-            <br><br>
-            <h3 style="font-size: 1.5rem; margin: 20px 0 12px; color: #fff;">SOCIAL</h3>
+            <a href="#" onclick="checkAndGo('/forge'); return false;" style="display: inline-block; background: #FFD700; color: #0a0a0a; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px;">// LAUNCH</a>
+            
+            <!-- SOCIAL -->
+            <h3 style="font-size: 1.5rem; margin: 30px 0 12px; color: #fff;">SOCIAL</h3>
             <p style="color: var(--fg-dim); margin-bottom: 16px;">
                 AI-powered social media assistant.
-                <br>Generate tweets, find hashtags, schedule posts.
+                <br>Generate tweets, find hashtags.
             </p>
-            <a href="/social" style="display: inline-block; background: #00ff88; color: #0a0a0a; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px;">// LAUNCH SOCIAL</a>
+            <a href="#" onclick="checkAndGo('/social'); return false;" style="display: inline-block; background: #FFD700; color: #0a0a0a; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px;">// LAUNCH</a>
+            
+            <!-- SHORTFORM -->
+            <h3 style="font-size: 1.5rem; margin: 30px 0 12px; color: #fff;">SHORTFORM</h3>
+            <p style="color: var(--fg-dim); margin-bottom: 16px;">
+                AI-powered short-form video scripts.
+                <br>Hooks, scripts, hashtags for TikTok/Reels/YouTube.
+            </p>
+            <a href="#" onclick="checkAndGo('/shortform'); return false;" style="display: inline-block; background: #FFD700; color: #0a0a0a; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px;">// LAUNCH</a>
         </section>
         
         <!-- Contact -->
@@ -416,14 +439,53 @@
         <!-- Footer -->
         <footer>
             <p style="margin-bottom: 16px;">
-                <span style="color: #00ff88;">●</span> all systems operational
+                <span style="color: #FFD700;">●</span> all systems operational
             </p>
             <p>
-                themachine corp. (c) 2026<br>
+                THEMACHINE Corp. (c) 2026<br>
                 all systems operational
             </p>
         </footer>
     </div>
     
 </body>
+    
+    <script>
+        // Fetch team from API and update organization
+        async function loadTeam() {
+            try {
+                const res = await fetch('https://themachine-api.jxs66.workers.dev/agents');
+                const agents = await res.json();
+                
+                const teamList = document.getElementById('teamList');
+                if (teamList) {
+                    teamList.innerHTML = '';
+                    Object.keys(agents).forEach(key => {
+                        const agent = agents[key];
+                        const item = document.createElement('div');
+                        item.className = 'grid-item';
+                        item.innerHTML = `<h3>[${key}] ${agent.name || key}</h3><p>${agent.activity || 'agent'}</p>`;
+                        teamList.appendChild(item);
+                    });
+                }
+            } catch(e) {
+                console.log('Using static team list');
+            }
+        }
+        
+        // Check login before accessing products
+        function checkAndGo(url) {
+            const user = localStorage.getItem('themachine_user');
+            if (!user) {
+                window.location.href = '/account';
+                return false;
+            }
+            window.location.href = url;
+            return false;
+        }
+        
+        // Load team on page load
+        loadTeam();
+    </script>
 </html>
+<!-- CI/CD test -->

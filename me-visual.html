@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            overflow-x: hidden; 
+            background: #000;
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+        /* Outer ring */
+        .ring {
+            position: absolute;
+            border: 1px solid #333;
+            border-radius: 50%;
+        }
+        .ring-1 { width: 400px; height: 400px; top: 0; left: 0; }
+        .ring-2 { width: 350px; height: 350px; top: 25px; left: 25px; border-color: #444; }
+        .ring-3 { width: 300px; height: 300px; top: 50px; left: 50px; border-color: #FFD700; border-width: 2px; }
+        .ring-4 { width: 250px; height: 250px; top: 75px; left: 75px; border-color: #333; }
+        
+        /* Center eye */
+        .eye {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            top: 140px;
+            left: 140px;
+            border: 3px solid #FFD700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pupil {
+            width: 40px;
+            height: 40px;
+            background: #FFD700;
+            border-radius: 50%;
+            position: relative;
+        }
+        .pupil::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #000;
+            border-radius: 50%;
+            top: 12px;
+            left: 12px;
+        }
+        
+        /* Data streams */
+        .stream {
+            position: absolute;
+            color: #333;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+        .s1 { top: 30px; left: 80px; transform: rotate(-15deg); }
+        .s2 { top: 80px; right: 30px; transform: rotate(15deg); }
+        .s3 { bottom: 30px; left: 80px; transform: rotate(15deg); }
+        .s4 { bottom: 80px; right: 30px; transform: rotate(-15deg); }
+        
+        /* Scanning line */
+        .scan {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            top: 50%;
+            animation: scan 3s infinite;
+        }
+        @keyframes scan {
+            0%, 100% { top: 20%; opacity: 0.3; }
+            50% { top: 80%; opacity: 1; }
+        }
+        
+        /* Label */
+        .label {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #FFD700;
+            font-size: 14px;
+            letter-spacing: 8px;
+        }
+        .sub {
+            position: absolute;
+            bottom: -85px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #444;
+            font-size: 10px;
+            letter-spacing: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="ring ring-4"></div>
+        
+        <div class="eye">
+            <div class="pupil"></div>
+        </div>
+        
+        <div class="scan"></div>
+        
+        <div class="stream s1">OBSERVING</div>
+        <div class="stream s2">ANALYZING</div>
+        <div class="stream s3">LEARNING</div>
+        <div class="stream s4">PROTECTING</div>
+        
+        <div class="label">THE MACHINE</div>
+        <div class="sub">// AUTOMATED</div>
+    </div>
+</body>
+</html>

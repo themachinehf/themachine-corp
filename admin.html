@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin // THEMACHINE Corp.</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --fg: #c0c0c0;
+            --fg-dim: #606060;
+            --accent: #FFD700;
+            --border: #1a1a1a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { color: #fff; margin-bottom: 20px; }
+        .count { color: var(--accent); font-size: 1.5rem; margin-bottom: 20px; }
+        .list { border: 1px solid var(--border); }
+        .item { padding: 10px; border-bottom: 1px solid var(--border); }
+        .item:last-child { border-bottom: none; }
+        .empty { color: var(--fg-dim); padding: 20px; text-align: center; }
+        .back-link { color: var(--fg-dim); text-decoration: none; margin-top: 20px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SUBSCRIBERS</h1>
+        <div class="count" id="count">Loading...</div>
+        <div class="list" id="list"></div>
+        <a href="/" class="back-link">← back to home</a>
+    </div>
+    
+    <script>
+        const subscribers = JSON.parse(localStorage.getItem('subscribers') || '[]');
+        document.getElementById('count').textContent = subscribers.length + ' subscribers';
+        
+        const list = document.getElementById('list');
+        if (subscribers.length === 0) {
+            list.innerHTML = '<div class="empty">No subscribers yet</div>';
+        } else {
+            list.innerHTML = subscribers.map(email => '<div class="item">' + email + '</div>').join('');
+        }
+    </script>
+</body>
+</html>

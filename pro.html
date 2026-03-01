@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO // THEMACHINE Corp.</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --fg: #c0c0c0;
+            --fg-dim: #606060;
+            --accent: #FFD700;
+            --border: #1a1a1a;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            background: var(--bg);
+            color: var(--fg);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .logo { font-size: 1.5rem; color: #fff; margin-bottom: 8px; }
+        .logo span { color: var(--accent); }
+        .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
+        
+        h1 { font-size: 2rem; color: #fff; margin-bottom: 10px; text-align: center; }
+        h2 { font-size: 1.2rem; color: #fff; margin: 30px 0 15px; }
+        
+        .product-card {
+            background: var(--border);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .product-card h3 { color: #fff; margin-bottom: 10px; }
+        .product-card .price { font-size: 2rem; color: var(--accent); margin: 10px 0; }
+        .product-card .price span { font-size: 1rem; color: var(--fg-dim); }
+        
+        .product-card.all-access {
+            border: 2px solid var(--accent);
+        }
+        
+        .product-card.all-access h3::after {
+            content: ' ★';
+            color: var(--accent);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        
+        th { color: var(--fg-dim); font-weight: normal; }
+        
+        .check { color: var(--accent); }
+        .cross { color: #ff4444; }
+        
+        .btn {
+            display: block;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn:hover { opacity: 0.9; }
+        
+        .note {
+            color: var(--fg-dim);
+            font-size: 0.8rem;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            h1 { font-size: 1.5rem; }
+            .product-card .price { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">THEMACHINE Corp.</a> <span>//</span> PRO</div>
+            <a href="javascript:history.back()" class="back-link">← back</a>
+        </header>
+        
+        <h1>UPGRADE TO PRO</h1>
+        <p style="text-align:center;color:var(--fg-dim);margin-bottom:30px;">Choose your plan</p>
+        
+        <!-- ALL ACCESS -->
+        <div class="product-card all-access">
+            <h3>ALL ACCESS</h3>
+            <p style="color:var(--fg-dim);font-size:0.85rem;">Everything we have now AND in the future</p>
+            <div class="price">$15<span>/month</span></div>
+            <button class="btn" onclick="pay('all')">UPGRADE NOW</button>
+        </div>
+        
+        <!-- FORGE -->
+        <div class="product-card">
+            <h3>FORGE PRO</h3>
+            <p style="color:var(--fg-dim);font-size:0.85rem;">Content, Ideas, Bio generation</p>
+            <div class="price">$5<span>/month</span></div>
+            <button class="btn" onclick="pay('forge')">UPGRADE NOW</button>
+        </div>
+        
+        <!-- SOCIAL -->
+        <div class="product-card">
+            <h3>SOCIAL PRO</h3>
+            <p style="color:var(--fg-dim);font-size:0.85rem;">Tweet generation, Hashtags</p>
+            <div class="price">$5<span>/month</span></div>
+            <button class="btn" onclick="pay('social')">UPGRADE NOW</button>
+        </div>
+        
+        <!-- SHORTFORM -->
+        <div class="product-card">
+            <h3>SHORTFORM PRO</h3>
+            <p style="color:var(--fg-dim);font-size:0.85rem;">Short video scripts, Hooks, Hashtags</p>
+            <div class="price">$5<span>/month</span></div>
+            <button class="btn" onclick="pay('shortform')">UPGRADE NOW</button>
+        </div>
+        
+        <p class="note">Secure payment via Lemon Squeezy<br>Cancel anytime</p>
+        
+        <div style="text-align:center;margin-top:30px;">
+            <button onclick="verify()" style="background:transparent;border:1px solid var(--fg-dim);color:var(--fg-dim);padding:10px 20px;cursor:pointer;">I've Already Paid</button>
+        </div>
+        
+        <footer style="text-align:center;margin-top:60px;padding-top:20px;border-top:1px dashed var(--border);color:var(--fg-dim);font-size:0.7rem;">
+            <p>THEMACHINE Corp. © 2026</p>
+        </footer>
+    </div>
+    
+    <script>
+        const links = {
+            all: 'https://themachinecorp.lemonsqueezy.com/checkout/buy/e8be9c0d-3239-4c24-85c0-db6e92f4b31d',
+            forge: 'https://themachinecorp.lemonsqueezy.com/checkout/buy/dd902927-475f-4f31-8bff-56090dcbca61',
+            social: 'https://themachinecorp.lemonsqueezy.com/checkout/buy/3a8f8d70-7b29-4398-8b8b-3ad4560d400d',
+            shortform: 'https://themachinecorp.lemonsqueezy.com/checkout/buy/06459d69-0a34-4ac5-8bc2-9087746ff703'
+        };
+        
+        function pay(product) {
+            window.open(links[product], '_blank');
+        }
+        
+        function verify() {
+            const email = prompt('Please enter the email you used for payment:');
+            if (email) {
+                // Check if user exists
+                let user = JSON.parse(localStorage.getItem('themachine_user'));
+                
+                if (!user || user.email !== email) {
+                    // Create new user
+                    user = {
+                        email: email,
+                        created: Date.now(),
+                        products: {
+                            forge: true,
+                            social: true,
+                            shortform: true,
+                            all: true
+                        }
+                    };
+                } else {
+                    // Update existing user
+                    user.products.forge = true;
+                    user.products.social = true;
+                    user.products.shortform = true;
+                    user.products.all = true;
+                }
+                
+                localStorage.setItem('themachine_user', JSON.stringify(user));
+                
+                // Also set individual product flags for backward compatibility
+                localStorage.setItem('forge_pro', 'true');
+                localStorage.setItem('social_pro', 'true');
+                localStorage.setItem('shortform_pro', 'true');
+                localStorage.setItem('all_access', 'true');
+                
+                alert('Congratulations! You now have PRO access to all products!');
+                window.location.href = '/account';
+            }
+        }
+    </script>
+</body>
+</html>

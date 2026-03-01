@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOCIAL // THEMACHINE</title>
+    <title>SOCIAL // themachine corp.</title>
     <style>
         :root {
+            --gold: #FFD700;
             --bg: #0a0a0a;
             --fg: #c0c0c0;
             --fg-dim: #606060;
-            --accent: #00ff88;
+            --accent: #FFD700;
             --border: #1a1a1a;
         }
         
@@ -23,201 +24,88 @@
             line-height: 1.6;
         }
         
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
         
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px dashed var(--border);
-        }
+        header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
         
         .logo { font-size: 1.8rem; color: #fff; margin-bottom: 8px; }
         .logo span { color: var(--accent); }
-        .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
-        .back-link:hover { color: var(--accent); }
         
-        .tabs {
-            display: flex;
-            gap: 2px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .tab {
-            padding: 12px 16px;
-            background: transparent;
-            border: none;
-            color: var(--fg-dim);
-            font-family: inherit;
-            font-size: 0.75rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        
+        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .tab { padding: 10px 15px; background: transparent; border: none; color: var(--fg-dim); cursor: pointer; font-family: inherit; font-size: 0.8rem; }
         .tab:hover { color: var(--fg); }
-        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab.active { color: var(--accent); border-bottom: 1px solid var(--accent); }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; color: var(--fg-dim); font-size: 0.7rem; margin-bottom: 6px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--fg-dim); margin-bottom: 8px; font-size: 0.8rem; }
         
-        .input-group textarea,
-        .input-group input,
-        .input-group select {
+        input, textarea, select {
             width: 100%;
             background: var(--bg);
             border: 1px solid var(--border);
             color: var(--fg);
             padding: 12px;
             font-family: inherit;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
         
-        .input-group textarea { min-height: 100px; resize: vertical; }
-        .input-group textarea:focus, .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); }
+        textarea { min-height: 100px; resize: vertical; }
         
         button {
-            width: 100%;
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 12px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 12px 24px;
             font-family: inherit;
-            font-size: 0.8rem;
+            font-weight: bold;
             cursor: pointer;
-            letter-spacing: 2px;
-            transition: all 0.3s;
+            margin-top: 10px;
         }
         
-        button:hover { background: var(--accent); color: var(--bg); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        button.loading { animation: pulse 1s infinite; }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        button:hover { opacity: 0.9; }
         
         .result {
-            background: var(--bg);
+            margin-top: 20px;
+            padding: 15px;
             border: 1px solid var(--border);
-            padding: 16px;
-            margin-top: 16px;
             white-space: pre-wrap;
-            font-size: 0.85rem;
-            line-height: 1.7;
             display: none;
         }
-        
         .result.show { display: block; }
         
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-        }
+        .back-link { color: var(--fg-dim); text-decoration: none; font-size: 0.8rem; }
         
-        .result-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .result-actions button {
-            width: auto;
-            padding: 6px 12px;
-            font-size: 0.7rem;
-        }
-        
-        .copy-btn { background: var(--border); color: var(--fg); }
-        .copy-btn:hover { background: var(--accent); color: var(--bg); }
-        
-        .history-item {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-        
-        .history-item .topic {
-            color: var(--fg-dim);
-            font-size: 0.7rem;
-            margin-bottom: 8px;
-        }
-        
-        .history-item .content {
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-        }
-        
-        .hashtag {
-            color: var(--accent);
-            margin-right: 8px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: var(--accent);
-            display: none;
-        }
-        
-        .loading .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-top: 2px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--border);
-            color: var(--fg-dim);
-            font-size: 0.7rem;
-        }
-        footer a { color: var(--accent); text-decoration: none; }
-        
-        /* Mobile */
         @media (max-width: 600px) {
             .container { padding: 20px 16px; }
-            .logo { font-size: 1.4rem; }
-            .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-            .tab { padding: 10px 8px; font-size: 0.65rem; text-align: center; }
-        }
-        
-        @media (min-width: 1200px) {
-            .container { max-width: 700px; padding: 60px 40px; }
-            .logo { font-size: 2.2rem; }
-            .input-group textarea { min-height: 150px; }
+            .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+            .tab { padding: 10px 8px; font-size: 0.65rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo"><a href="/" style="color:#fff;text-decoration:none;">THEMACHINE</a> <span>//</span> SOCIAL</div>
-            <a href="/" class="back-link">← back to home</a>
+        <header style="text-align:center;">
+            <div class="logo" style="font-size:1.8rem;"><a href="/" style="color:#fff;text-decoration:none;">themachine corp.</a> <span>//</span> SOCIAL</div>
+            <div style="margin:8px 0;font-size:0.7rem;">
+                <span id="userEmail" style="color:#fff;margin-right:10px;font-weight:bold;"></span>
+                <span><a href="/account" style="color:var(--fg-dim);">[account]</a></span>
+            </div>
+            <div style="margin:8px 0;font-size:0.7rem;">
+                <span id="usageDisplay" style="color:var(--fg-dim);"></span>
+            </div>
+            <div id="upgradeSection" style="display:none;">
+                <button onclick="location.href='/pro.html'" style="background:var(--accent);color:var(--bg);padding:6px 12px;font-size:0.7rem;border:none;cursor:pointer;margin-right:8px;">UPGRADE TO PRO</button>
+                <button onclick="verifyPro()" style="background:transparent;border:1px solid var(--fg-dim);color:var(--fg-dim);padding:6px 12px;font-size:0.7rem;">I'VE PAID</button>
+            </div>
+            <div id="proSection" style="display:none;">
+                <span style="color:#fff;font-size:0.7rem;">✓ PRO - UNLIMITED</span>
+            </div>
+            <a href="/#products" class="back-link">← back to home</a>
         </header>
         
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" onclick="showTab('compose')">01 COMPOSE</button>
             <button class="tab" onclick="showTab('hashtags')">02 HASHTAGS</button>
@@ -238,74 +126,128 @@
                     <option value="casual">CASUAL</option>
                     <option value="humorous">HUMOROUS</option>
                     <option value="thoughtful">THOUGHTFUL</option>
-                    <option value="provocative">PROVOCATIVE</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>// LENGTH</label>
-                <select id="tweetLength">
-                    <option value="short">SHORT (< 140 chars)</option>
-                    <option value="medium">MEDIUM (140-280 chars)</option>
-                    <option value="long">LONG (thread)</option>
-                </select>
-            </div>
-            <button onclick="generateTweet(event)">// GENERATE</button>
+            <button onclick="generateTweet(event)">// EXECUTE</button>
             <div class="result" id="tweetResult"></div>
         </div>
         
         <!-- Hashtags Tab -->
         <div id="tab-hashtags" class="tab-content">
             <div class="input-group">
-                <label>// YOUR TWEET OR TOPIC</label>
-                <textarea id="hashtagPrompt" placeholder="Paste your tweet or describe your topic..."></textarea>
+                <label>// ENTER YOUR TWEET OR TOPIC</label>
+                <textarea id="hashtagInput" placeholder="Paste your tweet or enter a topic..."></textarea>
             </div>
-            <button onclick="generateHashtags(event)">// FIND HASHTAGS</button>
+            <button onclick="generateHashtags(event)">// EXECUTE</button>
             <div class="result" id="hashtagResult"></div>
         </div>
         
         <!-- Schedule Tab -->
         <div id="tab-schedule" class="tab-content">
             <div class="input-group">
-                <label>// SCHEDULE A TWEET (Coming Soon)</label>
-                <input type="datetime-local" id="scheduleTime" disabled>
+                <label>// SCHEDULE (Coming Soon)</label>
+                <input type="text" placeholder="Schedule feature coming soon..." disabled>
             </div>
-            <div class="input-group">
-                <label>// TWEET CONTENT</label>
-                <textarea id="scheduledTweet" placeholder="Enter tweet to schedule..." disabled></textarea>
-            </div>
-            <button onclick="alert('Scheduling feature coming soon!')" disabled>// SCHEDULE (COMING SOON)</button>
-            <p style="color:var(--fg-dim);margin-top:16px;font-size:0.8rem;">
-                📅 Schedule feature is under development.<br>
-                For now, generate tweets and copy them to post manually.
-            </p>
         </div>
         
         <!-- History Tab -->
         <div id="tab-history" class="tab-content">
             <div id="historyList"></div>
         </div>
-        
-        <div class="loading" id="loading"><span class="spinner"></span>PROCESSING</div>
-        
-        <footer>
-            <p>// <a href="/">THEMACHINE CORP</a></p>
-            <p style="margin-top:8px;color:var(--fg-dim)">AI-POWERED TWITTER ASSISTANT</p>
-        </footer>
     </div>
     
     <script>
-        const PROMPTS = {
-            tweet: `You are an expert Twitter content creator. Generate engaging, viral-worthy tweets based on the user's input.`,
-            hashtags: `You are a social media expert. Generate relevant, popular hashtags for the given tweet or topic.`
-        };
+
+        // Auto-check subscription on page load
+        (function() {
+            var user = JSON.parse(localStorage.getItem("themachine_user") || "null");
+            if (!user || !user.email) return;
+            fetch("https://themachine-subscription.jxs66.workers.dev?email=" + encodeURIComponent(user.email))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.has_active && data.products) {
+                        if (data.products.forge || data.products.all) localStorage.setItem("forge_pro", "true");
+                        if (data.products.social || data.products.all) localStorage.setItem("social_pro", "true");
+                        if (data.products.shortform || data.products.all) localStorage.setItem("shortform_pro", "true");
+                        if (data.products.all) localStorage.setItem("all_access", "true");
+                    }
+                });
+        })();
+
+        // Show/hide PRO section
+        var isProSocial = localStorage.getItem("social_pro") === "true";
+        if (isProSocial) {
+            document.getElementById("upgradeSection").style.display = "none";
+            document.getElementById("proSection").style.display = "block";
+        }
+        const API_URL = 'https://themachine-api.jxs66.workers.dev';
+        const FREE_DAILY_LIMIT = 3;
+        const today = new Date().toDateString();
+        let usage = JSON.parse(localStorage.getItem('social_usage') || '{"date":"","count":0}');
         
-        const TONES = {
-            professional: 'Professional, informative, business-oriented.',
-            casual: 'Casual, friendly, conversational.',
-            humorous: 'Funny, witty, entertaining.',
-            thoughtful: 'Thoughtful, reflective, insightful.',
-            provocative: 'Provocative, controversial, attention-grabbing.'
-        };
+        if (usage.date !== today) {
+            usage = { date: today, count: 0 };
+            localStorage.setItem('social_usage', JSON.stringify(usage));
+        }
+        
+        function canUse() {
+            const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+            if (!user) return false;
+            const isPro = user.products?.social === true || localStorage.getItem('social_pro') === 'true';
+            return isPro || usage.count < FREE_DAILY_LIMIT;
+        }
+        
+        function checkLogin() {
+            const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+            if (!user) {
+                alert('Please login first! Click [account] to login.');
+                return false;
+            }
+            return true;
+        }
+        
+        function incrementUsage() {
+            const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+            const isPro = user.products?.social === true || localStorage.getItem('social_pro') === 'true';
+            if (!isPro) {
+                usage.count++;
+                localStorage.setItem('social_usage', JSON.stringify(usage));
+            }
+        }
+        
+        function getUsageInfo() {
+            const user = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+            if (!user) return 'Please login to use';
+            const isPro = user.products?.social === true || localStorage.getItem('social_pro') === 'true';
+            if (isPro) return "";;
+            return usage.count + '/' + FREE_DAILY_LIMIT + ' free today';
+        }
+        
+        document.getElementById('usageDisplay').textContent = getUsageInfo();
+        
+        const socialUser = JSON.parse(localStorage.getItem('themachine_user') || 'null');
+        if (socialUser && socialUser.email) {
+            document.getElementById('userEmail').textContent = socialUser.email;
+        }
+        
+        const isPro = socialUser && (socialUser.products?.social === true || localStorage.getItem('social_pro') === 'true');
+        
+        if (isPro) {
+            document.getElementById('upgradeSection').style.display = 'none';
+            document.getElementById('proSection').style.display = 'block';
+        } else {
+            document.getElementById('upgradeSection').style.display = 'block';
+            document.getElementById('proSection').style.display = 'none';
+        }
+        
+        function verifyPro() {
+            const email = prompt('Please enter the email you used for payment:');
+            if (email) {
+                localStorage.setItem('social_pro', 'true');
+                alert('Congratulations! You now have PRO access!');
+                
+            }
+        }
         
         function showTab(tabId) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -315,140 +257,68 @@
             if (tabId === 'history') loadHistory();
         }
         
-        async function callAPI(data) {
-            const loadingEl = document.getElementById('loading');
-            loadingEl.style.display = 'inline-flex';
-            loadingEl.style.alignItems = 'center';
-            loadingEl.style.justifyContent = 'center';
-            loadingEl.style.gap = '10px';
+        async function callAPI(prompt) {
+            document.getElementById('loading').style.display = 'block';
             try {
-                const res = await fetch('https://themachine-corp.vercel.app/api/generate', {
+                const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({prompt, type:'content'})
                 });
                 return await res.json();
-            } catch(e) { 
-                console.error(e);
-                return {error: 'Failed: ' + e.message};
-            }
-            finally { loadingEl.style.display = 'none'; }
-        }
-        
-        function saveToHistory(topic, content, type) {
-            const history = JSON.parse(localStorage.getItem('twitter_history') || '[]');
-            history.unshift({ topic, content, type, time: new Date().toISOString() });
-            localStorage.setItem('twitter_history', JSON.stringify(history.slice(0, 50)));
-        }
-        
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('twitter_history') || '[]');
-            const list = document.getElementById('historyList');
-            if (history.length === 0) {
-                list.innerHTML = '<p style="color:var(--fg-dim);text-align:center;">No history yet. Generate some tweets!</p>';
-                return;
-            }
-            list.innerHTML = history.map((item, i) => `
-                <div class="history-item">
-                    <div class="topic">${item.topic} • ${new Date(item.time).toLocaleDateString()}</div>
-                    <div class="content">${item.content}</div>
-                </div>
-            `).join('');
-        }
-        
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            alert('Copied to clipboard!');
+            } catch(e) { return {error:e.message}; }
+            finally { }
         }
         
         async function generateTweet(e) {
-            const btn = e.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'GENERATING...';
-            btn.classList.add('loading');
-            btn.disabled = true;
+            if(!checkLogin()) return;
+            if(!canUse()) { document.getElementById('tweetResult').textContent = 'ERROR: Daily limit reached.'; document.getElementById('tweetResult').classList.add('show'); return; }
             
-            const p = document.getElementById('tweetPrompt').value;
+            const prompt = document.getElementById('tweetPrompt').value;
             const tone = document.getElementById('tweetTone').value;
-            const length = document.getElementById('tweetLength').value;
             
-            if(!p) {
-                document.getElementById('tweetResult').innerHTML = 'ERROR: Please enter a topic';
-                document.getElementById('tweetResult').classList.add('show');
-                btn.textContent = originalText;
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                return;
-            }
+            if(!prompt) { document.getElementById('tweetResult').textContent = 'ERROR: Please enter a topic'; document.getElementById('tweetResult').classList.add('show'); return; }
             
-            let lengthHint = '';
-            if (length === 'short') lengthHint = 'Keep it under 140 characters. ';
-            else if (length === 'medium') lengthHint = '140-280 characters. ';
-            else lengthHint = 'Write a Twitter thread of 3-5 tweets. ';
+            const fullPrompt = `You are an expert Twitter content creator. Write a tweet in ${tone} tone about: ${prompt}. Make it engaging and viral-worthy.`;
             
-            const prompt = `${PROMPTS.tweet} ${TONES[tone]} ${lengthHint}Topic: ${p}`;
-            const r = await callAPI({prompt, type:'content'});
-            
-            const content = r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED');
-            
-            document.getElementById('tweetResult').innerHTML = `
-                <div class="result-header">
-                    <span style="color:var(--fg-dim);font-size:0.7rem;">GENERATED TWEET</span>
-                    <div class="result-actions">
-                        <button class="copy-btn" onclick="copyToClipboard(this.parentElement.parentElement.nextElementSibling.textContent)">COPY</button>
-                    </div>
-                </div>
-                ${content}
-            `;
+            const r = await callAPI(fullPrompt);
+            document.getElementById('tweetResult').textContent = r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED');
             document.getElementById('tweetResult').classList.add('show');
-            
-            saveToHistory(p, content, 'tweet');
-            
-            btn.textContent = originalText;
-            btn.classList.remove('loading');
-            btn.disabled = false;
+            if (r.success) {
+                incrementUsage();
+                saveToHistory(prompt, r.content, 'TWEET');
+            }
         }
         
         async function generateHashtags(e) {
-            const btn = e.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'FINDING...';
-            btn.classList.add('loading');
-            btn.disabled = true;
+            if(!checkLogin()) return;
+            if(!canUse()) { document.getElementById('hashtagResult').textContent = 'ERROR: Daily limit reached.'; document.getElementById('hashtagResult').classList.add('show'); return; }
             
-            const p = document.getElementById('hashtagPrompt').value;
+            const input = document.getElementById('hashtagInput').value;
+            if(!input) { document.getElementById('hashtagResult').textContent = 'ERROR: Please enter content'; document.getElementById('hashtagResult').classList.add('show'); return; }
             
-            if(!p) {
-                document.getElementById('hashtagResult').innerHTML = 'ERROR: Please enter a topic or tweet';
-                document.getElementById('hashtagResult').classList.add('show');
-                btn.textContent = originalText;
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                return;
-            }
-            
-            const prompt = `${PROMPTS.hashtags} Find the top 5-10 relevant hashtags for: ${p}`;
-            const r = await callAPI({prompt, type:'hashtags'});
-            
-            const content = r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED');
-            
-            document.getElementById('hashtagResult').innerHTML = `
-                <div class="result-header">
-                    <span style="color:var(--fg-dim);font-size:0.7rem;">RECOMMENDED HASHTAGS</span>
-                    <div class="result-actions">
-                        <button class="copy-btn" onclick="copyToClipboard(this.parentElement.parentElement.nextElementSibling.textContent)">COPY</button>
-                    </div>
-                </div>
-                ${content}
-            `;
+            const fullPrompt = `Generate 10 relevant hashtags for this tweet/topic: ${input}`;
+            const r = await callAPI(fullPrompt);
+            document.getElementById('hashtagResult').textContent = r.success ? r.content : 'ERROR: ' + (r.error || 'FAILED');
             document.getElementById('hashtagResult').classList.add('show');
-            
-            saveToHistory(p, content, 'hashtags');
-            
-            btn.textContent = originalText;
-            btn.classList.remove('loading');
-            btn.disabled = false;
+            if (r.success) incrementUsage();
         }
+        
+        function saveToHistory(prompt, result, type) {
+            let h = JSON.parse(localStorage.getItem('social_history') || '[]');
+            h.unshift({prompt, result, type, time: Date.now()});
+            if (h.length > 50) h = h.slice(0, 50);
+            localStorage.setItem('social_history', JSON.stringify(h));
+        }
+        
+        function loadHistory() {
+            const h = JSON.parse(localStorage.getItem('social_history') || '[]');
+            const el = document.getElementById('historyList');
+            if (!h.length) { el.innerHTML = '<p style="color:var(--fg-dim)">No history yet</p>'; return; }
+            el.innerHTML = h.map(x => `<div style="margin-bottom:15px;padding:10px;border:1px solid var(--border);"><div style="color:var(--fg-dim);font-size:0.7rem">${x.type}</div><div>${x.result}</div></div>`).join('');
+        }
+    </script>
     </script>
 </body>
 </html>
+<!-- deploy: 2026年 02月 26日 星期四 02:20:17 CST -->

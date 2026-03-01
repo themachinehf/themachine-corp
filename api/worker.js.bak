@@ -1,0 +1,115 @@
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    };
+    
+    // CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    // Agent states
+    if (path.startsWith('/agents')) {
+      if (request.method === 'POST') {
+        try {
+          const text = await request.text();
+          const states = JSON.parse(text);
+          if (env.TOKEN_KV) {
+            await env.TOKEN_KV.put('agent_states', JSON.stringify(states));
+          }
+          return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
+        } catch(e) {
+          return new Response(JSON.stringify({ error: e.message }), { status: 400, headers: corsHeaders });
+        }
+      } else {
+        if (env.TOKEN_KV) {
+          const data = await env.TOKEN_KV.get('agent_states');
+          return new Response(data || '{}', { headers: corsHeaders });
+        }
+        return new Response('{}', { headers: corsHeaders });
+      }
+    }
+
+    // Token API
+    if (path === '/api/token' && request.method === 'POST') {
+      try {
+        const { key, tokens } = await request.json();
+        if (env.TOKEN_KV) {
+          await env.TOKEN_KV.put(key, String(tokens));
+        }
+        return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
+      } catch(e) {
+        return new Response(JSON.stringify({ error: e.message }), { status: 400, headers: corsHeaders });
+      }
+    }
+
+    if (path === '/api/token') {
+      const key = url.searchParams.get('key');
+      if (env.TOKEN_KV) {
+        const val = await env.TOKEN_KV.get(key);
+        return new Response(val || '0', { headers: corsHeaders });
+      }
+      return new Response('0', { headers: corsHeaders });
+    }
+
+    // Agent messages
+    if (path === '/api/agent/messages' && request.method === 'GET') {
+      if (env.AGENT_MESSAGES) {
+        const pending = await env.AGENT_MESSAGES.get('pending') || '[]';
+        const processed = await env.AGENT_MESSAGES.get('processed') || '[]';
+        return new Response(JSON.stringify({ 
+          pending: JSON.parse(pending),
+          processed: JSON.parse(processed).slice(-50)
+        }), { headers: corsHeaders });
+      }
+      return new Response(JSON.stringify({ pending: [], processed: [] }), { headers: corsHeaders });
+    }
+
+    if (path === '/api/agent/chat' && request.method === 'POST') {
+      try {
+        const { agent, message, user } = await request.json();
+        const pending = JSON.parse(await env.AGENT_MESSAGES?.get('pending') || '[]');
+        pending.push({
+          id: Date.now(),
+          agent,
+          message,
+          user: user || 'boss',
+          status: 'pending',
+          created: new Date().toISOString()
+        });
+        await env.AGENT_MESSAGES?.put('pending', JSON.stringify(pending));
+        return new Response(JSON.stringify({ success: true, message: 'Message queued. Waiting for agent response...' }), { headers: corsHeaders });
+      } catch(e) {
+        return new Response(JSON.stringify({ error: e.message }), { status: 400, headers: corsHeaders });
+      }
+    }
+
+    if (path === '/api/agent/respond' && request.method === 'POST') {
+      try {
+        const { id, response } = await request.json();
+        const pending = JSON.parse(await env.AGENT_MESSAGES?.get('pending') || '[]');
+        const processed = JSON.parse(await env.AGENT_MESSAGES?.get('processed') || '[]');
+        const msg = pending.find(m => m.id === id);
+        if (msg) {
+          msg.status = 'processed';
+          msg.response = response;
+          msg.responded = new Date().toISOString();
+          processed.push(msg);
+          await env.AGENT_MESSAGES?.put('pending', JSON.stringify(pending.filter(m => m.id !== id)));
+          await env.AGENT_MESSAGES?.put('processed', JSON.stringify(processed.slice(-100)));
+        }
+        return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
+      } catch(e) {
+        return new Response(JSON.stringify({ error: e.message }), { status: 400, headers: corsHeaders });
+      }
+    }
+
+    return new Response('THEMACHINE API', { headers: corsHeaders });
+  }
+}
