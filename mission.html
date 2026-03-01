@@ -2,825 +2,349 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIVE OFFICE // THEMACHINE Corp.</title>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<title>LIVE OFFICE // THEMACHINE</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-    --bg-dark: #0a0e14;
-    --bg-panel: #12181f;
-    --border-color: #1e2832;
-    --gold: #f0c040;
-    --text-dim: #5a6a7a;
-    --text-bright: #c8d4e0;
-    --accent-green: #00ff88;
-    --accent-red: #ff3344;
-    --accent-blue: #00a8ff;
+:root{
+    --bg:#030308;
+    --panel:#0a0a12;
+    --gold:#ffd700;
+    --cyan:#00f0ff;
+    --pink:#ff0080;
+    --green:#00ff88;
 }
-
-body {
-    background: var(--bg-dark);
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--text-bright);
-    min-height: 100vh;
-    overflow-x: hidden;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 24px;
-    background: linear-gradient(180deg, #0d1117 0%, #0a0e14 100%);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.logo {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
-    color: var(--gold);
-    letter-spacing: 4px;
-    text-shadow: 0 0 20px rgba(240, 192, 64, 0.3);
-}
-
-.clock {
-    font-size: 14px;
-    color: var(--text-dim);
-    font-family: 'Orbitron', sans-serif;
-}
-
-.live {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    background: var(--accent-red);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--accent-red);
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-}
-
-.canvas-wrap {
-    padding: 20px;
-    position: relative;
-}
-
-canvas {
-    display: block;
-    width: 100%;
-    max-width: 1200px;
-    height: auto;
-    margin: 0 auto;
-    border: 2px solid var(--border-color);
-    border-radius: 4px;
-    background: #050810;
-    box-shadow: 
-        0 0 40px rgba(0, 168, 255, 0.1),
-        inset 0 0 100px rgba(0, 0, 0, 0.5);
-}
-
-.bottom-panels {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    padding: 16px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.panel {
-    background: linear-gradient(180deg, var(--bg-panel) 0%, #0d1218 100%);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 16px;
-}
-
-.panel-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    color: var(--gold);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.agent-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.agent-row:last-child {
-    border-bottom: none;
-}
-
-.agent-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-}
-
-.agent-name {
-    font-size: 12px;
-    flex: 1;
-    color: var(--text-bright);
-}
-
-.agent-activity {
-    font-size: 10px;
-    color: var(--text-dim);
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.agent-status {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-dim);
-}
-
-.agent-status.working {
-    background: var(--accent-green);
-    box-shadow: 0 0 8px var(--accent-green);
-}
-
-.agent-status.idle {
-    background: #ffaa00;
-}
-
-.msg-row {
-    padding: 8px 0;
-    border-left: 2px solid var(--border-color);
-    padding-left: 12px;
-    margin-bottom: 8px;
-}
-
-.msg-name {
-    font-size: 11px;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-
-.msg-text {
-    font-size: 10px;
-    color: var(--text-dim);
-}
-
-.msg-time {
-    font-size: 9px;
-    color: #3a4a5a;
-    margin-top: 4px;
-}
-
-.scanlines {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.1) 0px,
-        rgba(0, 0, 0, 0.1) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-    z-index: 1000;
-    opacity: 0.3;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);font-family:'Courier New',monospace;color:#666;min-height:100vh}
+header{display:flex;justify-content:space-between;padding:12px 20px;background:var(--panel);border-bottom:1px solid #1a1a24;align-items:center}
+.logo{color:var(--gold);font-size:14px;letter-spacing:4px;text-shadow:0 0 15px var(--gold),0 0 30px var(--gold);font-weight:bold}
+.clock{color:var(--cyan);font-size:12px;font-family:monospace;text-shadow:0 0 8px var(--cyan)}
+.dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green),0 0 20px var(--green);animation:p 1.5s infinite}
+@keyframes p{0%,100%{opacity:1;box-shadow:0 0 10px var(--green),0 0 20px var(--green)}50%{opacity:0.5;box-shadow:0 0 5px var(--green)}}
+.canvas-wrap{padding:12px}
+canvas{display:block;width:100%;max-width:1200px;margin:0 auto;background:linear-gradient(135deg,#050510 0%,#030308 100%);border:1px solid #1f1f2f;box-shadow:0 0 40px rgba(0,240,255,0.1),inset 0 0 100px rgba(0,0,0,0.5)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;max-width:1200px;margin:0 auto}
+.panel{background:var(--panel);border:1px solid #1f1f2f;padding:12px;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.panel::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.panel-title{color:var(--gold);font-size:11px;letter-spacing:2px;margin-bottom:8px;text-transform:uppercase}
+.row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.dot-s{width:8px;height:8px;border-radius:50%;box-shadow:0 0 8px currentColor}
+.name{font-size:11px;color:#555;flex:1}
+.status{font-size:10px;color:#333}
+.msg{font-size:10px;color:#555;border-left:2px solid var(--cyan);padding-left:8px;margin:6px 0}
+@media(max-width:500px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="scanlines"></div>
 <header>
-    <div class="logo">🏢 THEMACHINE Corp.</div>
-    <div class="clock" id="clock">00:00</div>
-    <div class="live"><span class="dot"></span><span>LIVE</span></div>
+<div class="logo">◈ THEMACHINE ◈</div>
+<div class="clock" id="c">00:00</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:11px"><span class="dot"></span><span style="color:var(--green);text-shadow:0 0 8px var(--green)">LIVE</span></div>
 </header>
-<div class="canvas-wrap">
-    <canvas id="office"></canvas>
-</div>
-<div class="bottom-panels">
-    <div class="panel">
-        <div class="panel-title">👥 TEAM <span id="workCount" style="color:var(--accent-green)">(0/0)</span></div>
-        <div id="agents"></div>
-    </div>
-    <div class="panel">
-        <div class="panel-title">💬 RECENT ACTIVITY</div>
-        <div id="messages"></div>
-    </div>
+<div class="canvas-wrap"><canvas id="o"></canvas></div>
+<div class="grid">
+<div class="panel"><div class="panel-title">◈ OPERATIVES <span id="wc" style="color:var(--green)"></span></div><div id="a"></div></div>
+<div class="panel"><div class="panel-title">◈ COMM LINK</div><div id="m"></div></div>
 </div>
 
 <script>
-(function() {
-    'use strict';
-    
-    var API = 'https://themachine-api.jxs66.workers.dev/agents';
-    var canvas = document.getElementById('office');
-    var ctx = canvas.getContext('2d');
-    
-    var TILE_WIDTH = 64;
-    var TILE_HEIGHT = 32;
-    var GRID_WIDTH = 16;
-    var GRID_HEIGHT = 12;
-    
-    var SCALE = window.devicePixelRatio || 1;
-    
-    var COLORS = {
-        floor: '#1a1f2a',
-        floorAlt: '#1e2433',
-        wall: '#2a3140',
-        wallTop: '#3a4150',
-        shadow: 'rgba(0,0,0,0.4)',
-        highlight: 'rgba(255,255,255,0.05)'
-    };
-    
-    var ROOMS = {
-        'CEO Office':   { x: 1, y: 1, w: 3, h: 3, type: 'office' },
-        'CFO Office':   { x: 5, y: 1, w: 3, h: 3, type: 'office' },
-        'Meeting':      { x: 9, y: 1, w: 4, h: 3, type: 'meeting' },
-        'Lounge':       { x: 1, y: 5, w: 3, h: 3, type: 'lounge' },
-        'Tech Lab':     { x: 5, y: 5, w: 3, h: 3, type: 'lab' },
-        'Dev Zone':     { x: 9, y: 5, w: 4, h: 3, type: 'office' },
-        'Pantry':       { x: 1, y: 9, w: 2, h: 2, type: 'pantry' },
-        'Toilet':       { x: 4, y: 9, w: 2, h: 2, type: 'toilet' },
-        'Server Room':  { x: 7, y: 9, w: 3, h: 2, type: 'server' },
-        'Storage':      { x: 11, y: 9, w: 3, h: 2, type: 'storage' }
-    };
-    
-    var AGENTS = {
-        CEO:  { name: 'The Machine', color: '#ff6b6b', room: 'CEO Office', deskX: 0.5, deskY: 0.5, role: 'CEO' },
-        CFO:  { name: 'Alex',        color: '#4ecdc4', room: 'CFO Office', deskX: 0.5, deskY: 0.5, role: 'CFO' },
-        CTO:  { name: 'Kevin',       color: '#45b7d1', room: 'Tech Lab', deskX: 0.5, deskY: 0.5, role: 'CTO' },
-        CPO:  { name: 'Sarah',       color: '#96ceb4', room: 'Dev Zone', deskX: 0.3, deskY: 0.4, role: 'CPO' },
-        CMO:  { name: 'Mike',        color: '#ffeaa7', room: 'Lounge', deskX: 0.5, deskY: 0.5, role: 'CMO' },
-        SEC:  { name: 'David',       color: '#dfe6e9', room: 'Server Room', deskX: 0.5, deskY: 0.5, role: 'SEC' },
-        DEV:  { name: 'Chris',       color: '#fd79a8', room: 'Dev Zone', deskX: 0.7, deskY: 0.6, role: 'DEV' },
-        HR:   { name: 'Lisa',        color: '#a29bfe', room: 'Meeting', deskX: 0.5, deskY: 0.5, role: 'HR' }
-    };
-    
-    var agentData = {};
-    var chars = {};
-    var particles = [];
-    var lastTime = 0;
-    var frame = 0;
-    
-    function init() {
-        canvas.width = GRID_WIDTH * TILE_WIDTH * SCALE;
-        canvas.height = GRID_HEIGHT * TILE_HEIGHT * SCALE;
-        canvas.style.width = (GRID_WIDTH * TILE_WIDTH) + 'px';
-        canvas.style.height = (GRID_HEIGHT * TILE_HEIGHT) + 'px';
-        ctx.scale(SCALE, SCALE);
-        
-        load();
-        requestAnimationFrame(animate);
-        setInterval(load, 5000);
-        updateClock();
-    }
-    
-    function updateClock() {
-        var now = new Date();
-        var h = now.getHours();
-        var m = now.getMinutes();
-        document.getElementById('clock').textContent = 
-            (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
-    }
-    setInterval(updateClock, 1000);
-    
-    async function load() {
-        try {
-            agentData = await fetch(API).then(function(r) { return r.json(); });
-            updateAgents();
-            updatePanel();
-            updateMessages();
-        } catch(e) { 
-            console.log('API not available, using simulation'); 
-        }
-    }
-    
-    function gridToScreen(gx, gy) {
-        var sx = (gx - gy) * (TILE_WIDTH / 2) + (GRID_WIDTH * TILE_WIDTH / 2);
-        var sy = (gx + gy) * (TILE_HEIGHT / 2);
-        return { x: sx, y: sy + 20 };
-    }
-    
-    function drawTile(gx, gy, color, altColor) {
-        var pos = gridToScreen(gx, gy);
-        var isAlt = (gx + gy) % 2 === 0;
-        
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        ctx.lineTo(pos.x + TILE_WIDTH/2, pos.y + TILE_HEIGHT/2);
-        ctx.lineTo(pos.x, pos.y + TILE_HEIGHT);
-        ctx.lineTo(pos.x - TILE_WIDTH/2, pos.y + TILE_HEIGHT/2);
-        ctx.closePath();
-        
-        ctx.fillStyle = isAlt && altColor ? altColor : color;
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-    }
-    
-    function drawRoomFloor(room) {
-        for (var x = room.x; x < room.x + room.w; x++) {
-            for (var y = room.y; y < room.y + room.h; y++) {
-                var floorColor = room.type === 'server' ? '#0a1020' : 
-                                 room.type === 'toilet' ? '#1a2530' :
-                                 room.type === 'pantry' ? '#1f2a1f' :
-                                 COLORS.floor;
-                var altColor = room.type === 'server' ? '#0d1525' : 
-                               room.type === 'meeting' ? '#1e2835' :
-                               COLORS.floorAlt;
-                drawTile(x, y, floorColor, altColor);
-            }
-        }
-    }
-    
-    function drawRoomWalls(room) {
-        var leftWallHeight = 40;
-        var leftBottom = gridToScreen(room.x, room.y + room.h);
-        var leftTop = gridToScreen(room.x, room.y);
-        var leftTopAbove = { x: leftTop.x, y: leftTop.y - leftWallHeight };
-        
-        ctx.beginPath();
-        ctx.moveTo(leftTopAbove.x, leftTopAbove.y);
-        ctx.lineTo(leftTop.x, leftTop.y);
-        ctx.lineTo(leftBottom.x, leftBottom.y);
-        ctx.lineTo(leftBottom.x, leftBottom.y - leftWallHeight);
-        ctx.closePath();
-        ctx.fillStyle = COLORS.wall;
-        ctx.fill();
-        
-        var rightBottom = gridToScreen(room.x + room.w, room.y + room.h);
-        var rightTop = gridToScreen(room.x + room.w, room.y);
-        var rightTopAbove = { x: rightTop.x, y: rightTop.y - leftWallHeight };
-        
-        ctx.beginPath();
-        ctx.moveTo(rightTopAbove.x, rightTopAbove.y);
-        ctx.lineTo(rightTop.x, rightTop.y);
-        ctx.lineTo(rightBottom.x, rightBottom.y);
-        ctx.lineTo(rightBottom.x, rightBottom.y - leftWallHeight);
-        ctx.closePath();
-        ctx.fillStyle = COLORS.wallTop;
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.moveTo(leftTopAbove.x, leftTopAbove.y);
-        ctx.lineTo(rightTopAbove.x, rightTopAbove.y);
-        ctx.lineTo(rightTop.x, rightTop.y);
-        ctx.lineTo(leftTop.x, leftTop.y);
-        ctx.closePath();
-        ctx.fillStyle = '#3a4150';
-        ctx.fill();
-    }
-    
-    function drawFurniture(room, roomName) {
-        if (room.type === 'office') {
-            drawDesk(room, roomName);
-        } else if (room.type === 'meeting') {
-            drawMeetingTable(room);
-        } else if (room.type === 'lounge') {
-            drawLounge(room);
-        } else if (room.type === 'lab') {
-            drawLab(room, roomName);
-        } else if (room.type === 'server') {
-            drawServerRack(room);
-        } else if (room.type === 'pantry') {
-            drawPantry(room);
-        } else if (room.type === 'toilet') {
-            drawToilet(room);
-        }
-        
-        var centerPos = gridToScreen(room.x + room.w/2, room.y + room.h/2);
-        ctx.font = 'bold 11px "Share Tech Mono", monospace';
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
-        ctx.textAlign = 'center';
-        ctx.fillText(roomName.toUpperCase(), centerPos.x, centerPos.y + TILE_HEIGHT);
-    }
-    
-    function drawDesk(room, roomName) {
-        var cx = room.x + room.w * 0.5;
-        var cy = room.y + room.h * 0.5;
-        var pos = gridToScreen(cx, cy);
-        
-        var agentKey = roomName === 'CEO Office' ? 'CEO' :
-                       roomName === 'CFO Office' ? 'CFO' :
-                       roomName === 'Dev Zone' ? 'DEV' : null;
-        var isWorking = agentKey && chars[agentKey] && chars[agentKey].isWorking;
-        
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y - 15);
-        ctx.lineTo(pos.x + 25, pos.y - 5);
-        ctx.lineTo(pos.x, pos.y + 5);
-        ctx.lineTo(pos.x - 25, pos.y - 5);
-        ctx.closePath();
-        ctx.fillStyle = '#8B6914';
-        ctx.fill();
-        ctx.fillStyle = '#A07828';
-        ctx.fillRect(pos.x - 20, pos.y - 8, 40, 6);
-        
-        if (isWorking) {
-            ctx.fillStyle = '#00ff88';
-            ctx.shadowColor = '#00ff88';
-            ctx.shadowBlur = 10;
-        } else {
-            ctx.fillStyle = '#1a2a3a';
-            ctx.shadowBlur = 0;
-        }
-        ctx.fillRect(pos.x - 8, pos.y - 25, 16, 12);
-        ctx.shadowBlur = 0;
-        
-        if (isWorking) {
-            ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
-            ctx.beginPath();
-            ctx.arc(pos.x, pos.y - 30, 20, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-    
-    function drawMeetingTable(room) {
-        var cx = room.x + room.w * 0.5;
-        var cy = room.y + room.h * 0.5;
-        var pos = gridToScreen(cx, cy);
-        
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y, 30, 15, 0, 0, Math.PI * 2);
-        ctx.fillStyle = '#4a3520';
-        ctx.fill();
-        ctx.strokeStyle = '#6B4E0A';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        for (var i = 0; i < 6; i++) {
-            var angle = (i / 6) * Math.PI * 2;
-            var chairX = pos.x + Math.cos(angle) * 38;
-            var chairY = pos.y + Math.sin(angle) * 18;
-            
-            ctx.fillStyle = '#3a5a7a';
-            ctx.fillRect(chairX - 5, chairY - 3, 10, 6);
-        }
-    }
-    
-    function drawLounge(room) {
-        var pos = gridToScreen(room.x + 0.5, room.y + 0.6);
-        ctx.fillStyle = '#8B0000';
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y, 25, 12, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        var tvPos = gridToScreen(room.x + room.w - 0.5, room.y + 0.4);
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(tvPos.x - 15, tvPos.y - 10, 30, 18);
-        ctx.fillStyle = '#0a2a4a';
-        ctx.fillRect(tvPos.x - 12, tvPos.y - 7, 24, 12);
-        
-        ctx.fillStyle = 'rgba(0, 168, 255, 0.1)';
-        ctx.beginPath();
-        ctx.arc(tvPos.x, tvPos.y, 25, 0, Math.PI * 2);
-        ctx.fill();
-    }
-    
-    function drawLab(room, roomName) {
-        var pos1 = gridToScreen(room.x + 0.4, room.y + 0.5);
-        var pos2 = gridToScreen(room.x + room.w - 0.4, room.y + 0.5);
-        
-        ctx.fillStyle = '#2a3a4a';
-        ctx.fillRect(pos1.x - 15, pos1.y - 8, 30, 16);
-        
-        ctx.fillStyle = '#1a2a3a';
-        ctx.fillRect(pos1.x - 8, pos1.y - 15, 10, 8);
-        ctx.fillStyle = '#00a8ff';
-        ctx.fillRect(pos1.x - 6, pos1.y - 13, 6, 4);
-        
-        ctx.fillStyle = '#2a3a4a';
-        ctx.fillRect(pos2.x - 15, pos2.y - 8, 30, 16);
-        
-        ctx.fillStyle = '#1a2a3a';
-        ctx.fillRect(pos2.x - 3, pos2.y - 15, 8, 8);
-    }
-    
-    function drawServerRack(room) {
-        var serverPos = gridToScreen(room.x + 0.5, room.y + 0.5);
-        
-        ctx.fillStyle = '#1a1a2a';
-        ctx.fillRect(serverPos.x - 20, serverPos.y - 30, 40, 35);
-        
-        var blinkOn = Math.sin(frame * 0.1) > 0;
-        for (var i = 0; i < 4; i++) {
-            for (var j = 0; j < 2; j++) {
-                var lx = serverPos.x - 15 + j * 14;
-                var ly = serverPos.y - 22 + i * 10;
-                
-                if (i % 2 === 0) {
-                    ctx.fillStyle = blinkOn ? '#00ff00' : '#003300';
-                } else {
-                    ctx.fillStyle = '#00a8ff';
-                }
-                ctx.fillRect(lx, ly, 8, 5);
-            }
-        }
-        
-        ctx.fillStyle = 'rgba(0, 255, 100, 0.05)';
-        ctx.beginPath();
-        ctx.arc(serverPos.x, serverPos.y, 35, 0, Math.PI * 2);
-        ctx.fill();
-    }
-    
-    function drawPantry(room) {
-        var pos = gridToScreen(room.x + 0.5, room.y + 0.5);
-        ctx.fillStyle = '#5a4a3a';
-        ctx.fillRect(pos.x - 20, pos.y - 10, 40, 15);
-        
-        ctx.fillStyle = '#3a3a3a';
-        ctx.fillRect(pos.x - 8, pos.y - 20, 12, 12);
-        ctx.fillStyle = '#00ff88';
-        ctx.fillRect(pos.x - 5, pos.y - 17, 4, 3);
-    }
-    
-    function drawToilet(room) {
-        var pos = gridToScreen(room.x + 0.5, room.y + 0.5);
-        ctx.fillStyle = '#eeeeee';
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y, 10, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
-    }
-    
-    function drawCharacter(key) {
-        var c = chars[key];
-        if (!c) return;
-        
-        var pos = gridToScreen(c.gx, c.gy);
-        
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.beginPath();
-        ctx.ellipse(pos.x, pos.y + 5, 12, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
-        
-        var bob = c.behavior === 'walking' ? Math.sin(frame * 0.3) * 2 : Math.sin(frame * 0.05) * 1;
-        
-        var facing = c.vx > 0 ? 1 : c.vx < 0 ? -1 : 0;
-        
-        ctx.fillStyle = c.color;
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y - 20 + bob, 8, 0, Math.PI * 2);
-        ctx.fill();
-        
-        ctx.fillStyle = c.color;
-        ctx.fillRect(pos.x - 6, pos.y - 12 + bob, 12, 14);
-        
-        ctx.fillStyle = '#ffffff';
-        var eyeOffset = facing !== 0 ? facing * 2 : 0;
-        ctx.fillRect(pos.x - 4 + eyeOffset, pos.y - 22 + bob, 2, 2);
-        ctx.fillRect(pos.x + 2 + eyeOffset, pos.y - 22 + bob, 2, 2);
-        
-        if (c.isWorking) {
-            ctx.fillStyle = '#00ff88';
-            ctx.beginPath();
-            ctx.arc(pos.x + 10, pos.y - 25 + bob, 3, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        
-        ctx.font = '8px "Share Tech Mono", monospace';
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-        ctx.textAlign = 'center';
-        ctx.fillText(c.name, pos.x, pos.y - 32 + bob);
-        
-        if (c.isWorking && Math.random() < 0.05) {
-            particles.push({
-                x: pos.x + (Math.random() - 0.5) * 10,
-                y: pos.y - 30 + bob,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: -Math.random() * 1 - 0.5,
-                life: 30,
-                color: '#00ff88'
-            });
-        }
-    }
-    
-    function updateChars() {
-        Object.keys(chars).forEach(function(key) {
-            var c = chars[key];
-            if (!c) return;
-            
-            if (c.behavior === 'walking') {
-                var dx = c.targetX - c.gx;
-                var dy = c.targetY - c.gy;
-                var dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist < 0.1) {
-                    c.gx = c.targetX;
-                    c.gy = c.targetY;
-                    c.behavior = c.isWorking ? 'working' : 'idle';
-                    c.vx = 0;
-                    c.vy = 0;
-                } else {
-                    var speed = 0.02;
-                    c.vx = dx / dist * speed;
-                    c.vy = dy / dist * speed;
-                    c.gx += c.vx;
-                    c.gy += c.vy;
-                }
-            } else if (c.behavior === 'idle' || c.behavior === 'working') {
-                if (Math.random() < 0.002) {
-                    var r = ROOMS[c.room];
-                    if (r) {
-                        c.targetX = r.x + 0.5 + (Math.random() - 0.5) * (r.w - 1);
-                        c.targetY = r.y + 0.5 + (Math.random() - 0.5) * (r.h - 1);
-                        c.behavior = 'walking';
-                    }
-                }
-            }
-        });
-        
-        particles = particles.filter(function(p) {
-            p.x += p.vx;
-            p.y += p.vy;
-            p.life--;
-            return p.life > 0;
-        });
-    }
-    
-    function drawParticles() {
-        particles.forEach(function(p) {
-            ctx.globalAlpha = p.life / 30;
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        ctx.globalAlpha = 1;
-    }
-    
-    function draw() {
-        ctx.fillStyle = '#050810';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        for (var x = 0; x < GRID_WIDTH; x++) {
-            for (var y = 0; y < GRID_HEIGHT; y++) {
-                drawTile(x, y, '#0a0f18', '#0d1220');
-            }
-        }
-        
-        var roomList = Object.keys(ROOMS).map(function(name) {
-            return { name: name, room: ROOMS[name] };
-        });
-        
-        roomList.forEach(function(r) {
-            drawRoomFloor(r.room);
-        });
-        
-        roomList.forEach(function(r) {
-            drawFurniture(r.room, r.name);
-        });
-        
-        Object.keys(chars).forEach(function(key) {
-            drawCharacter(key);
-        });
-        
-        drawParticles();
-    }
-    
-    function animate(timestamp) {
-        var dt = timestamp - lastTime;
-        lastTime = timestamp;
-        frame++;
-        
-        updateChars();
-        draw();
-        
-        requestAnimationFrame(animate);
-    }
-    
-    function updateAgents() {
-        var now = Date.now();
-        
-        Object.keys(AGENTS).forEach(function(key) {
-            var def = AGENTS[key];
-            var data = agentData[key] || {};
-            var status = data.status || 'idle';
-            var isWorking = ['working', 'coding', 'designing', 'writing', 'auditing', 'trading', 'monitoring'].indexOf(status) !== -1;
-            var room = ROOMS[def.room];
-            
-            if (!chars[key]) {
-                chars[key] = {
-                    name: def.name,
-                    color: def.color,
-                    room: def.room,
-                    status: status,
-                    activity: data.activity || def.role + '工作中',
-                    isWorking: isWorking,
-                    gx: room ? room.x + def.deskX : def.deskX,
-                    gy: room ? room.y + def.deskY : def.deskY,
-                    targetX: 0,
-                    targetY: 0,
-                    behavior: isWorking ? 'working' : 'idle',
-                    vx: 0,
-                    vy: 0,
-                    actionTime: now
-                };
-            } else {
-                chars[key].status = status;
-                chars[key].isWorking = isWorking;
-                chars[key].activity = data.activity || def.role + '工作中';
-                
-                if (now - chars[key].actionTime > 5000) {
-                    var b = isWorking ? { working: 0.8, idle: 0.1, walking: 0.1 } : { working: 0, idle: 0.4, walking: 0.6 };
-                    var r = Math.random();
-                    
-                    if (r < b.working) {
-                        chars[key].behavior = 'working';
-                    } else if (r < b.working + b.idle) {
-                        chars[key].behavior = 'idle';
-                    } else {
-                        chars[key].behavior = 'walking';
-                        var targetRoom = ROOMS[chars[key].room];
-                        if (targetRoom) {
-                            chars[key].targetX = targetRoom.x + 0.5 + (Math.random() - 0.5) * (targetRoom.w - 1);
-                            chars[key].targetY = targetRoom.y + 0.5 + (Math.random() - 0.5) * (targetRoom.h - 1);
-                        }
-                    }
-                    chars[key].actionTime = now;
-                }
-            }
-        });
-    }
-    
-    function updatePanel() {
-        var html = Object.keys(AGENTS).map(function(key) {
-            var c = chars[key] || {};
-            var activity = c.activity || AGENTS[key].role + '工作中';
-            var statusClass = c.isWorking ? 'working' : 'idle';
-            return '<div class="agent-row">' +
-                '<div class="agent-dot" style="background:' + AGENTS[key].color + '"></div>' +
-                '<span class="agent-name">' + AGENTS[key].name + '</span>' +
-                '<span class="agent-activity">' + activity + '</span>' +
-                '<div class="agent-status ' + statusClass + '"></div>' +
-                '</div>';
-        }).join('');
-        document.getElementById('agents').innerHTML = html;
-        
-        var w = Object.keys(chars).filter(function(k) {
-            return chars[k] && chars[k].isWorking;
-        }).length;
-        document.getElementById('workCount').textContent = '(' + w + '/' + Object.keys(AGENTS).length + ')';
-    }
-    
-    function updateMessages() {
-        var msgs = [];
-        
-        Object.keys(chars).forEach(function(key) {
-            var c = chars[key];
-            if (c && c.activity && c.status !== 'idle') {
-                msgs.push({ 
-                    name: c.name, 
-                    color: AGENTS[key] ? AGENTS[key].color : '#fff', 
-                    activity: c.activity, 
-                    time: new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'})
-                });
-            }
-        });
-        
-        if (msgs.length === 0) {
-            msgs = [
-                { name: 'CFO', color: '#4ecdc4', activity: '执行网格交易策略', time: '12:45' },
-                { name: 'CTO', color: '#45b7d1', activity: '监控系统正常运行', time: '12:44' },
-                { name: 'CPO', color: '#96ceb4', activity: '规划新功能', time: '12:43' }
-            ];
-        }
-        
-        var html = msgs.slice(0, 5).map(function(m) {
-            return '<div class="msg-row"><div class="msg-name" style="color:' + m.color + '">' + m.name + '</div>' +
-                '<div class="msg-text">' + m.activity + '</div>' +
-                '<div class="msg-time">' + m.time + '</div></div>';
-        }).join('');
-        document.getElementById('messages').innerHTML = html;
-    }
-    
-    init();
-})();
+var api='https://themachine-api.jxs66.workers.dev/agents';
+var cvs=document.getElementById('o');
+var ctx=cvs.getContext('2d');
+// 电脑端: 4列房间, 手机端: 3列房间
+// 每个房间 100x80 像素
+var TILE_W=100;
+var TILE_H=80;
+var COLS=4; // 电脑端4列
+var ROWS=3; // 3行
+var S=2.8; // 缩放
+
+// 房间布局: 电脑4列, 手机3列
+var rooms=[
+{n:'CEO Office',x:0,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
+{n:'CFO Office',x:1,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
+{n:'Meeting',x:2,y:0,w:2,h:1,t:'meeting',c:'#0f1015'}, // 会议室占2格
+{n:'Tech Lab',x:0,y:1,w:1,h:1,t:'lab',c:'#0a1015'},
+{n:'Dev Zone',x:1,y:1,w:2,h:1,t:'lab',c:'#0a1015'}, // 开发区占2格
+{n:'Lounge',x:3,y:1,w:1,h:1,t:'lounge',c:'#100f10'},
+{n:'Pantry',x:0,y:2,w:1,h:1,t:'pantry',c:'#0a100a'},
+{n:'Toilet',x:1,y:2,w:1,h:1,t:'toilet',c:'#0f0f12'},
+{n:'Server Room',x:2,y:2,w:1,h:1,t:'server',c:'#050508'},
+{n:'Storage',x:3,y:2,w:1,h:1,t:'storage',c:'#100c08'}
+];
+
+var ag={
+CEO:{c:'#ff4040',r:'CEO Office',dx:0.5,dy:0.5,n:'THE MACHINE'},
+CFO:{c:'#00f0ff',r:'CFO Office',dx:0.5,dy:0.5,n:'Alex'},
+CTO:{c:'#00aaff',r:'Tech Lab',dx:0.5,dy:0.5,n:'Kevin'},
+CPO:{c:'#00ff88',r:'Dev Zone',dx:0.3,dy:0.5,n:'Sarah'},
+CMO:{c:'#ffcc00',r:'Lounge',dx:0.5,dy:0.5,n:'Mike'},
+SEC:{c:'#d0d0d0',r:'Server Room',dx:0.5,dy:0.5,n:'David'},
+DEV:{c:'#ff0080',r:'Dev Zone',dx:0.7,dy:0.5,n:'Chris'},
+HR:{c:'#8844ff',r:'Meeting',dx:0.3,dy:0.5,n:'Lisa'}
+};
+
+var chars={},frame=0,data={};
+
+function init(){
+var cols=window.innerWidth<600?3:COLS;
+cvs.width=colss*TILE_W*S;cvs.height=ROWS*TILE_H*S;
+ctx.scale(S,S);
+load();
+requestAnimationFrame(anim);
+setInterval(load,5000);
+setInterval(function(){document.getElementById('c').innerText=new Date().toTimeString().slice(0,5)},1000);
+window.addEventListener('resize',function(){
+var cols=window.innerWidth<600?3:COLS;
+cvs.width=colss*TILE_W*S;cvs.height=ROWS*TILE_H*S;
+ctx.scale(S,S);
+});
+}
+
+function load(){
+fetch(api).then(function(r){return r.json()}).then(function(d){data=d;updA();updP()}).catch(function(){});
+}
+
+function getRoomPos(name){
+for(var i=0;i<rooms.length;i++){
+if(rooms[i].n===name)return rooms[i];
+}
+return rooms[0];
+}
+
+function updA(){
+var now=Date.now();
+Object.keys(ag).forEach(function(k){
+var d=ag[k],st=(data[k]||{}).status||'idle',work=['working','coding','designing','trading','monitoring'].indexOf(st)!==-1;
+if(!chars[k]){
+var rm=getRoomPos(d.r);
+chars[k]={c:d.c,r:d.r,x:rm.x*TILE_W+d.dx*rm.w*TILE_W+TILE_W*0.1,y:rm.y*TILE_H+d.dy*rm.h*TILE_H,tx:0,ty:0,work:work,act:now,b:'idle',rm:rm};
+}else{
+chars[k].work=work;
+if(now-chars[k].act>4000+Math.random()*3000){
+var rm=chars[k].rm;
+chars[k].b=work&&Math.random()<0.7?'idle':(Math.random()<0.5?'idle':'walk');
+if(chars[k].b==='walk'){
+chars[k].tx=rm.x*TILE_W+Math.random()*(rm.w*TILE_W-30)+15;
+chars[k].ty=rm.y*TILE_H+Math.random()*(rm.h*TILE_H-30)+15;
+}
+chars[k].act=now;
+}
+}
+});
+var w=Object.keys(chars).filter(function(k){return chars[k].work}).length;
+document.getElementById('wc').innerText='('+w+'/'+Object.keys(ag).length+')';
+}
+
+function updP(){
+var msgs=[];
+Object.keys(chars).forEach(function(k){
+if(chars[k].work){
+var act=(data[k]||{}).activity||ag[k].n+'工作中';
+msgs.push({n:ag[k].c,nm:ag[k].n,t:act,s:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})});
+}
+});
+if(msgs.length===0)msgs=[{n:'#00f0ff',nm:'CFO',t:'执行网格交易策略',s:'12:45'},{n:'#00aaff',nm:'CTO',t:'监控系统正常运行',s:'12:44'},{n:'#00ff88',nm:'CPO',t:'规划新功能',s:'12:43'}];
+var h=msgs.slice(0,6).map(function(m){return'<div class="msg"><span style="color:'+m.n+'">'+m.nm+'</span> '+m.t+'<div style="font-size:9px;color:#333;margin-top:2px">'+m.s+'</div></div>'}).join('');
+document.getElementById('m').innerHTML=h;
+var ha=Object.keys(ag).map(function(k){var w=chars[k]&&chars[k].work;return'<div class="row"><div class="dot-s" style="background:'+ag[k].c+';color:'+ag[k].c+'"></div><span class="name">'+ag[k].n+'</span><span class="status">'+(data[k]||{}).activity+'</span></div>'}).join('');
+document.getElementById('a').innerHTML=ha;
+}
+
+function drawRoom(r){
+var x=r.x*TILE_W,y=r.y*TILE_H,w=r.w*TILE_W,h=r.h*TILE_H;
+// 房间地板
+ctx.fillStyle=r.c;
+ctx.fillRect(x,y,w,h);
+// 地板纹理
+ctx.fillStyle='rgba(255,255,255,0.02)';
+for(var i=0;i<w;i+=20)for(var j=0;j<h;j+=20){if((i+j)%40===0)ctx.fillRect(x+i,y+j,10,10)}
+// 墙壁
+ctx.fillStyle='#1a1a24';
+ctx.fillRect(x,y,w,3);ctx.fillRect(x,y,3,h);
+ctx.fillStyle='#252530';
+ctx.fillRect(x+w-3,y,3,h);ctx.fillRect(x,y+h-3,w,3);
+// 房间名
+ctx.font='bold 10px Courier New';
+ctx.fillStyle='rgba(255,255,255,0.1)';
+ctx.textAlign='center';
+ctx.fillText(r.n.toUpperCase(),x+w/2,y+h/2+4);
+}
+
+function drawDesk(x,y,w,h,on){
+// 桌子
+ctx.fillStyle='#3a3020';
+ctx.fillRect(x+w*0.2,y+h*0.3,w*0.6,h*0.4);
+ctx.fillStyle='#4a3a20';
+ctx.fillRect(x+w*0.25,y+h*0.35,w*0.5,h*0.1);
+// 电脑
+ctx.fillStyle=on?'#00ff88':'#1a2a3a';
+ctx.shadowColor=on?'#00ff88':'transparent';
+ctx.shadowBlur=on?15:0;
+ctx.fillRect(x+w*0.3,y+h*0.15,w*0.4,h*0.25);
+ctx.shadowBlur=0;
+// 屏幕光
+if(on){
+ctx.fillStyle='rgba(0,255,136,0.1)';
+ctx.beginPath();
+ctx.arc(x+w/2,y+h*0.1,w*0.4,0,Math.PI*2);
+ctx.fill();
+}
+}
+
+function drawMeeting(x,y,w,h){
+ctx.fillStyle='#2a2520';
+ctx.beginPath();
+ctx.ellipse(x+w/2,y+h/2,w*0.4,h*0.35,0,0,Math.PI*2);
+ctx.fill();
+ctx.strokeStyle='#4a3520';
+ctx.lineWidth=2;
+ctx.stroke();
+// 椅子
+for(var i=0;i<6;i++){
+var a=i/6*Math.PI*2,dx=Math.cos(a)*w*0.45,dy=Math.sin(a)*h*0.4;
+ctx.fillStyle='#3a4a5a';
+ctx.fillRect(x+w/2+dx-5,y+h/2+dy-3,10,6);
+}
+}
+
+function drawLounge(x,y,w,h){
+// 沙发
+ctx.fillStyle='#4a1515';
+ctx.beginPath();
+ctx.ellipse(x+w*0.5,y+h*0.6,w*0.5,h*0.3,0,0,Math.PI*2);
+ctx.fill();
+// 电视
+ctx.fillStyle='#1a1a1a';
+ctx.fillRect(x+w*0.6,y+h*0.2,w*0.3,h*0.25);
+ctx.fillStyle='#0a1a2a';
+ctx.fillRect(x+w*0.65,y+h*0.25,w*0.2,h*0.15);
+ctx.fillStyle='rgba(0,168,255,0.1)';
+ctx.beginPath();
+ctx.arc(x+w*0.8,y+h*0.32,w*0.2,0,Math.PI*2);
+ctx.fill();
+}
+
+function drawLab(x,y,w,h){
+ctx.fillStyle='#1a2530';
+ctx.fillRect(x+w*0.1,y+h*0.3,w*0.35,h*0.4);
+ctx.fillRect(x+w*0.55,y+h*0.3,w*0.35,h*0.4);
+// 设备
+ctx.fillStyle='#0a1520';
+ctx.fillRect(x+w*0.15,y+h*0.15,w*0.25,h*0.2);
+ctx.fillStyle='#00aaff';
+ctx.fillRect(x+w*0.18,y+h*0.18,w*0.15,h*0.08);
+ctx.fillRect(x+w*0.6,y+h*0.15,w*0.2,h*0.2);
+}
+
+function drawServer(x,y,w,h){
+ctx.fillStyle='#0a0a10';
+ctx.fillRect(x+w*0.1,y+h*0.1,w*0.8,h*0.8);
+// 灯光
+for(var i=0;i<4;i++){
+for(var j=0;j<2;j++){
+var lx=x+w*(0.15+j*0.35),ly=y+h*(0.15+i*0.18);
+ctx.fillStyle=i%2===0?(Math.sin(frame*0.1)>0?'#00ff00':'#003300'):'#00aaff';
+ctx.fillRect(lx,ly,w*0.2,h*0.08);
+}
+}
+ctx.fillStyle='rgba(0,255,100,0.05)';
+ctx.beginPath();
+ctx.arc(x+w/2,y+h/2,w*0.5,0,Math.PI*2);
+ctx.fill();
+}
+
+function drawPantry(x,y,w,h){
+ctx.fillStyle='#2a2a1a';
+ctx.fillRect(x+w*0.1,y+h*0.4,w*0.8,h*0.4);
+// 咖啡机
+ctx.fillStyle='#2a2a2a';
+ctx.fillRect(x+w*0.35,y+h*0.15,w*0.3,h*0.3);
+ctx.fillStyle='#00ff88';
+ctx.fillRect(x+w*0.4,y+h*0.2,w*0.1,h*0.08);
+}
+
+function drawToilet(x,y,w,h){
+ctx.fillStyle='#1a1a1a';
+ctx.fillRect(x+w*0.1,y+h*0.3,w*0.8,h*0.5);
+ctx.fillStyle='#eeeeee';
+ctx.beginPath();
+ctx.ellipse(x+w*0.5,y+h*0.55,w*0.25,h*0.15,0,0,Math.PI*2);
+ctx.fill();
+}
+
+function drawChar(k){
+var c=chars[k];
+if(!c)return;
+var x=c.x,y=c.y;
+if(c.b==='walk'){
+var dx=c.tx-x,dy=c.ty-y,dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<2){x=c.tx;y=c.ty;c.b=c.work?'idle':'idle';}else{
+x+=dx/dist*1.5;y+=dy/dist*1.5;
+}
+c.x=x;c.y=y;
+}
+// 阴影
+ctx.fillStyle='rgba(0,0,0,0.4)';
+ctx.beginPath();
+ctx.ellipse(x,y+12,12,5,0,0,Math.PI*2);
+ctx.fill();
+// 身体
+var bob=c.b==='walk'?Math.sin(frame*0.2)*2:Math.sin(frame*0.05)*1;
+ctx.fillStyle=c.c;
+ctx.beginPath();
+ctx.arc(x,y-4+bob,10,0,Math.PI*2);
+ctx.fill();
+ctx.fillRect(x-7,y-14+bob,14,16);
+// 眼睛
+ctx.fillStyle='#fff';
+ctx.fillRect(x-4,y-8+bob,3,3);
+ctx.fillRect(x+1,y-8+bob,3,3);
+// 名字
+ctx.font='8px Courier New';
+ctx.fillStyle='rgba(255,255,255,0.5)';
+ctx.textAlign='center';
+ctx.fillText(ag[k].n,x,y-24+bob);
+// 工作指示
+if(c.work){
+ctx.fillStyle='#00ff88';
+ctx.beginPath();
+ctx.arc(x+8,y-16+bob,3,0,Math.PI*2);
+ctx.fill();
+// 粒子
+if(Math.random()<0.05){
+particles.push({x:x+(Math.random()-0.5)*10,y:y-25+bob,vx:(Math.random()-0.5)*0.5,vy:-Math.random()*1,l:30,c:'#00ff88'});
+}
+}
+}
+var particles=[];
+
+function anim(){
+frame++;
+ctx.fillStyle='#030308';
+ctx.fillRect(0,0,cvs.width,cvs.height);
+// 绘制房间
+rooms.forEach(function(r){
+drawRoom(r);
+var x=r.x*TILE_W,y=r.y*TILE_H,w=r.w*TILE_W,h=r.h*TILE_H;
+if(r.t==='office'){var k=Object.keys(ag).find(function(k){return ag[k].r===r.n});drawDesk(x,y,w,h,k&&chars[k]&&chars[k].work);}
+else if(r.t==='meeting')drawMeeting(x,y,w,h);
+else if(r.t==='lounge')drawLounge(x,y,w,h);
+else if(r.t==='lab')drawLab(x,y,w,h);
+else if(r.t==='server')drawServer(x,y,w,h);
+else if(r.t==='pantry')drawPantry(x,y,w,h);
+else if(r.t==='toilet')drawToilet(x,y,w,h);
+});
+// 绘制角色
+Object.keys(chars).forEach(drawChar);
+// 粒子
+particles=particles.filter(function(p){p.x+=p.vx;p.y+=p.vy;p.l--;return p.l>0});
+particles.forEach(function(p){ctx.globalAlpha=p.l/30;ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fill();});
+ctx.globalAlpha=1;
+requestAnimationFrame(anim);
+}
+
+init();
 </script>
 </body>
 </html>
