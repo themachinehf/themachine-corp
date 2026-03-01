@@ -1,748 +1,826 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <title>MISSION CONTROL // THEMACHINE Corp.</title>
-    <style>
-        :root { --bg: #0a0a0a; --fg: #c0c0c0; --gold: #FFD700; --fg-dim: #606060; }
-        * { margin: 0; padding: 0; }
-        body { background: var(--bg); font-family: 'Courier New', monospace; color: var(--fg); padding: 15px; min-height: 100vh; font-size: 14px; }
-        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3), rgba(0,0,0,0.3) 1px, transparent 1px, transparent 2px); pointer-events: none; z-index: 999; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 12px; border-bottom: 1px dashed var(--fg-dim); padding-bottom: 10px; }
-        .logo { color: var(--gold); font-size: 20px; letter-spacing: 2px; text-shadow: 0 0 10px var(--gold); }
-        .time { color: var(--gold); }
-        
-        .top-section { display: grid; grid-template-columns: 450px auto; gap: 8px; max-width: 1400px; margin: 0 auto 12px; }
-        .team-card { border: 1px dashed var(--fg-dim); padding: 12px; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; min-height: 160px; width: 200px; }
-        .team-card h3 { color: var(--gold); font-size: 14px; margin-bottom: 10px; border-bottom: 1px dashed var(--fg-dim); padding-bottom: 6px; }
-        .team-card ul { list-style: none; font-size: 12px; color: var(--fg); flex: 1; overflow-y: auto; }
-        .team-card li { padding: 4px 0; display: block; border-bottom: 1px dashed var(--fg-dim); white-space: normal; word-wrap: break-word; }
-        .team-card li span:first-child { color: var(--gold); font-weight: bold; margin-right: 10px; }
-        .right-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        
-        .card { border: 1px dashed var(--fg-dim); padding: 8px; background: rgba(0,0,0,0.3); }
-        .card h3 { color: var(--gold); font-size: 14px; margin-bottom: 6px; border-bottom: 1px dashed var(--fg-dim); padding-bottom: 4px; }
-        .card ul { list-style: none; font-size: 12px; color: var(--fg); }
-        .card li { padding: 3px 0; display: flex; justify-content: space-between; border-bottom: 1px dashed var(--fg-dim); white-space: nowrap; }
-        .card li span:first-child { color: var(--gold); font-weight: bold; margin-right: 10px; }
-        
-        .office-section { max-width: 1400px; margin: 0 auto; }
-        .office-card { border: 1px dashed var(--fg-dim); padding: 12px; background: rgba(0,0,0,0.3); position: relative; }
-        .office-card h3 { color: var(--gold); font-size: 14px; margin-bottom: 10px; border-bottom: 1px dashed var(--fg-dim); padding-bottom: 6px; }
-        .office-card h3 button { float: right; background: var(--gold); color: #000; border: none; padding: 2px 8px; font-size: 11px; cursor: pointer; font-family: inherit; }
-        canvas { display: block; border: 2px solid var(--gold); background: #0a0a12; width: 100%; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
-        .modal.active { display: flex; justify-content: center; align-items: center; }
-        .modal-content { position: relative; background: #0a0a0a; border: 2px solid var(--gold); padding: 20px; }
-        .modal-content canvas { width: 95vw; height: auto; }
-        .modal-close { position: absolute; top: 10px; right: 20px; color: var(--gold); font-size: 24px; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVE OFFICE // THEMACHINE Corp.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg-dark: #0a0e14;
+    --bg-panel: #12181f;
+    --border-color: #1e2832;
+    --gold: #f0c040;
+    --text-dim: #5a6a7a;
+    --text-bright: #c8d4e0;
+    --accent-green: #00ff88;
+    --accent-red: #ff3344;
+    --accent-blue: #00a8ff;
+}
+
+body {
+    background: var(--bg-dark);
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-bright);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: linear-gradient(180deg, #0d1117 0%, #0a0e14 100%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(240, 192, 64, 0.3);
+}
+
+.clock {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-red);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-red);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.canvas-wrap {
+    padding: 20px;
+    position: relative;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    margin: 0 auto;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    background: #050810;
+    box-shadow: 
+        0 0 40px rgba(0, 168, 255, 0.1),
+        inset 0 0 100px rgba(0, 0, 0, 0.5);
+}
+
+.bottom-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.panel {
+    background: linear-gradient(180deg, var(--bg-panel) 0%, #0d1218 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 16px;
+}
+
+.panel-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.agent-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.agent-row:last-child {
+    border-bottom: none;
+}
+
+.agent-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}
+
+.agent-name {
+    font-size: 12px;
+    flex: 1;
+    color: var(--text-bright);
+}
+
+.agent-activity {
+    font-size: 10px;
+    color: var(--text-dim);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.agent-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-dim);
+}
+
+.agent-status.working {
+    background: var(--accent-green);
+    box-shadow: 0 0 8px var(--accent-green);
+}
+
+.agent-status.idle {
+    background: #ffaa00;
+}
+
+.msg-row {
+    padding: 8px 0;
+    border-left: 2px solid var(--border-color);
+    padding-left: 12px;
+    margin-bottom: 8px;
+}
+
+.msg-name {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.msg-text {
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+.msg-time {
+    font-size: 9px;
+    color: #3a4a5a;
+    margin-top: 4px;
+}
+
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    z-index: 1000;
+    opacity: 0.3;
+}
+</style>
 </head>
 <body>
-    <header><div class="logo">> MISSION CONTROL</div><div class="time" id="t"></div></header>
-    
-    <div class="top-section">
-        <div class="team-card"><h3>:: TEAM</h3><ul id="team" style="flex:1;overflow-y:auto;"></ul></div>
-        <div class="right-cards">
-            <div class="card"><h3>:: TASKS</h3><ul id="tasks"><li><span>Paddle</span><span>Pending</span></li><li><span>UI Update</span><span>In Progress</span></li><li><span>OKX Bot</span><span>Running</span></li><li><span>Security</span><span>Weekly</span></li></ul></div>
-            <div class="card"><h3>:: CALENDAR</h3><ul id="calendar"><li><span>09:00</span><span>Standup</span></li><li><span>12:00</span><span>Lunch</span></li><li><span>18:00</span><span>Review</span></li><li><span>21:00</span><span>Report</span></li></ul></div>
-            <div class="card"><h3>:: MEMORY</h3><ul id="memory"><li><span>System</span><span>Online</span></li><li><span>Agents</span><span>8 Active</span></li></ul></div>
-            <div class="card"><h3>:: LOG</h3><ul id="log"><li><span>System</span><span>Ready</span></li><li><span>Office</span><span>Loaded</span></li></ul></div>
-        </div>
+<div class="scanlines"></div>
+<header>
+    <div class="logo">🏢 THEMACHINE Corp.</div>
+    <div class="clock" id="clock">00:00</div>
+    <div class="live"><span class="dot"></span><span>LIVE</span></div>
+</header>
+<div class="canvas-wrap">
+    <canvas id="office"></canvas>
+</div>
+<div class="bottom-panels">
+    <div class="panel">
+        <div class="panel-title">👥 TEAM <span id="workCount" style="color:var(--accent-green)">(0/0)</span></div>
+        <div id="agents"></div>
     </div>
-    
-    <div class="office-section">
-        <div class="office-card">
-            <h3>:: OFFICE</h3>
-            <canvas id="g"></canvas>
-        </div>
+    <div class="panel">
+        <div class="panel-title">💬 RECENT ACTIVITY</div>
+        <div id="messages"></div>
     </div>
+</div>
 
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">×</span>
-            <canvas id="g2"></canvas>
-        </div>
-    </div>
-
-    <script>
-    const API = 'https://themachine-api.jxs66.workers.dev/agents';
+<script>
+(function() {
+    'use strict';
     
-    let W, H;
-    const cvs = document.getElementById('g');
-    const ctx = cvs.getContext('2d');
-    const cvs2 = document.getElementById('g2');
-    const ctx2 = cvs2.getContext('2d');
+    var API = 'https://themachine-api.jxs66.workers.dev/agents';
+    var canvas = document.getElementById('office');
+    var ctx = canvas.getContext('2d');
     
-    let rooms = [];
-    let initialized = false;
+    var TILE_WIDTH = 64;
+    var TILE_HEIGHT = 32;
+    var GRID_WIDTH = 16;
+    var GRID_HEIGHT = 12;
     
-    function initSize(){
-        const container = document.querySelector('.office-card');
-        W = container.clientWidth - 24;
-        H = W < 600 ? 560 : 540;  // Increased height for more space
-        cvs.width = W;
-        cvs.height = H;
-        cvs2.width = W;
-        cvs2.height = H;
+    var SCALE = window.devicePixelRatio || 1;
+    
+    var COLORS = {
+        floor: '#1a1f2a',
+        floorAlt: '#1e2433',
+        wall: '#2a3140',
+        wallTop: '#3a4150',
+        shadow: 'rgba(0,0,0,0.4)',
+        highlight: 'rgba(255,255,255,0.05)'
+    };
+    
+    var ROOMS = {
+        'CEO Office':   { x: 1, y: 1, w: 3, h: 3, type: 'office' },
+        'CFO Office':   { x: 5, y: 1, w: 3, h: 3, type: 'office' },
+        'Meeting':      { x: 9, y: 1, w: 4, h: 3, type: 'meeting' },
+        'Lounge':       { x: 1, y: 5, w: 3, h: 3, type: 'lounge' },
+        'Tech Lab':     { x: 5, y: 5, w: 3, h: 3, type: 'lab' },
+        'Dev Zone':     { x: 9, y: 5, w: 4, h: 3, type: 'office' },
+        'Pantry':       { x: 1, y: 9, w: 2, h: 2, type: 'pantry' },
+        'Toilet':       { x: 4, y: 9, w: 2, h: 2, type: 'toilet' },
+        'Server Room':  { x: 7, y: 9, w: 3, h: 2, type: 'server' },
+        'Storage':      { x: 11, y: 9, w: 3, h: 2, type: 'storage' }
+    };
+    
+    var AGENTS = {
+        CEO:  { name: 'The Machine', color: '#ff6b6b', room: 'CEO Office', deskX: 0.5, deskY: 0.5, role: 'CEO' },
+        CFO:  { name: 'Alex',        color: '#4ecdc4', room: 'CFO Office', deskX: 0.5, deskY: 0.5, role: 'CFO' },
+        CTO:  { name: 'Kevin',       color: '#45b7d1', room: 'Tech Lab', deskX: 0.5, deskY: 0.5, role: 'CTO' },
+        CPO:  { name: 'Sarah',       color: '#96ceb4', room: 'Dev Zone', deskX: 0.3, deskY: 0.4, role: 'CPO' },
+        CMO:  { name: 'Mike',        color: '#ffeaa7', room: 'Lounge', deskX: 0.5, deskY: 0.5, role: 'CMO' },
+        SEC:  { name: 'David',       color: '#dfe6e9', room: 'Server Room', deskX: 0.5, deskY: 0.5, role: 'SEC' },
+        DEV:  { name: 'Chris',       color: '#fd79a8', room: 'Dev Zone', deskX: 0.7, deskY: 0.6, role: 'DEV' },
+        HR:   { name: 'Lisa',        color: '#a29bfe', room: 'Meeting', deskX: 0.5, deskY: 0.5, role: 'HR' }
+    };
+    
+    var agentData = {};
+    var chars = {};
+    var particles = [];
+    var lastTime = 0;
+    var frame = 0;
+    
+    function init() {
+        canvas.width = GRID_WIDTH * TILE_WIDTH * SCALE;
+        canvas.height = GRID_HEIGHT * TILE_HEIGHT * SCALE;
+        canvas.style.width = (GRID_WIDTH * TILE_WIDTH) + 'px';
+        canvas.style.height = (GRID_HEIGHT * TILE_HEIGHT) + 'px';
+        ctx.scale(SCALE, SCALE);
         
-        const bw = 15;
-        const ww = W - bw*2;
-        const wh = H - 25;
-        const cols = W < 600 ? 3 : 4;
-        const roomW = ww / cols;
-        const roomH = wh / 3.2;  // Slightly taller rooms
-        
-        const gap = 12;  // Increased gap between floors
-        rooms = [
-            {name:'CEO Office',x:bw,y:gap,w:roomW-gap,h:roomH-gap,type:'exec'},
-            {name:'CFO Office',x:bw+roomW,y:gap,w:roomW-gap,h:roomH-gap,type:'exec'},
-            {name:'Meeting A',x:bw+roomW*2,y:gap,w:roomW-gap,h:roomH-gap,type:'meeting'},
-            {name:'Meeting B',x:bw+roomW*3,y:gap,w:roomW,h:roomH-gap,type:'meeting'},
-            
-            {name:'Tech Lab',x:bw,y:gap+roomH,w:roomW*1.2,h:roomH-gap,type:'lab'},
-            {name:'Dev Zone',x:bw+roomW*1.2,y:gap+roomH,w:roomW*1.2,h:roomH-gap,type:'dev'},
-            {name:'Marketing',x:bw+roomW*2.4,y:gap+roomH,w:roomW*0.6,h:roomH-gap,type:'office'},
-            {name:'Security',x:bw+roomW*3,y:gap+roomH,w:roomW,h:roomH-gap,type:'office'},
-            
-            {name:'Kitchen',x:bw,y:gap+roomH*2,w:roomW-gap,h:roomH,type:'kitchen'},
-            {name:'Lounge',x:bw+roomW,y:gap+roomH*2,w:roomW-gap,h:roomH,type:'lounge'},
-            {name:'Server',x:bw+roomW*2,y:gap+roomH*2,w:roomW-gap,h:roomH,type:'server'},
-            {name:'Reception',x:bw+roomW*3,y:gap+roomH*2,w:roomW,h:roomH,type:'reception'},
-        ];
-        initialized = true;
+        load();
+        requestAnimationFrame(animate);
+        setInterval(load, 5000);
+        updateClock();
     }
     
-    const windowPatterns = {
-        'exec': (r) => [{x:r.w*0.15,y:r.h*0.1,w:r.w*0.25,h:r.h*0.18},{x:r.w*0.6,y:r.h*0.1,w:r.w*0.25,h:r.h*0.18}],
-        'meeting': (r) => [{x:r.w*0.1,y:r.h*0.4,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.7,y:r.h*0.4,w:r.w*0.2,h:r.h*0.15}],
-        'lab': (r) => [{x:r.w*0.1,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.4,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.7,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15}],
-        'dev': (r) => [{x:r.w*0.1,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.4,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.7,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15}],
-        'office': (r) => [{x:r.w*0.15,y:r.h*0.1,w:r.w*0.25,h:r.h*0.18},{x:r.w*0.6,y:r.h*0.1,w:r.w*0.25,h:r.h*0.18}],
-        'kitchen': (r) => [{x:r.w*0.1,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.7,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15}],
-        'lounge': (r) => [{x:r.w*0.1,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15},{x:r.w*0.7,y:r.h*0.08,w:r.w*0.2,h:r.h*0.15}],
-        'server': (r) => [],
-        'reception': (r) => [{x:r.w*0.1,y:r.h*0.4,w:r.w*0.15,h:r.h*0.35},{x:r.w*0.75,y:r.h*0.4,w:r.w*0.15,h:r.h*0.35}],
-    };
+    function updateClock() {
+        var now = new Date();
+        var h = now.getHours();
+        var m = now.getMinutes();
+        document.getElementById('clock').textContent = 
+            (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
+    }
+    setInterval(updateClock, 1000);
     
-    const furniture = {
-        'exec': (r) => [
-            {t:'desk',x:r.w*0.5,y:r.h*0.55,w:r.w*0.4,h:r.h*0.08},
-            {t:'chair',x:r.w*0.35,y:r.h*0.58,w:r.w*0.1,h:r.h*0.06},
-            {t:'monitor',x:r.w*0.55,y:r.h*0.35,w:r.w*0.12,h:r.h*0.08},
-            {t:'bookshelf',x:r.w*0.08,y:r.h*0.25,w:r.w*0.15,h:r.h*0.35},
-            {t:'plant',x:r.w*0.85,y:r.h*0.5,w:r.w*0.08,h:r.h*0.15},
-            {t:'lamp',x:r.w*0.75,y:r.h*0.4,w:r.w*0.06,h:r.h*0.12},
-        ],
-        'meeting': (r) => [
-            {t:'table',x:r.w*0.5,y:r.h*0.55,w:r.w*0.5,h:r.h*0.06},
-            {t:'chairs',x:r.w*0.3,y:r.h*0.52,w:r.w*0.12,h:r.h*0.06},
-            {t:'chairs',x:r.w*0.58,y:r.h*0.52,w:r.w*0.12,h:r.h*0.06},
-            {t:'tv',x:r.w*0.5,y:r.h*0.15,w:r.w*0.35,h:r.h*0.2},
-            {t:'watercooler',x:r.w*0.85,y:r.h*0.5,w:r.w*0.1,h:r.h*0.25},
-        ],
-        'lab': (r) => [
-            {t:'workbench',x:r.w*0.5,y:r.h*0.6,w:r.w*0.6,h:r.h*0.08},
-            {t:'monitor',x:r.w*0.35,y:r.h*0.4,w:r.w*0.12,h:r.h*0.08},
-            {t:'monitor',x:r.w*0.55,y:r.h*0.4,w:r.w*0.12,h:r.h*0.08},
-            {t:'monitor',x:r.w*0.75,y:r.h*0.4,w:r.w*0.12,h:r.h*0.08},
-            {t:'equipment',x:r.w*0.1,y:r.h*0.35,w:r.w*0.15,h:r.h*0.2},
-            {t:'cabinet',x:r.w*0.85,y:r.h*0.3,w:r.w*0.12,h:r.h*0.35},
-        ],
-        'dev': (r) => [
-            {t:'desk',x:r.w*0.5,y:r.h*0.6,w:r.w*0.7,h:r.h*0.08},
-            {t:'monitor',x:r.w*0.3,y:r.h*0.38,w:r.w*0.1,h:r.h*0.07},
-            {t:'monitor',x:r.w*0.45,y:r.h*0.38,w:r.w*0.1,h:r.h*0.07},
-            {t:'monitor',x:r.w*0.6,y:r.h*0.38,w:r.w*0.1,h:r.h*0.07},
-            {t:'keyboard',x:r.w*0.45,y:r.h*0.48,w:r.w*0.2,h:r.h*0.04},
-            {t:'chair',x:r.w*0.5,y:r.h*0.65,w:r.w*0.12,h:r.h*0.06},
-            {t:'plant',x:r.w*0.85,y:r.h*0.55,w:r.w*0.08,h:r.h*0.15},
-        ],
-        'office': (r) => [
-            {t:'desk',x:r.w*0.5,y:r.h*0.55,w:r.w*0.45,h:r.h*0.08},
-            {t:'chair',x:r.w*0.4,y:r.h*0.58,w:r.w*0.1,h:r.h*0.06},
-            {t:'monitor',x:r.w*0.52,y:r.h*0.35,w:r.w*0.1,h:r.h*0.07},
-            {t:'cabinet',x:r.w*0.08,y:r.h*0.3,w:r.w*0.12,h:r.h*0.3},
-            {t:'lamp',x:r.w*0.8,y:r.h*0.4,w:r.w*0.05,h:r.h*0.1},
-        ],
-        'kitchen': (r) => [
-            {t:'fridge',x:r.w*0.15,y:r.h*0.35,w:r.w*0.15,h:r.h*0.35},
-            {t:'stove',x:r.w*0.4,y:r.h*0.45,w:r.w*0.2,h:r.h*0.08},
-            {t:'microwave',x:r.w*0.65,y:r.h*0.4,w:r.w*0.1,h:r.h*0.08},
-            {t:'coffee',x:r.w*0.8,y:r.h*0.35,w:r.w*0.1,h:r.h*0.12},
-            {t:'table',x:r.w*0.5,y:r.h*0.7,w:r.w*0.35,h:r.h*0.06},
-            {t:'chairs',x:r.w*0.45,y:r.h*0.72,w:r.w*0.08,h:r.h*0.05},
-            {t:'chairs',x:r.w*0.55,y:r.h*0.72,w:r.w*0.08,h:r.h*0.05},
-        ],
-        'lounge': (r) => [
-            {t:'sofa',x:r.w*0.3,y:r.h*0.55,w:r.w*0.4,h:r.h*0.12},
-            {t:'tv',x:r.w*0.5,y:r.h*0.2,w:r.w*0.3,h:r.h*0.18},
-            {t:'table',x:r.w*0.5,y:r.h*0.7,w:r.w*0.2,h:r.h*0.05},
-            {t:'plant',x:r.w*0.85,y:r.h*0.4,w:r.w*0.1,h:r.h*0.25},
-            {t:'lamp',x:r.w*0.1,y:r.h*0.3,w:r.w*0.06,h:r.h*0.15},
-            {t:'coffee',x:r.w*0.8,y:r.h*0.55,w:r.w*0.1,h:r.h*0.1},
-        ],
-        'server': (r) => [
-            {t:'rack',x:r.w*0.2,y:r.h*0.25,w:r.w*0.15,h:r.h*0.5},
-            {t:'rack',x:r.w*0.4,y:r.h*0.25,w:r.w*0.15,h:r.h*0.5},
-            {t:'rack',x:r.w*0.6,y:r.h*0.25,w:r.w*0.15,h:r.h*0.5},
-            {t:'desk',x:r.w*0.3,y:r.h*0.75,w:r.w*0.4,h:r.h*0.06},
-            {t:'monitor',x:r.w*0.45,y:r.h*0.58,w:r.w*0.1,h:r.h*0.07},
-        ],
-        'reception': (r) => [
-            {t:'desk',x:r.w*0.5,y:r.h*0.55,w:r.w*0.4,h:r.h*0.08},
-            {t:'chair',x:r.w*0.45,y:r.h*0.6,w:r.w*0.1,h:r.h*0.06},
-            {t:'monitor',x:r.w*0.52,y:r.h*0.38,w:r.w*0.1,h:r.h*0.07},
-            {t:'sofa',x:r.w*0.2,y:r.h*0.6,w:r.w*0.2,h:r.h*0.1},
-            {t:'plant',x:r.w*0.85,y:r.h*0.45,w:r.w*0.1,h:r.h*0.25},
-            {t:'tv',x:r.w*0.5,y:r.h*0.15,w:r.w*0.25,h:r.h*0.15},
-            {t:'clock',x:r.w*0.85,y:r.h*0.12,w:r.w*0.08,h:r.h*0.08},
-        ],
-    };
-    
-    function drawFurniture(ctx, r, item){
-        const x = r.x + item.x;
-        const y = r.y + item.y;
-        const w = item.w;
-        const h = item.h;
-        
-        if(item.t === 'desk' || item.t === 'table' || item.t === 'workbench'){
-            ctx.fillStyle='#4a3728';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#3a2718';ctx.fillRect(x,y+h,w,2);
-        }else if(item.t === 'chair'){
-            ctx.fillStyle='#333';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#222';ctx.fillRect(x,y+h,w,3);
-        }else if(item.t === 'chairs'){
-            ctx.fillStyle='#444';ctx.fillRect(x,y,w,h);
-        }else if(item.t === 'monitor'){
-            ctx.fillStyle='#1a1a2e';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#4a90d9';ctx.fillRect(x+2,y+2,w-4,h-4);
-        }else if(item.t === 'bookshelf' || item.t === 'cabinet'){
-            ctx.fillStyle='#3a3025';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#2a2015';
-            for(let i=0;i<4;i++)ctx.fillRect(x+2,y+h*0.2*i+2,w-4,2);
-        }else if(item.t === 'plant'){
-            ctx.fillStyle='#2a4a2a';ctx.beginPath();ctx.arc(x+w/2,y+h*0.6,w/2,h*0.4,0,Math.PI*2);ctx.fill();
-            ctx.fillStyle='#5a4030';ctx.fillRect(x+w*0.3,y+h*0.8,w*0.4,h*0.2);
-        }else if(item.t === 'lamp'){
-            ctx.fillStyle='#888';ctx.fillRect(x+w*0.4,y,w*0.2,h*0.6);
-            ctx.fillStyle='#ffd700';ctx.globalAlpha=0.3;ctx.beginPath();ctx.arc(x+w/2,y,w,w,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
-        }else if(item.t === 'tv'){
-            ctx.fillStyle='#222';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#3a4a5a';ctx.fillRect(x+2,y+2,w-4,h-4);
-            ctx.fillStyle='#111';ctx.fillRect(x+w*0.9,y+h*0.8,w*0.1,h*0.15);
-        }else if(item.t === 'fridge'){
-            ctx.fillStyle='#aaa';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#888';ctx.fillRect(x,y,w*0.45,h*0.02);
-        }else if(item.t === 'stove'){
-            ctx.fillStyle='#333';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#222';
-            for(let i=0;i<4;i++)ctx.beginPath(),ctx.arc(x+w*0.2+i*w*0.25,y+h*0.5,h*0.15,0,Math.PI*2),ctx.fill();
-        }else if(item.t === 'microwave'){
-            ctx.fillStyle='#ccc';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#222';ctx.fillRect(x+w*0.1,y+h*0.2,w*0.8,h*0.6);
-        }else if(item.t === 'coffee'){
-            ctx.fillStyle='#5a4a3a';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#3a2a1a';ctx.fillRect(x+w*0.2,y+h*0.3,w*0.6,h*0.4);
-        }else if(item.t === 'watercooler'){
-            ctx.fillStyle='#444';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#6af';ctx.fillRect(x+w*0.2,y+h*0.3,w*0.6,h*0.3);
-        }else if(item.t === 'sofa'){
-            ctx.fillStyle='#4a5568';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#3a4558';ctx.fillRect(x,y-h*0.15,w,h*0.15);
-        }else if(item.t === 'equipment'){
-            ctx.fillStyle='#2a3a4a';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#4a90d9';ctx.fillRect(x+w*0.2,y+h*0.3,w*0.3,h*0.2);
-            ctx.fillStyle='#0f0';ctx.fillRect(x+w*0.6,y+h*0.4,w*0.15,h*0.1);
-        }else if(item.t === 'keyboard'){
-            ctx.fillStyle='#333';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#444';
-            for(let i=0;i<8;i++)ctx.fillRect(x+i*w*0.1+2,y+2,w*0.08,h-4);
-        }else if(item.t === 'rack'){
-            ctx.fillStyle='#1a1a1a';ctx.fillRect(x,y,w,h);
-            ctx.fillStyle='#0f0';
-            for(let i=0;i<5;i++)ctx.fillRect(x+2,y+h*0.1*i+2,w*0.3,2),ctx.fillRect(x+w*0.6,y+h*0.1*i+2,w*0.3,2);
-        }else if(item.t === 'clock'){
-            ctx.fillStyle='#333';ctx.beginPath();ctx.arc(x+w/2,y+h/2,w/2,0,Math.PI*2);ctx.fill();
-            ctx.fillStyle='#ffd700';ctx.beginPath();ctx.arc(x+w/2,y+h/2,w*0.35,0,Math.PI*2);ctx.fill();
+    async function load() {
+        try {
+            agentData = await fetch(API).then(function(r) { return r.json(); });
+            updateAgents();
+            updatePanel();
+            updateMessages();
+        } catch(e) { 
+            console.log('API not available, using simulation'); 
         }
     }
     
-    const agentRoomMap = {
-        'CEO':'CEO Office','CFO':'CFO Office','CTO':'Tech Lab','CPO':'Marketing',
-        'CMO':'Marketing','DEV':'Dev Zone','SEC':'Security','HR':'Kitchen'
-    };
-    
-    const colors = {CEO:'#ff6b6b',CFO:'#4ecdc4',CTO:'#45b7d1',CPO:'#96ceb4',CMO:'#ffeaa7',SEC:'#dfe6e9',DEV:'#fd79a8',HR:'#a29bfe'};
-    const names = {CEO:'The Machine',CFO:'Alex',CTO:'Kevin',CPO:'Sarah',CMO:'Mike',SEC:'David',DEV:'Chris',HR:'Lisa'};
-    
-    // Pixel avatars - 50x100 design for each role
-    const pixelAvatars = {
-        // CEO - leader, suit, authoritative
-        CEO: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair
-            ctx.fillStyle='#2a2a2a';ctx.fillRect(x-9*s,y-38*s,18*s,5*s);
-            // Eyes
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            // Suit body
-            ctx.fillStyle='#1a1a2e';ctx.fillRect(x-10*s,y-19*s,20*s,22*s);
-            // Gold tie
-            ctx.fillStyle='#ffd700';ctx.fillRect(x-2*s,y-17*s,4*s,12*s);
-            // Arms
-            ctx.fillStyle='#1a1a2e';ctx.fillRect(x-14*s,y-17*s,4*s,14*s);ctx.fillRect(x+10*s,y-17*s,4*s,14*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-3*s,4*s,4*s);ctx.fillRect(x+10*s,y-3*s,4*s,4*s);
-            // Legs
-            ctx.fillStyle='#1a1a2e';ctx.fillRect(x-8*s,y+3*s,6*s,18*s);ctx.fillRect(x+2*s,y+3*s,6*s,18*s);
-            // Shoes
-            ctx.fillStyle='#000';ctx.fillRect(x-9*s,y+19*s,7*s,3*s);ctx.fillRect(x+2*s,y+19*s,7*s,3*s);
-        },
-        // CFO - finance, glasses, analytical
-        CFO: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair
-            ctx.fillStyle='#4a3728';ctx.fillRect(x-9*s,y-38*s,18*s,4*s);ctx.fillRect(x-9*s,y-34*s,4*s,6*s);
-            // Glasses
-            ctx.fillStyle='#000';ctx.fillRect(x-7*s,y-32*s,5*s,2*s);ctx.fillRect(x+2*s,y-32*s,5*s,2*s);ctx.fillRect(x-2*s,y-32*s,4*s,1*s);
-            // Eyes
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            // Body - business casual
-            ctx.fillStyle='#2d5a4a';ctx.fillRect(x-10*s,y-19*s,20*s,20*s);
-            // Shirt
-            ctx.fillStyle='#fff';ctx.fillRect(x-4*s,y-17*s,8*s,8*s);
-            // Arms
-            ctx.fillStyle='#2d5a4a';ctx.fillRect(x-14*s,y-17*s,4*s,12*s);ctx.fillRect(x+10*s,y-17*s,4*s,12*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-5*s,4*s,4*s);ctx.fillRect(x+10*s,y-5*s,4*s,4*s);
-            // Legs
-            ctx.fillStyle='#2d5a4a';ctx.fillRect(x-8*s,y+1*s,6*s,18*s);ctx.fillRect(x+2*s,y+1*s,6*s,18*s);
-            // Shoes
-            ctx.fillStyle='#333';ctx.fillRect(x-9*s,y+17*s,7*s,3*s);ctx.fillRect(x+2*s,y+17*s,7*s,3*s);
-        },
-        // CTO - tech leader, hoodie, innovative
-        CTO: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair/hoodie
-            ctx.fillStyle='#1a1a2e';ctx.fillRect(x-10*s,y-40*s,20*s,8*s);ctx.fillRect(x-11*s,y-32*s,4*s,12*s);
-            // Eyes
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-30*s,2*s,2*s);ctx.fillRect(x+3*s,y-30*s,2*s,2*s);
-            // Hoodie body
-            ctx.fillStyle='#45b7d1';ctx.fillRect(x-10*s,y-19*s,20*s,22*s);
-            // Logo
-            ctx.fillStyle='#fff';ctx.fillRect(x-3*s,y-12*s,6*s,6*s);
-            // Arms
-            ctx.fillStyle='#45b7d1';ctx.fillRect(x-14*s,y-17*s,4*s,14*s);ctx.fillRect(x+10*s,y-17*s,4*s,14*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-3*s,4*s,4*s);ctx.fillRect(x+10*s,y-3*s,4*s,4*s);
-            // Legs - jeans
-            ctx.fillStyle='#1a3a5a';ctx.fillRect(x-8*s,y+3*s,6*s,18*s);ctx.fillRect(x+2*s,y+3*s,6*s,18*s);
-            // Shoes
-            ctx.fillStyle='#333';ctx.fillRect(x-9*s,y+19*s,7*s,3*s);ctx.fillRect(x+2*s,y+19*s,7*s,3*s);
-        },
-        // CPO - creative, colorful, artistic
-        CPO: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair - colorful
-            ctx.fillStyle='#ff6b9d';ctx.fillRect(x-9*s,y-38*s,18*s,5*s);ctx.fillRect(x-10*s,y-33*s,4*s,8*s);
-            // Eyes
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            // Blouse - colorful
-            ctx.fillStyle='#96ceb4';ctx.fillRect(x-10*s,y-19*s,20*s,20*s);
-            // Necklace
-            ctx.fillStyle='#ffd700';ctx.fillRect(x-2*s,y-17*s,4*s,2*s);ctx.fillRect(x-3*s,y-15*s,6*s,1*s);
-            // Arms
-            ctx.fillStyle='#96ceb4';ctx.fillRect(x-14*s,y-17*s,4*s,12*s);ctx.fillRect(x+10*s,y-17*s,4*s,12*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-5*s,4*s,4*s);ctx.fillRect(x+10*s,y-5*s,4*s,4*s);
-            // Skirt/pants
-            ctx.fillStyle='#8b4513';ctx.fillRect(x-8*s,y+1*s,6*s,14*s);ctx.fillRect(x+2*s,y+1*s,6*s,14*s);
-            // Shoes
-            ctx.fillStyle='#333';ctx.fillRect(x-9*s,y+13*s,7*s,3*s);ctx.fillRect(x+2*s,y+13*s,7*s,3*s);
-        },
-        // CMO - marketing, outgoing, casual
-        CMO: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair
-            ctx.fillStyle='#8b4513';ctx.fillRect(x-9*s,y-38*s,18*s,4*s);ctx.fillRect(x-8*s,y-34*s,4*s,6*s);
-            // Eyes
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            // Body - casual
-            ctx.fillStyle='#ffeaa7';ctx.fillRect(x-10*s,y-19*s,20*s,20*s);
-            // Slogan
-            ctx.fillStyle='#000';ctx.fillRect(x-6*s,y-14*s,12*s,4*s);
-            // Arms
-            ctx.fillStyle='#ffeaa7';ctx.fillRect(x-14*s,y-17*s,4*s,12*s);ctx.fillRect(x+10*s,y-17*s,4*s,12*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-5*s,4*s,4*s);ctx.fillRect(x+10*s,y-5*s,4*s,4*s);
-            // Legs
-            ctx.fillStyle='#555';ctx.fillRect(x-8*s,y+1*s,6*s,18*s);ctx.fillRect(x+2*s,y+1*s,6*s,18*s);
-            // Shoes
-            ctx.fillStyle='#fff';ctx.fillRect(x-9*s,y+17*s,7*s,3*s);ctx.fillRect(x+2*s,y+17*s,7*s,3*s);
-        },
-        // SEC - security, serious, protective
-        SEC: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair - short military
-            ctx.fillStyle='#2a2a2a';ctx.fillRect(x-9*s,y-38*s,18*s,4*s);
-            // Eyes - serious
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            // Uniform
-            ctx.fillStyle='#2a4a2a';ctx.fillRect(x-10*s,y-19*s,20*s,22*s);
-            // Badge
-            ctx.fillStyle='#ffd700';ctx.fillRect(x+4*s,y-15*s,4*s,4*s);
-            // Arms
-            ctx.fillStyle='#2a4a2a';ctx.fillRect(x-14*s,y-17*s,4*s,14*s);ctx.fillRect(x+10*s,y-17*s,4*s,14*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-3*s,4*s,4*s);ctx.fillRect(x+10*s,y-3*s,4*s,4*s);
-            // Legs
-            ctx.fillStyle='#2a4a2a';ctx.fillRect(x-8*s,y+3*s,6*s,18*s);ctx.fillRect(x+2*s,y+3*s,6*s,18*s);
-            // Boots
-            ctx.fillStyle='#1a1a1a';ctx.fillRect(x-9*s,y+19*s,7*s,3*s);ctx.fillRect(x+2*s,y+19*s,7*s,3*s);
-        },
-        // DEV - developer, casual, tech
-        DEV: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair - messy
-            ctx.fillStyle='#5a3a2a';ctx.fillRect(x-9*s,y-38*s,18*s,4*s);ctx.fillRect(x-10*s,y-34*s,3*s,5*s);ctx.fillRect(x+7*s,y-35*s,3*s,4*s);
-            // Eyes - with glasses
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            ctx.fillStyle='#333';ctx.fillRect(x-7*s,y-33*s,5*s,1*s);ctx.fillRect(x+2*s,y-33*s,5*s,1*s);
-            // T-shirt
-            ctx.fillStyle='#fd79a8';ctx.fillRect(x-10*s,y-19*s,20*s,20*s);
-            // Logo
-            ctx.fillStyle='#fff';ctx.fillRect(x-4*s,y-10*s,8*s,4*s);
-            // Arms
-            ctx.fillStyle='#fd79a8';ctx.fillRect(x-14*s,y-17*s,4*s,12*s);ctx.fillRect(x+10*s,y-17*s,4*s,12*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-5*s,4*s,4*s);ctx.fillRect(x+10*s,y-5*s,4*s,4*s);
-            // Legs - jeans
-            ctx.fillStyle='#1a3a5a';ctx.fillRect(x-8*s,y+1*s,6*s,18*s);ctx.fillRect(x+2*s,y+1*s,6*s,18*s);
-            // Shoes
-            ctx.fillStyle='#666';ctx.fillRect(x-9*s,y+17*s,7*s,3*s);ctx.fillRect(x+2*s,y+17*s,7*s,3*s);
-        },
-        // HR - friendly, approachable, warm
-        HR: (ctx, x, y, scale, b) => {
-            const s = scale;
-            // Head
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-8*s,y-35*s,16*s,16*s);
-            // Hair - long
-            ctx.fillStyle='#a29bfe';ctx.fillRect(x-9*s,y-38*s,18*s,4*s);ctx.fillRect(x-11*s,y-34*s,4*s,10*s);ctx.fillRect(x+7*s,y-34*s,4*s,10*s);
-            // Eyes - friendly
-            ctx.fillStyle='#000';ctx.fillRect(x-5*s,y-32*s,2*s,2*s);ctx.fillRect(x+3*s,y-32*s,2*s,2*s);
-            // Smile
-            ctx.fillStyle='#ff6b6b';ctx.fillRect(x-3*s,y-26*s,6*s,1*s);
-            // Body - professional
-            ctx.fillStyle='#a29bfe';ctx.fillRect(x-10*s,y-19*s,20*s,20*s);
-            // Cardigan
-            ctx.fillStyle='#6c5ce7';ctx.fillRect(x-10*s,y-17*s,4*s,16*s);ctx.fillRect(x+6*s,y-17*s,4*s,16*s);
-            // Arms
-            ctx.fillStyle='#a29bfe';ctx.fillRect(x-14*s,y-17*s,4*s,12*s);ctx.fillRect(x+10*s,y-17*s,4*s,12*s);
-            // Hands
-            ctx.fillStyle='#f5d0c5';ctx.fillRect(x-14*s,y-5*s,4*s,4*s);ctx.fillRect(x+10*s,y-5*s,4*s,4*s);
-            // Skirt
-            ctx.fillStyle='#6c5ce7';ctx.fillRect(x-8*s,y+1*s,6*s,14*s);ctx.fillRect(x+2*s,y+1*s,6*s,14*s);
-            // Shoes
-            ctx.fillStyle='#fff';ctx.fillRect(x-9*s,y+13*s,7*s,3*s);ctx.fillRect(x+2*s,y+13*s,7*s,3*s);
-        },
-    };
-    
-    let agents={}, chars={};
-    let breath = 0;
-    
-    function init(id, r){
-        // 根据当前API状态确定正确的房间，而不是默认房间
-        const targetRoom = getTargetRoom(id);
-        const room = rooms.find(x=>x.name===targetRoom) || rooms[0];
-        // 初始化时直接放到目标房间，不从原位置走过去
-        return{
-            x:room.x + room.w/2,
-            y:room.y + room.h/2 + room.h*0.08,
-            targetX: room.x + room.w/2,
-            targetY: room.y + room.h/2 + room.h*0.08,
-            state:'idle',
-            tRoom:targetRoom,
-            lastRoom:targetRoom,
-            c:colors[id]||'#fff',
-            facing:1,
-            pose:getPose(agents[id]?.status || 'working')
-        };
+    function gridToScreen(gx, gy) {
+        var sx = (gx - gy) * (TILE_WIDTH / 2) + (GRID_WIDTH * TILE_WIDTH / 2);
+        var sy = (gx + gy) * (TILE_HEIGHT / 2);
+        return { x: sx, y: sy + 20 };
     }
     
-    // 根据agent ID(role)获取对应的默认房间
-    function getDefaultRoom(k){
-        return agentRoomMap[k]||'CEO';
+    function drawTile(gx, gy, color, altColor) {
+        var pos = gridToScreen(gx, gy);
+        var isAlt = (gx + gy) % 2 === 0;
+        
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        ctx.lineTo(pos.x + TILE_WIDTH/2, pos.y + TILE_HEIGHT/2);
+        ctx.lineTo(pos.x, pos.y + TILE_HEIGHT);
+        ctx.lineTo(pos.x - TILE_WIDTH/2, pos.y + TILE_HEIGHT/2);
+        ctx.closePath();
+        
+        ctx.fillStyle = isAlt && altColor ? altColor : color;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
     }
     
-    // 根据当前状态获取实际应该去的房间
-    function getTargetRoom(k){
-        const a=agents[k];
-        if(!a)return getDefaultRoom(k);
-        const st=a.status||'working';
-        if(['meeting','standup'].includes(st))return Math.random()>0.5?'Meeting A':'Meeting B';
-        if(['coffee','lunch','snack'].includes(st))return'Kitchen';
-        if(['gaming','sleeping'].includes(st))return'Lounge';
-        // 其他状态回到各自办公室
-        return getDefaultRoom(k);
+    function drawRoomFloor(room) {
+        for (var x = room.x; x < room.x + room.w; x++) {
+            for (var y = room.y; y < room.y + room.h; y++) {
+                var floorColor = room.type === 'server' ? '#0a1020' : 
+                                 room.type === 'toilet' ? '#1a2530' :
+                                 room.type === 'pantry' ? '#1f2a1f' :
+                                 COLORS.floor;
+                var altColor = room.type === 'server' ? '#0d1525' : 
+                               room.type === 'meeting' ? '#1e2835' :
+                               COLORS.floorAlt;
+                drawTile(x, y, floorColor, altColor);
+            }
+        }
     }
     
-    function getPose(status){
-        if(['meeting','standup'].includes(status))return'sit';
-        if(['coffee','lunch','snack'].includes(status))return'coffee';
-        if(['gaming'].includes(status))return'gaming';
-        if(['sleeping'].includes(status))return'sleep';
-        if(['coding','working','researching'].includes(status))return'computer';
-        return'work';
+    function drawRoomWalls(room) {
+        var leftWallHeight = 40;
+        var leftBottom = gridToScreen(room.x, room.y + room.h);
+        var leftTop = gridToScreen(room.x, room.y);
+        var leftTopAbove = { x: leftTop.x, y: leftTop.y - leftWallHeight };
+        
+        ctx.beginPath();
+        ctx.moveTo(leftTopAbove.x, leftTopAbove.y);
+        ctx.lineTo(leftTop.x, leftTop.y);
+        ctx.lineTo(leftBottom.x, leftBottom.y);
+        ctx.lineTo(leftBottom.x, leftBottom.y - leftWallHeight);
+        ctx.closePath();
+        ctx.fillStyle = COLORS.wall;
+        ctx.fill();
+        
+        var rightBottom = gridToScreen(room.x + room.w, room.y + room.h);
+        var rightTop = gridToScreen(room.x + room.w, room.y);
+        var rightTopAbove = { x: rightTop.x, y: rightTop.y - leftWallHeight };
+        
+        ctx.beginPath();
+        ctx.moveTo(rightTopAbove.x, rightTopAbove.y);
+        ctx.lineTo(rightTop.x, rightTop.y);
+        ctx.lineTo(rightBottom.x, rightBottom.y);
+        ctx.lineTo(rightBottom.x, rightBottom.y - leftWallHeight);
+        ctx.closePath();
+        ctx.fillStyle = COLORS.wallTop;
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.moveTo(leftTopAbove.x, leftTopAbove.y);
+        ctx.lineTo(rightTopAbove.x, rightTopAbove.y);
+        ctx.lineTo(rightTop.x, rightTop.y);
+        ctx.lineTo(leftTop.x, leftTop.y);
+        ctx.closePath();
+        ctx.fillStyle = '#3a4150';
+        ctx.fill();
     }
     
-    let lastTime = 0;
-    const animSpeed = 80; // ms per frame
+    function drawFurniture(room, roomName) {
+        if (room.type === 'office') {
+            drawDesk(room, roomName);
+        } else if (room.type === 'meeting') {
+            drawMeetingTable(room);
+        } else if (room.type === 'lounge') {
+            drawLounge(room);
+        } else if (room.type === 'lab') {
+            drawLab(room, roomName);
+        } else if (room.type === 'server') {
+            drawServerRack(room);
+        } else if (room.type === 'pantry') {
+            drawPantry(room);
+        } else if (room.type === 'toilet') {
+            drawToilet(room);
+        }
+        
+        var centerPos = gridToScreen(room.x + room.w/2, room.y + room.h/2);
+        ctx.font = 'bold 11px "Share Tech Mono", monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.textAlign = 'center';
+        ctx.fillText(roomName.toUpperCase(), centerPos.x, centerPos.y + TILE_HEIGHT);
+    }
     
-    function update(timestamp){
-        if(timestamp - lastTime < animSpeed) return;
+    function drawDesk(room, roomName) {
+        var cx = room.x + room.w * 0.5;
+        var cy = room.y + room.h * 0.5;
+        var pos = gridToScreen(cx, cy);
+        
+        var agentKey = roomName === 'CEO Office' ? 'CEO' :
+                       roomName === 'CFO Office' ? 'CFO' :
+                       roomName === 'Dev Zone' ? 'DEV' : null;
+        var isWorking = agentKey && chars[agentKey] && chars[agentKey].isWorking;
+        
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y - 15);
+        ctx.lineTo(pos.x + 25, pos.y - 5);
+        ctx.lineTo(pos.x, pos.y + 5);
+        ctx.lineTo(pos.x - 25, pos.y - 5);
+        ctx.closePath();
+        ctx.fillStyle = '#8B6914';
+        ctx.fill();
+        ctx.fillStyle = '#A07828';
+        ctx.fillRect(pos.x - 20, pos.y - 8, 40, 6);
+        
+        if (isWorking) {
+            ctx.fillStyle = '#00ff88';
+            ctx.shadowColor = '#00ff88';
+            ctx.shadowBlur = 10;
+        } else {
+            ctx.fillStyle = '#1a2a3a';
+            ctx.shadowBlur = 0;
+        }
+        ctx.fillRect(pos.x - 8, pos.y - 25, 16, 12);
+        ctx.shadowBlur = 0;
+        
+        if (isWorking) {
+            ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y - 30, 20, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    function drawMeetingTable(room) {
+        var cx = room.x + room.w * 0.5;
+        var cy = room.y + room.h * 0.5;
+        var pos = gridToScreen(cx, cy);
+        
+        ctx.beginPath();
+        ctx.ellipse(pos.x, pos.y, 30, 15, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#4a3520';
+        ctx.fill();
+        ctx.strokeStyle = '#6B4E0A';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        for (var i = 0; i < 6; i++) {
+            var angle = (i / 6) * Math.PI * 2;
+            var chairX = pos.x + Math.cos(angle) * 38;
+            var chairY = pos.y + Math.sin(angle) * 18;
+            
+            ctx.fillStyle = '#3a5a7a';
+            ctx.fillRect(chairX - 5, chairY - 3, 10, 6);
+        }
+    }
+    
+    function drawLounge(room) {
+        var pos = gridToScreen(room.x + 0.5, room.y + 0.6);
+        ctx.fillStyle = '#8B0000';
+        ctx.beginPath();
+        ctx.ellipse(pos.x, pos.y, 25, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        var tvPos = gridToScreen(room.x + room.w - 0.5, room.y + 0.4);
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(tvPos.x - 15, tvPos.y - 10, 30, 18);
+        ctx.fillStyle = '#0a2a4a';
+        ctx.fillRect(tvPos.x - 12, tvPos.y - 7, 24, 12);
+        
+        ctx.fillStyle = 'rgba(0, 168, 255, 0.1)';
+        ctx.beginPath();
+        ctx.arc(tvPos.x, tvPos.y, 25, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
+    function drawLab(room, roomName) {
+        var pos1 = gridToScreen(room.x + 0.4, room.y + 0.5);
+        var pos2 = gridToScreen(room.x + room.w - 0.4, room.y + 0.5);
+        
+        ctx.fillStyle = '#2a3a4a';
+        ctx.fillRect(pos1.x - 15, pos1.y - 8, 30, 16);
+        
+        ctx.fillStyle = '#1a2a3a';
+        ctx.fillRect(pos1.x - 8, pos1.y - 15, 10, 8);
+        ctx.fillStyle = '#00a8ff';
+        ctx.fillRect(pos1.x - 6, pos1.y - 13, 6, 4);
+        
+        ctx.fillStyle = '#2a3a4a';
+        ctx.fillRect(pos2.x - 15, pos2.y - 8, 30, 16);
+        
+        ctx.fillStyle = '#1a2a3a';
+        ctx.fillRect(pos2.x - 3, pos2.y - 15, 8, 8);
+    }
+    
+    function drawServerRack(room) {
+        var serverPos = gridToScreen(room.x + 0.5, room.y + 0.5);
+        
+        ctx.fillStyle = '#1a1a2a';
+        ctx.fillRect(serverPos.x - 20, serverPos.y - 30, 40, 35);
+        
+        var blinkOn = Math.sin(frame * 0.1) > 0;
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 2; j++) {
+                var lx = serverPos.x - 15 + j * 14;
+                var ly = serverPos.y - 22 + i * 10;
+                
+                if (i % 2 === 0) {
+                    ctx.fillStyle = blinkOn ? '#00ff00' : '#003300';
+                } else {
+                    ctx.fillStyle = '#00a8ff';
+                }
+                ctx.fillRect(lx, ly, 8, 5);
+            }
+        }
+        
+        ctx.fillStyle = 'rgba(0, 255, 100, 0.05)';
+        ctx.beginPath();
+        ctx.arc(serverPos.x, serverPos.y, 35, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
+    function drawPantry(room) {
+        var pos = gridToScreen(room.x + 0.5, room.y + 0.5);
+        ctx.fillStyle = '#5a4a3a';
+        ctx.fillRect(pos.x - 20, pos.y - 10, 40, 15);
+        
+        ctx.fillStyle = '#3a3a3a';
+        ctx.fillRect(pos.x - 8, pos.y - 20, 12, 12);
+        ctx.fillStyle = '#00ff88';
+        ctx.fillRect(pos.x - 5, pos.y - 17, 4, 3);
+    }
+    
+    function drawToilet(room) {
+        var pos = gridToScreen(room.x + 0.5, room.y + 0.5);
+        ctx.fillStyle = '#eeeeee';
+        ctx.beginPath();
+        ctx.ellipse(pos.x, pos.y, 10, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
+    function drawCharacter(key) {
+        var c = chars[key];
+        if (!c) return;
+        
+        var pos = gridToScreen(c.gx, c.gy);
+        
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(pos.x, pos.y + 5, 12, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        var bob = c.behavior === 'walking' ? Math.sin(frame * 0.3) * 2 : Math.sin(frame * 0.05) * 1;
+        
+        var facing = c.vx > 0 ? 1 : c.vx < 0 ? -1 : 0;
+        
+        ctx.fillStyle = c.color;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y - 20 + bob, 8, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = c.color;
+        ctx.fillRect(pos.x - 6, pos.y - 12 + bob, 12, 14);
+        
+        ctx.fillStyle = '#ffffff';
+        var eyeOffset = facing !== 0 ? facing * 2 : 0;
+        ctx.fillRect(pos.x - 4 + eyeOffset, pos.y - 22 + bob, 2, 2);
+        ctx.fillRect(pos.x + 2 + eyeOffset, pos.y - 22 + bob, 2, 2);
+        
+        if (c.isWorking) {
+            ctx.fillStyle = '#00ff88';
+            ctx.beginPath();
+            ctx.arc(pos.x + 10, pos.y - 25 + bob, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        ctx.font = '8px "Share Tech Mono", monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.textAlign = 'center';
+        ctx.fillText(c.name, pos.x, pos.y - 32 + bob);
+        
+        if (c.isWorking && Math.random() < 0.05) {
+            particles.push({
+                x: pos.x + (Math.random() - 0.5) * 10,
+                y: pos.y - 30 + bob,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -Math.random() * 1 - 0.5,
+                life: 30,
+                color: '#00ff88'
+            });
+        }
+    }
+    
+    function updateChars() {
+        Object.keys(chars).forEach(function(key) {
+            var c = chars[key];
+            if (!c) return;
+            
+            if (c.behavior === 'walking') {
+                var dx = c.targetX - c.gx;
+                var dy = c.targetY - c.gy;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 0.1) {
+                    c.gx = c.targetX;
+                    c.gy = c.targetY;
+                    c.behavior = c.isWorking ? 'working' : 'idle';
+                    c.vx = 0;
+                    c.vy = 0;
+                } else {
+                    var speed = 0.02;
+                    c.vx = dx / dist * speed;
+                    c.vy = dy / dist * speed;
+                    c.gx += c.vx;
+                    c.gy += c.vy;
+                }
+            } else if (c.behavior === 'idle' || c.behavior === 'working') {
+                if (Math.random() < 0.002) {
+                    var r = ROOMS[c.room];
+                    if (r) {
+                        c.targetX = r.x + 0.5 + (Math.random() - 0.5) * (r.w - 1);
+                        c.targetY = r.y + 0.5 + (Math.random() - 0.5) * (r.h - 1);
+                        c.behavior = 'walking';
+                    }
+                }
+            }
+        });
+        
+        particles = particles.filter(function(p) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+            return p.life > 0;
+        });
+    }
+    
+    function drawParticles() {
+        particles.forEach(function(p) {
+            ctx.globalAlpha = p.life / 30;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#050810';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        for (var x = 0; x < GRID_WIDTH; x++) {
+            for (var y = 0; y < GRID_HEIGHT; y++) {
+                drawTile(x, y, '#0a0f18', '#0d1220');
+            }
+        }
+        
+        var roomList = Object.keys(ROOMS).map(function(name) {
+            return { name: name, room: ROOMS[name] };
+        });
+        
+        roomList.forEach(function(r) {
+            drawRoomFloor(r.room);
+        });
+        
+        roomList.forEach(function(r) {
+            drawFurniture(r.room, r.name);
+        });
+        
+        Object.keys(chars).forEach(function(key) {
+            drawCharacter(key);
+        });
+        
+        drawParticles();
+    }
+    
+    function animate(timestamp) {
+        var dt = timestamp - lastTime;
         lastTime = timestamp;
+        frame++;
         
-        breath = (breath + 0.08) % (Math.PI * 2);
+        updateChars();
+        draw();
         
-        Object.keys(agents).forEach(k=>{
-            // 获取当前状态对应的目标房间
-            const targetRoomName = getTargetRoom(k);
-            const room = rooms.find(x=>x.name===targetRoomName) || rooms[0];
-            const st=agents[k].status||'working';
+        requestAnimationFrame(animate);
+    }
+    
+    function updateAgents() {
+        var now = Date.now();
+        
+        Object.keys(AGENTS).forEach(function(key) {
+            var def = AGENTS[key];
+            var data = agentData[key] || {};
+            var status = data.status || 'idle';
+            var isWorking = ['working', 'coding', 'designing', 'writing', 'auditing', 'trading', 'monitoring'].indexOf(status) !== -1;
+            var room = ROOMS[def.room];
             
-            // 首次初始化：直接放到目标位置，不移动
-            if(!chars[k]){
-                chars[k]={
-                    x:room.x + room.w/2,
-                    y:room.y + room.h/2 + room.h*0.08,
-                    targetX: room.x + room.w/2,
-                    targetY: room.y + room.h/2 + room.h*0.08,
-                    state:'idle',
-                    tRoom:targetRoomName,
-                    lastRoom:targetRoomName,
-                    c:colors[k]||'#fff',
-                    facing:1,
-                    pose:getPose(st)
+            if (!chars[key]) {
+                chars[key] = {
+                    name: def.name,
+                    color: def.color,
+                    room: def.room,
+                    status: status,
+                    activity: data.activity || def.role + '工作中',
+                    isWorking: isWorking,
+                    gx: room ? room.x + def.deskX : def.deskX,
+                    gy: room ? room.y + def.deskY : def.deskY,
+                    targetX: 0,
+                    targetY: 0,
+                    behavior: isWorking ? 'working' : 'idle',
+                    vx: 0,
+                    vy: 0,
+                    actionTime: now
                 };
-                return;
-            }
-            
-            const c=chars[k];
-            c.pose=getPose(st);
-            
-            // 如果目标房间变了，开始移动
-            if(c.lastRoom !== targetRoomName){
-                c.lastRoom = targetRoomName;
-                c.state = 'walking';
-                c.targetX = room.x + room.w/2;
-                c.targetY = room.y + room.h/2 + room.h*0.08;
-            }
-            
-            // 移动动画
-            if(c.state === 'walking'){
-                const dx = c.targetX - c.x;
-                const dy = c.targetY - c.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if(dist < 5){
-                    c.state = 'idle';
-                    c.x = c.targetX;
-                    c.y = c.targetY;
-                    c.tRoom = targetRoomName;
-                }else{
-                    c.x += dx/dist * 3;
-                    c.y += dy/dist * 3;
-                    c.facing = dx > 0 ? 1 : -1;
+            } else {
+                chars[key].status = status;
+                chars[key].isWorking = isWorking;
+                chars[key].activity = data.activity || def.role + '工作中';
+                
+                if (now - chars[key].actionTime > 5000) {
+                    var b = isWorking ? { working: 0.8, idle: 0.1, walking: 0.1 } : { working: 0, idle: 0.4, walking: 0.6 };
+                    var r = Math.random();
+                    
+                    if (r < b.working) {
+                        chars[key].behavior = 'working';
+                    } else if (r < b.working + b.idle) {
+                        chars[key].behavior = 'idle';
+                    } else {
+                        chars[key].behavior = 'walking';
+                        var targetRoom = ROOMS[chars[key].room];
+                        if (targetRoom) {
+                            chars[key].targetX = targetRoom.x + 0.5 + (Math.random() - 0.5) * (targetRoom.w - 1);
+                            chars[key].targetY = targetRoom.y + 0.5 + (Math.random() - 0.5) * (targetRoom.h - 1);
+                        }
+                    }
+                    chars[key].actionTime = now;
                 }
             }
         });
     }
     
-    function drawBuilding(ctx){
-        ctx.fillStyle='#0a0a12';
-        ctx.fillRect(0,0,W,H);
+    function updatePanel() {
+        var html = Object.keys(AGENTS).map(function(key) {
+            var c = chars[key] || {};
+            var activity = c.activity || AGENTS[key].role + '工作中';
+            var statusClass = c.isWorking ? 'working' : 'idle';
+            return '<div class="agent-row">' +
+                '<div class="agent-dot" style="background:' + AGENTS[key].color + '"></div>' +
+                '<span class="agent-name">' + AGENTS[key].name + '</span>' +
+                '<span class="agent-activity">' + activity + '</span>' +
+                '<div class="agent-status ' + statusClass + '"></div>' +
+                '</div>';
+        }).join('');
+        document.getElementById('agents').innerHTML = html;
         
-        ctx.fillStyle='#1a1a22';
-        ctx.fillRect(0,H-8,W,8);
+        var w = Object.keys(chars).filter(function(k) {
+            return chars[k] && chars[k].isWorking;
+        }).length;
+        document.getElementById('workCount').textContent = '(' + w + '/' + Object.keys(AGENTS).length + ')';
+    }
+    
+    function updateMessages() {
+        var msgs = [];
         
-        const bx=10, by=10, bw=W-20, bh=H-15;
+        Object.keys(chars).forEach(function(key) {
+            var c = chars[key];
+            if (c && c.activity && c.status !== 'idle') {
+                msgs.push({ 
+                    name: c.name, 
+                    color: AGENTS[key] ? AGENTS[key].color : '#fff', 
+                    activity: c.activity, 
+                    time: new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'})
+                });
+            }
+        });
         
-        ctx.fillStyle='#1a1a25';
-        ctx.fillRect(bx,by,bw,bh);
-        
-        ctx.strokeStyle='#4a4a5a';
-        ctx.lineWidth=4;
-        ctx.strokeRect(bx,by,bw,bh);
-        
-        ctx.strokeStyle='#3a3a4a';
-        ctx.lineWidth=2;
-        const fh = bh/3;
-        for(let i=1;i<3;i++){
-            ctx.beginPath();
-            ctx.moveTo(bx,by+fh*i);
-            ctx.lineTo(bx+bw,by+fh*i);
-            ctx.stroke();
+        if (msgs.length === 0) {
+            msgs = [
+                { name: 'CFO', color: '#4ecdc4', activity: '执行网格交易策略', time: '12:45' },
+                { name: 'CTO', color: '#45b7d1', activity: '监控系统正常运行', time: '12:44' },
+                { name: 'CPO', color: '#96ceb4', activity: '规划新功能', time: '12:43' }
+            ];
         }
         
-        ctx.fillStyle='#ffd700';
-        ctx.font='bold 12px Arial';
-        ctx.fillText('F3', bx+5, 28);
-        ctx.fillText('F2', bx+5, 28+fh);
-        ctx.fillText('F1', bx+5, 28+fh*2);
+        var html = msgs.slice(0, 5).map(function(m) {
+            return '<div class="msg-row"><div class="msg-name" style="color:' + m.color + '">' + m.name + '</div>' +
+                '<div class="msg-text">' + m.activity + '</div>' +
+                '<div class="msg-time">' + m.time + '</div></div>';
+        }).join('');
+        document.getElementById('messages').innerHTML = html;
     }
     
-    function drawRooms(ctx){
-        rooms.forEach(r=>{
-            // Room floor - brighter
-            ctx.fillStyle='#1a1a28';
-            ctx.fillRect(r.x,r.y,r.w,r.h);
-            
-            // Room border - thicker and brighter
-            ctx.strokeStyle='#5a5a6a';
-            ctx.lineWidth=3;
-            ctx.strokeRect(r.x,r.y,r.w,r.h);
-            
-            // Room name - larger and clearer
-            ctx.fillStyle='#ffd700';
-            ctx.font='bold '+(Math.max(10,r.h*0.08))+'px Arial';
-            ctx.textAlign='center';
-            ctx.fillText(r.name, r.x+r.w/2, r.y-3);
-            
-            // Windows
-            const wins = (windowPatterns[r.type] || windowPatterns.office)(r);
-            wins.forEach(win=>{
-                ctx.fillStyle='#1a1a2a';
-                ctx.fillRect(r.x+win.x-2, r.y+win.y-2, win.w+4, win.h+4);
-                ctx.fillStyle='#4a5a6a';
-                ctx.fillRect(r.x+win.x, r.y+win.y, win.w, win.h);
-            });
-            
-            // Draw furniture - slightly brighter
-            const furn = (furniture[r.type] || furniture.office)(r);
-            furn.forEach(item=>drawFurniture(ctx,r,item));
-            
-            // Floor line
-            ctx.strokeStyle='#3a3a4a';
-            ctx.lineWidth=2;
-            ctx.beginPath();
-            ctx.moveTo(r.x, r.y+r.h-3);
-            ctx.lineTo(r.x+r.w, r.y+r.h-3);
-            ctx.stroke();
-        });
-    }
-    
-    async function load(){
-        try{
-            const newAgents = await (await fetch(API)).json();
-            Object.keys(newAgents).forEach(k=>{
-                if(agents[k] && agents[k].status !== newAgents[k].status && chars[k]){
-                    chars[k].lastRoom = null;
-                }
-                agents[k] = newAgents[k];
-            });
-            let h='';Object.keys(agents).forEach(k=>{const a=agents[k];h+=`<li><span>${names[k]||k}</span><span>${k} · ${a.activity||a.status||'Working'}</span></li>`});
-            document.getElementById('team').innerHTML=h;
-            document.getElementById('t').textContent=new Date().toLocaleTimeString();
-        }catch(e){console.log(e);}
-    }
-    
-    function drawAgent(x,y,col,f,pose,roomH,role){
-        const s = roomH / 80;
-        const b = Math.sin(breath) * s * 1.0;
-        x=Math.floor(x);y=Math.floor(y);
-        
-        // Draw character - simple fallback
-        // Body
-        ctx.fillStyle=col;
-        ctx.beginPath();
-        ctx.ellipse(x,y-roomH*0.05+b,roomH*0.12,roomH*0.22,0,Math.PI,0);
-        ctx.fill();
-        // Head
-        ctx.fillStyle='#ffcc99';
-        ctx.beginPath();
-        ctx.arc(x,y-roomH*0.28+b,roomH*0.13,0,Math.PI*2);
-        ctx.fill();
-        // Eyes
-        ctx.fillStyle='#000';
-        ctx.beginPath();
-        ctx.arc(x-roomH*0.04,y-roomH*0.28+b,roomH*0.02,0,Math.PI*2);
-        ctx.arc(x+roomH*0.04,y-roomH*0.28+b,roomH*0.02,0,Math.PI*2);
-        ctx.fill();
-    }
-    
-    function drawAgents(ctx){
-        const sorted=Object.keys(chars).sort((a,b)=>chars[a].y-chars[b].y);
-        sorted.forEach(k=>{const c=chars[k],a=agents[k];if(c&&a){
-            const room = rooms.find(r=>r.name===getTargetRoom(k)) || rooms[0];
-            drawAgent(c.x,c.y,c.c,c.facing,c.pose,room.h,k);
-        }});
-    }
-    
-    function drawAllTags(){
-        const sorted=Object.keys(chars).sort((a,b)=>chars[a].y-chars[b].y);
-        const b=Math.sin(breath)*1.5;
-        sorted.forEach(k=>{
-            const c=chars[k],a=agents[k];
-            if(!c||!a)return;
-            const room = rooms.find(r=>r.name===getTargetRoom(k)) || rooms[0];
-            const rh = room.h;
-            const x=c.x,y=c.y;
-            const name = names[k]||k;
-            const status = a.status||'working';
-            const mood = a.mood||'';
-            
-            ctx.textAlign='center';
-            
-            ctx.fillStyle='#ffd700';
-            ctx.font='bold '+(rh*0.085)+'px Arial';
-            const statusText = mood ? `${status} [${mood}]` : status;
-            ctx.fillText(statusText.substring(0,25),x,y+rh*0.28+b);
-            
-            ctx.fillStyle='#fff';
-            ctx.font='bold '+(rh*0.08)+'px Arial';
-            ctx.fillText(name,x,y+rh*0.38+b);
-        });
-    }
-    
-    function drawMain(){
-        drawBuilding(ctx);
-        drawRooms(ctx);
-        drawAgents(ctx);
-        drawAllTags();
-    }
-    
-    function loop(timestamp){
-        update(timestamp);
-        drawMain();
-        requestAnimationFrame(loop);
-    }
-    
-    function openModal(){
-        document.getElementById('modal').classList.add('active');
-        loop2(0);
-    }
-    function closeModal(){document.getElementById('modal').classList.remove('active');}
-    
-    // Initialize once
-    initSize();
-    load();
-    requestAnimationFrame(loop);
-    setInterval(load, 3000);
-    </script>
+    init();
+})();
+</script>
 </body>
 </html>
