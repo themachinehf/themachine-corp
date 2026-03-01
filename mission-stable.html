@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<title>LIVE OFFICE // THEMACHINE</title>
+<style>
+:root{
+    --bg:#030308;
+    --panel:#0a0a12;
+    --gold:#ffd700;
+    --cyan:#00f0ff;
+    --pink:#ff0080;
+    --green:#00ff88;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);font-family:'Courier New',monospace;color:#666;min-height:100vh}
+header{display:flex;justify-content:space-between;padding:12px 20px;background:var(--panel);border-bottom:1px solid #1a1a24;align-items:center}
+.logo{color:var(--gold);font-size:14px;letter-spacing:4px;text-shadow:0 0 15px var(--gold),0 0 30px var(--gold);font-weight:bold}
+.clock{color:var(--cyan);font-size:12px;font-family:monospace;text-shadow:0 0 8px var(--cyan)}
+.dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green),0 0 20px var(--green);animation:p 1.5s infinite}
+@keyframes p{0%,100%{opacity:1;box-shadow:0 0 10px var(--green),0 0 20px var(--green)}50%{opacity:0.5;box-shadow:0 0 5px var(--green)}}
+.canvas-wrap{padding:12px}
+canvas{display:block;width:100%;max-width:1200px;margin:0 auto;background:linear-gradient(135deg,#050510 0%,#030308 100%);border:1px solid #1f1f2f;box-shadow:0 0 40px rgba(0,240,255,0.1),inset 0 0 100px rgba(0,0,0,0.5)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;max-width:1200px;margin:0 auto}
+.panel{background:var(--panel);border:1px solid #1f1f2f;padding:12px;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.panel::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.panel-title{color:var(--gold);font-size:11px;letter-spacing:2px;margin-bottom:8px;text-transform:uppercase}
+.row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.dot-s{width:8px;height:8px;border-radius:50%;box-shadow:0 0 8px currentColor}
+.name{font-size:11px;color:#555;flex:1}
+.status{font-size:10px;color:#333}
+.msg{font-size:10px;color:#555;border-left:2px solid var(--cyan);padding-left:8px;margin:6px 0}
+@media(max-width:500px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">◈ THEMACHINE ◈</div>
+<div class="clock" id="c">00:00</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:11px"><span class="dot"></span><span style="color:var(--green);text-shadow:0 0 8px var(--green)">LIVE</span></div>
+</header>
+<div class="canvas-wrap"><canvas id="o"></canvas></div>
+<div class="grid">
+<div class="panel"><div class="panel-title">◈ OPERATIVES <span id="wc" style="color:var(--green)"></span></div><div id="a"></div></div>
+<div class="panel"><div class="panel-title">◈ COMM LINK</div><div id="m"></div></div>
+</div>
+
+<script>
+var api='https://themachine-api.jxs66.workers.dev/agents';
+var cvs=document.getElementById('o');
+var ctx=cvs.getContext('2d');
+
+// 3x3 = 9个房间
+// 电脑端4列(3+1走廊), 手机端3列
+var TILE_W=120;
+var TILE_H=100;
+var COLS=4; 
+var ROWS=3;
+var S=2.2; 
+
+// 9个房间布局
+var rooms=[
+{n:'CEO Office',x:0,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
+{n:'CFO Office',x:1,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
+{n:'Meeting',x:2,y:0,w:2,h:1,t:'meeting',c:'#0f1015'},
+{n:'Tech Lab',x:0,y:1,w:1,h:1,t:'lab',c:'#0a1015'},
+{n:'Dev Zone',x:1,y:1,w:2,h:1,t:'lab',c:'#0a1015'},
+{n:'Lounge',x:3,y:1,w:1,h:1,t:'lounge',c:'#100f10'},
+{n:'Pantry',x:0,y:2,w:1,h:1,t:'pantry',c:'#0a100a'},
+{n:'Server Room',x:1,y:2,w:2,h:1,t:'server',c:'#050508'},
+{n:'Storage',x:3,y:2,w:1,h:1,t:'storage',c:'#100c08'}
+];
+
+var ag={
+CEO:{c:'#ff4040',r:'CEO Office',dx:0.5,dy:0.5,n:'THE MACHINE'},
+CFO:{c:'#00f0ff',r:'CFO Office',dx:0.5,dy:0.5,n:'Alex'},
+CTO:{c:'#00aaff',r:'Tech Lab',dx:0.5,dy:0.5,n:'Kevin'},
+CPO:{c:'#00ff88',r:'Dev Zone',dx:0.3,dy:0.5,n:'Sarah'},
+CMO:{c:'#ffcc00',r:'Lounge',dx:0.5,dy:0.5,n:'Mike'},
+SEC:{c:'#d0d0d0',r:'Server Room',dx:0.5,dy:0.5,n:'David'},
+DEV:{c:'#ff0080',r:'Dev Zone',dx:0.7,dy:0.5,n:'Chris'},
+HR:{c:'#8844ff',r:'Meeting',dx:0.3,dy:0.5,n:'Lisa'}
+};
+
+var chars={},frame=0,data={};
+
+function init(){
+cvs.width=COLS*TILE_W*S;cvs.height=ROWS*TILE_H*S;
+ctx.scale(S,S);
+load();
+requestAnimationFrame(anim);
+setInterval(load,5000);
+setInterval(function(){document.getElementById('c').innerText=new Date().toTimeString().slice(0,5)},1000);
+}
+
+function load(){
+fetch(api).then(function(r){return r.json()}).then(function(d){data=d;updA();updP()}).catch(function(){});
+}
+
+function getRoomPos(name){
+for(var i=0;i<rooms.length;i++){
+if(rooms[i].n===name)return rooms[i];
+}
+return rooms[0];
+}
+
+function updA(){
+var now=Date.now();
+Object.keys(ag).forEach(function(k){
+var d=ag[k],st=(data[k]||{}).status||'idle',work=['working','coding','designing','trading','monitoring'].indexOf(st)!==-1;
+if(!chars[k]){
+var rm=getRoomPos(d.r);
+chars[k]={c:d.c,r:d.r,x:rm.x*TILE_W+d.dx*rm.w*TILE_W+TILE_W*0.1,y:rm.y*TILE_H+d.dy*rm.h*TILE_H,tx:0,ty:0,work:work,act:now,b:'idle',rm:rm};
+}else{
+chars[k].work=work;
+if(now-chars[k].act>4000+Math.random()*3000){
+var rm=chars[k].rm;
+chars[k].b=work&&Math.random()<0.7?'idle':(Math.random()<0.5?'idle':'walk');
+if(chars[k].b==='walk'){
+chars[k].tx=rm.x*TILE_W+Math.random()*(rm.w*TILE_W-30)+15;
+chars[k].ty=rm.y*TILE_H+Math.random()*(rm.h*TILE_H-30)+15;
+}
+chars[k].act=now;
+}
+}
+});
+var w=Object.keys(chars).filter(function(k){return chars[k].work}).length;
+document.getElementById('wc').innerText='('+w+'/'+Object.keys(ag).length+')';
+}
+
+function updP(){
+var msgs=[];
+Object.keys(chars).forEach(function(k){
+if(chars[k].work){
+var act=(data[k]||{}).activity||ag[k].n+'工作中';
+msgs.push({n:ag[k].c,nm:ag[k].n,t:act,s:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})});
+}
+});
+if(msgs.length===0)msgs=[{n:'#00f0ff',nm:'CFO',t:'执行网格交易策略',s:'12:45'},{n:'#00aaff',nm:'CTO',t:'监控系统正常运行',s:'12:44'},{n:'#00ff88',nm:'CPO',t:'规划新功能',s:'12:43'}];
+var h=msgs.slice(0,6).map(function(m){return'<div class="msg"><span style="color:'+m.n+'">'+m.nm+'</span> '+m.t+'<div style="font-size:9px;color:#333;margin-top:2px">'+m.s+'</div></div>'}).join('');
+document.getElementById('m').innerHTML=h;
+var ha=Object.keys(ag).map(function(k){var w=chars[k]&&chars[k].work;return'<div class="row"><div class="dot-s" style="background:'+ag[k].c+';color:'+ag[k].c+'"></div><span class="name">'+ag[k].n+'</span><span class="status">'+(data[k]||{}).activity+'</span></div>'}).join('');
+document.getElementById('a').innerHTML=ha;
+}
+
+function drawRoom(r){
+var x=r.x*TILE_W,y=r.y*TILE_H,w=r.w*TILE_W,h=r.h*TILE_H;
+ctx.fillStyle=r.c;
+ctx.fillRect(x,y,w,h);
+ctx.fillStyle='rgba(255,255,255,0.02)';
+for(var i=0;i<w;i+=20)for(var j=0;j<h;j+=20){if((i+j)%40===0)ctx.fillRect(x+i,y+j,10,10)}
+ctx.fillStyle='#1a1a24';
+ctx.fillRect(x,y,w,3);ctx.fillRect(x,y,3,h);
+ctx.fillStyle='#252530';
+ctx.fillRect(x+w-3,y,3,h);ctx.fillRect(x,y+h-3,w,3);
+ctx.font='bold 10px Courier New';
+ctx.fillStyle='rgba(255,255,255,0.1)';
+ctx.textAlign='center';
+ctx.fillText(r.n.toUpperCase(),x+w/2,y+h/2+4);
+}
+
+function drawDesk(x,y,w,h,on){
+ctx.fillStyle='#3a3020';
+ctx.fillRect(x+w*0.2,y+h*0.3,w*0.6,h*0.4);
+ctx.fillStyle='#4a3a20';
+ctx.fillRect(x+w*0.25,y+h*0.35,w*0.5,h*0.1);
+ctx.fillStyle=on?'#00ff88':'#1a2a3a';
+ctx.shadowColor=on?'#00ff88':'transparent';
+ctx.shadowBlur=on?15:0;
+ctx.fillRect(x+w*0.3,y+h*0.15,w*0.4,h*0.25);
+ctx.shadowBlur=0;
+if(on){
+ctx.fillStyle='rgba(0,255,136,0.1)';
+ctx.beginPath();
+ctx.arc(x+w/2,y+h*0.1,w*0.4,0,Math.PI*2);
+ctx.fill();
+}
+}
+
+function drawMeeting(x,y,w,h){
+ctx.fillStyle='#2a2520';
+ctx.beginPath();
+ctx.ellipse(x+w/2,y+h/2,w*0.4,h*0.35,0,0,Math.PI*2);
+ctx.fill();
+ctx.strokeStyle='#4a3520';
+ctx.lineWidth=2;
+ctx.stroke();
+for(var i=0;i<6;i++){
+var a=i/6*Math.PI*2,dx=Math.cos(a)*w*0.45,dy=Math.sin(a)*h*0.4;
+ctx.fillStyle='#3a4a5a';
+ctx.fillRect(x+w/2+dx-5,y+h/2+dy-3,10,6);
+}
+}
+
+function drawLounge(x,y,w,h){
+ctx.fillStyle='#4a1515';
+ctx.beginPath();
+ctx.ellipse(x+w*0.5,y+h*0.6,w*0.5,h*0.3,0,0,Math.PI*2);
+ctx.fill();
+ctx.fillStyle='#1a1a1a';
+ctx.fillRect(x+w*0.6,y+h*0.2,w*0.3,h*0.25);
+ctx.fillStyle='#0a1a2a';
+ctx.fillRect(x+w*0.65,y+h*0.25,w*0.2,h*0.15);
+ctx.fillStyle='rgba(0,168,255,0.1)';
+ctx.beginPath();
+ctx.arc(x+w*0.8,y+h*0.32,w*0.2,0,Math.PI*2);
+ctx.fill();
+}
+
+function drawLab(x,y,w,h){
+ctx.fillStyle='#1a2530';
+ctx.fillRect(x+w*0.1,y+h*0.3,w*0.35,h*0.4);
+ctx.fillRect(x+w*0.55,y+h*0.3,w*0.35,h*0.4);
+ctx.fillStyle='#0a1520';
+ctx.fillRect(x+w*0.15,y+h*0.15,w*0.25,h*0.2);
+ctx.fillStyle='#00aaff';
+ctx.fillRect(x+w*0.18,y+h*0.18,w*0.15,h*0.08);
+ctx.fillRect(x+w*0.6,y+h*0.15,w*0.2,h*0.2);
+}
+
+function drawServer(x,y,w,h){
+ctx.fillStyle='#0a0a10';
+ctx.fillRect(x+w*0.1,y+h*0.1,w*0.8,h*0.8);
+for(var i=0;i<4;i++){
+for(var j=0;j<2;j++){
+var lx=x+w*(0.15+j*0.35),ly=y+h*(0.15+i*0.18);
+ctx.fillStyle=i%2===0?(Math.sin(frame*0.1)>0?'#00ff00':'#003300'):'#00aaff';
+ctx.fillRect(lx,ly,w*0.2,h*0.08);
+}
+}
+ctx.fillStyle='rgba(0,255,100,0.05)';
+ctx.beginPath();
+ctx.arc(x+w/2,y+h/2,w*0.5,0,Math.PI*2);
+ctx.fill();
+}
+
+function drawPantry(x,y,w,h){
+ctx.fillStyle='#2a2a1a';
+ctx.fillRect(x+w*0.1,y+h*0.4,w*0.8,h*0.4);
+ctx.fillStyle='#2a2a2a';
+ctx.fillRect(x+w*0.35,y+h*0.15,w*0.3,h*0.3);
+ctx.fillStyle='#00ff88';
+ctx.fillRect(x+w*0.4,y+h*0.2,w*0.1,h*0.08);
+}
+
+function drawToilet(x,y,w,h){
+ctx.fillStyle='#1a1a1a';
+ctx.fillRect(x+w*0.1,y+h*0.3,w*0.8,h*0.5);
+ctx.fillStyle='#eeeeee';
+ctx.beginPath();
+ctx.ellipse(x+w*0.5,y+h*0.55,w*0.25,h*0.15,0,0,Math.PI*2);
+ctx.fill();
+}
+
+var particles=[];
+
+function drawChar(k){
+var c=chars[k];
+if(!c)return;
+var x=c.x,y=c.y;
+if(c.b==='walk'){
+var dx=c.tx-x,dy=c.ty-y,dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<2){x=c.tx;y=c.ty;c.b=c.work?'idle':'idle';}else{
+x+=dx/dist*1.5;y+=dy/dist*1.5;
+}
+c.x=x;c.y=y;
+}
+ctx.fillStyle='rgba(0,0,0,0.4)';
+ctx.beginPath();
+ctx.ellipse(x,y+12,12,5,0,0,Math.PI*2);
+ctx.fill();
+var bob=c.b==='walk'?Math.sin(frame*0.2)*2:Math.sin(frame*0.05)*1;
+ctx.fillStyle=c.c;
+ctx.beginPath();
+ctx.arc(x,y-4+bob,10,0,Math.PI*2);
+ctx.fill();
+ctx.fillRect(x-7,y-14+bob,14,16);
+ctx.fillStyle='#fff';
+ctx.fillRect(x-4,y-8+bob,3,3);
+ctx.fillRect(x+1,y-8+bob,3,3);
+ctx.font='8px Courier New';
+ctx.fillStyle='rgba(255,255,255,0.5)';
+ctx.textAlign='center';
+ctx.fillText(ag[k].n,x,y-24+bob);
+if(c.work){
+ctx.fillStyle='#00ff88';
+ctx.beginPath();
+ctx.arc(x+8,y-16+bob,3,0,Math.PI*2);
+ctx.fill();
+if(Math.random()<0.05){
+particles.push({x:x+(Math.random()-0.5)*10,y:y-25+bob,vx:(Math.random()-0.5)*0.5,vy:-Math.random()*1,l:30,c:'#00ff88'});
+}
+}
+}
+
+function anim(){
+frame++;
+ctx.fillStyle='#030308';
+ctx.fillRect(0,0,cvs.width,cvs.height);
+rooms.forEach(function(r){
+drawRoom(r);
+var x=r.x*TILE_W,y=r.y*TILE_H,w=r.w*TILE_W,h=r.h*TILE_H;
+if(r.t==='office'){var k=Object.keys(ag).find(function(k){return ag[k].r===r.n});drawDesk(x,y,w,h,k&&chars[k]&&chars[k].work);}
+else if(r.t==='meeting')drawMeeting(x,y,w,h);
+else if(r.t==='lounge')drawLounge(x,y,w,h);
+else if(r.t==='lab')drawLab(x,y,w,h);
+else if(r.t==='server')drawServer(x,y,w,h);
+else if(r.t==='pantry')drawPantry(x,y,w,h);
+else if(r.t==='toilet')drawToilet(x,y,w,h);
+});
+Object.keys(chars).forEach(drawChar);
+particles=particles.filter(function(p){p.x+=p.vx;p.y+=p.vy;p.l--;return p.l>0});
+particles.forEach(function(p){ctx.globalAlpha=p.l/30;ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fill();});
+ctx.globalAlpha=1;
+requestAnimationFrame(anim);
+}
+
+init();
+</script>
+</body>
+</html>
