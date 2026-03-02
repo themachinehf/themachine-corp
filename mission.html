@@ -455,7 +455,7 @@ ctx.fillRect(x+w-3,y,3,h);ctx.fillRect(x,y+h-3,w,3);
 ctx.font='bold 10px Courier New';
 ctx.fillStyle='rgba(255,255,255,0.1)';
 ctx.textAlign='center';
-ctx.fillText(r.n.toUpperCase(),x+w/2,y+h/2+4);
+ctx.font='9px monospace';ctx.fillStyle='rgba(255,255,255,0.3)';ctx.fillText(r.n.toUpperCase(),x+w/2,y+h-6);ctx.font='12px Arial';
 }
 
 function drawDesk(x,y,w,h,on){
@@ -543,12 +543,9 @@ ctx.fillRect(x+w*0.4,y+h*0.2,w*0.1,h*0.08);
 }
 
 function drawToilet(x,y,w,h){
-ctx.fillStyle='#1a1a1a';
-ctx.fillRect(x+w*0.1,y+h*0.3,w*0.8,h*0.5);
-ctx.fillStyle='#eeeeee';
-ctx.beginPath();
-ctx.ellipse(x+w*0.5,y+h*0.55,w*0.25,h*0.15,0,0,Math.PI*2);
-ctx.fill();
+ctx.font='20px Arial';
+ctx.textAlign='center';
+ctx.fillText('🚽',x+w/2,y+h/2+6);
 }
 
 var particles=[];
