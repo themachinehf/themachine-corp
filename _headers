@@ -1,7 +1,0 @@
-/*
-  Cache-Control: no-cache
-  Pragma: no-cache
-
-/*
-  Content-Security-Policy: script-src 'self' 'unsafe-eval' 'unsafe-inline'; connect-src *; style-src 'self' 'unsafe-inline';
-

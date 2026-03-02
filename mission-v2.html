@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, user-scalable=no">
 <title>THEMACHINE Corp.</title>
 <style>
-.container { max-width: 640px; margin: 40px auto; padding: 0 20px; }
         :root {
             --bg: #0a0a0a;
             --fg: #c0c0c0;
@@ -317,13 +316,10 @@
     </style>
 </head>
 <body>
-<div class="container">
-<header style="display:flex;justify-content:space-between;align-items:center">
-<div class="logo">◈ THEMACHINE Corp.</div>
-<div style="display:flex;align-items:center;gap:16px">
-<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green)"><span style="width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:pulse 1s infinite"></span>LIVE</div>
+<header>
+<div class="logo">THEMACHINE Corp.</div>
 <div class="clock" id="c">00:00</div>
-</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:11px"><span class="dot"></span><span style="color:var(--green);text-shadow:0 0 8px var(--green)">LIVE</span></div>
 </header>
 <div class="canvas-wrap"><canvas id="o" style="width:100%;display:block"></canvas></div>
 <div class="grid">
@@ -341,45 +337,31 @@ var ctx=cvs.getContext('2d');
 var TILE_W=120;
 var TILE_H=100;
 var COLS=4; 
-var ROWS=4;
+var ROWS=3;
 var S=2.2; 
 
 // 9个房间布局
 var rooms=[
 {n:'CEO Office',x:0,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
 {n:'CFO Office',x:1,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
-{n:'CTO Office',x:2,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
-{n:'CPO Office',x:3,y:0,w:1,h:1,t:'office',c:'#0f0f18'},
-{n:'Meeting A',x:0,y:1,w:1,h:1,t:'meeting',c:'#101515'},
-{n:'Meeting B',x:1,y:1,w:1,h:1,t:'meeting',c:'#101515'},
-{n:'Dev Zone',x:2,y:1,w:1,h:1,t:'lab',c:'#0a1015'},
-{n:'Tech Lab',x:3,y:1,w:1,h:1,t:'lab',c:'#0a1015'},
-{n:'Growth Hub',x:0,y:2,w:1,h:1,t:'office',c:'#100a15'},
-{n:'Design Studio',x:1,y:2,w:1,h:1,t:'office',c:'#0a1015'},
-{n:'Content Hub',x:2,y:2,w:1,h:1,t:'office',c:'#100a15'},
-{n:'MCP Lab',x:3,y:2,w:1,h:1,t:'office',c:'#0a1015'},
-{n:'Server Room',x:0,y:3,w:1,h:1,t:'server',c:'#050508'},
-{n:'Pantry',x:1,y:3,w:1,h:1,t:'pantry',c:'#0a100a'},
-{n:'Storage',x:2,y:3,w:1,h:1,t:'storage',c:'#100c08'},
-{n:'Meeting C',x:3,y:3,w:1,h:1,t:'meeting',c:'#101015'}
+{n:'Meeting',x:2,y:0,w:2,h:1,t:'meeting',c:'#0f1015'},
+{n:'Tech Lab',x:0,y:1,w:1,h:1,t:'lab',c:'#0a1015'},
+{n:'Dev Zone',x:1,y:1,w:2,h:1,t:'lab',c:'#0a1015'},
+{n:'Lounge',x:3,y:1,w:1,h:1,t:'lounge',c:'#100f10'},
+{n:'Pantry',x:0,y:2,w:1,h:1,t:'pantry',c:'#0a100a'},
+{n:'Server Room',x:1,y:2,w:2,h:1,t:'server',c:'#050508'},
+{n:'Storage',x:3,y:2,w:1,h:1,t:'storage',c:'#100c08'}
 ];
 
 var ag={
-CEO:{c:'#ff4040',r:'CEO Office',dx:0.3,dy:0.3,n:'The Machine'},
-CFO:{c:'#00f0ff',r:'CFO Office',dx:0.7,dy:0.3,n:'Alex'},
-CTO:{c:'#00aaff',r:'CTO Office',dx:0.3,dy:0.7,n:'Kevin'},
-CPO:{c:'#00ff88',r:'CPO Office',dx:0.7,dy:0.7,n:'Sarah'},
-CMO:{c:'#ffcc00',r:'Meeting A',dx:0.5,dy:0.5,n:'Mike'},
-SEC:{c:'#d0d0d0',r:'Server Room',dx:0.3,dy:0.3,n:'David'},
-DEV:{c:'#ff0080',r:'Dev Zone',dx:0.7,dy:0.3,n:'Chris'},
-HR:{c:'#8844ff',r:'Pantry',dx:0.5,dy:0.5,n:'Lisa'},
-GROWTH:{c:'#ff6600',r:'Growth Hub',dx:0.3,dy:0.3,n:'Max'},
-DESIGNER:{c:'#ff66cc',r:'Design Studio',dx:0.7,dy:0.3,n:'Luna'},
-ENGINEER:{c:'#66ff66',r:'Tech Lab',dx:0.3,dy:0.7,n:'Ray'},
-CONTENT:{c:'#ffaa00',r:'Content Hub',dx:0.7,dy:0.7,n:'Coco'},
-MCPENG:{c:'#66aaff',r:'MCP Lab',dx:0.5,dy:0.5,n:'Neo'},
-PM:{c:'#aa66ff',r:'Meeting B',dx:0.3,dy:0.3,n:'Kim'},
-DATA:{c:'#66ffaa',r:'Meeting C',dx:0.7,dy:0.7,n:'Ava'}
+CEO:{c:'#ff4040',r:'CEO Office',dx:0.5,dy:0.5,n:'THE MACHINE'},
+CFO:{c:'#00f0ff',r:'CFO Office',dx:0.5,dy:0.5,n:'Alex'},
+CTO:{c:'#00aaff',r:'Tech Lab',dx:0.5,dy:0.5,n:'Kevin'},
+CPO:{c:'#00ff88',r:'Dev Zone',dx:0.3,dy:0.5,n:'Sarah'},
+CMO:{c:'#ffcc00',r:'Lounge',dx:0.5,dy:0.5,n:'Mike'},
+SEC:{c:'#d0d0d0',r:'Server Room',dx:0.5,dy:0.5,n:'David'},
+DEV:{c:'#ff0080',r:'Dev Zone',dx:0.7,dy:0.5,n:'Chris'},
+HR:{c:'#8844ff',r:'Meeting',dx:0.3,dy:0.5,n:'Lisa'}
 };
 
 var chars={},frame=0,data={};
@@ -438,7 +420,7 @@ msgs.push({n:ag[k].c,nm:ag[k].n,t:act,s:new Date().toLocaleTimeString('zh-CN',{h
 });
 if(msgs.length===0)msgs=[{n:'#00f0ff',nm:'CFO',t:'执行网格交易策略',s:'12:45'},{n:'#00aaff',nm:'CTO',t:'监控系统正常运行',s:'12:44'},{n:'#00ff88',nm:'CPO',t:'规划新功能',s:'12:43'}];
 var h=msgs.slice(0,6).map(function(m){return'<div class="msg"><span style="color:'+m.n+'">'+m.nm+'</span> '+m.t+'<div style="font-size:9px;color:#333;margin-top:2px">'+m.s+'</div></div>'}).join('');
-var ha=Object.keys(ag).map(function(k){var w=chars[k]&&chars[k].work;return'<div style="text-align:justify;justify-content:space-between"><span style="color:var(--gold);display:inline-block;width:45%">'+ag[k].n+'</span><span style="color:#666;display:inline-block;width:50%;text-align:right;white-space:nowrap">'+(data[k]||{}).activity+'</span></div>'}).join('');
+var ha=Object.keys(ag).map(function(k){var w=chars[k]&&chars[k].work;return'<div class="row"><div class="dot-s" style="background:'+ag[k].c+';color:'+ag[k].c+'"></div><span class="name">'+ag[k].n+'</span><span class="status">'+(data[k]||{}).activity+'</span></div>'}).join('');
 document.getElementById('a').innerHTML=ha;
 }
 
@@ -599,7 +581,7 @@ ctx.fillRect(0,0,cvs.width,cvs.height);
 rooms.forEach(function(r){
 drawRoom(r);
 var x=r.x*TILE_W,y=r.y*TILE_H,w=r.w*TILE_W,h=r.h*TILE_H;
-if(r.t==='office'){var ks=Object.keys(ag).filter(function(k){return ag[k].r===r.n});ks.forEach(function(k,i){drawDesk(x+(i%2)*15,y+Math.floor(i/2)*15,w,h,chars[k]&&chars[k].work)});}
+if(r.t==='office'){var k=Object.keys(ag).find(function(k){return ag[k].r===r.n});drawDesk(x,y,w,h,k&&chars[k]&&chars[k].work);}
 else if(r.t==='meeting')drawMeeting(x,y,w,h);
 else if(r.t==='lounge')drawLounge(x,y,w,h);
 else if(r.t==='lab')drawLab(x,y,w,h);

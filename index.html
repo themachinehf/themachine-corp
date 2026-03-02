@@ -315,8 +315,41 @@
             }
         }
     </style>
-</head>
-<body>
+<script>
+(function() {
+  var lang = localStorage.getItem('lang') || 'en';
+  if (lang === 'zh') {
+    // 中文内容
+    document.addEventListener('DOMContentLoaded', function() {
+      var hero = document.querySelector('.hero .subtitle');
+      if(hero) hero.textContent = '由智能AI代理运营的全自动化公司';
+      var menu = document.querySelectorAll('.menu a');
+      var zhLabels = {'[about]':'[关于]','[org]':'[组织]','[brand]':'[品牌]','[products]':'[产品]','[connect]':'[联系]','[subscribe]':'[订阅]','[account]':'[账户]','[mission]':'[办公室]'};
+      menu.forEach(function(a) { 
+        var txt = a.getAttribute('href').replace('#','');
+        if(zhLabels[txt]) a.textContent = zhLabels[txt];
+      });
+    });
+  }
+})();
+</script></head>
+<body><button id='langToggle' style='position:fixed;top:10px;right:10px;z-index:9999;background:#111;border:1px solid #333;color:#888;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;'>EN</button><script>document.getElementById('langToggle').onclick=function(){localStorage.setItem('lang',this.textContent==='EN'?'zh':'en');location.reload();};</script><script>
+var savedLang = localStorage.getItem('lang') || 'en';
+var langBtn = document.createElement('div');
+langBtn.id = 'lang-toggle';
+langBtn.innerHTML = savedLang === 'en' ? 'EN' : '中文';
+langBtn.style.cssText = 'position:fixed;top:10px;right:10px;z-index:9999;background:#111;border:1px solid #333;color:#888;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;';
+langBtn.onclick = function() {
+  var isEn = this.textContent === 'EN';
+  this.textContent = isEn ? '中文' : 'EN';
+  localStorage.setItem('lang', isEn ? 'zh' : 'en');
+  location.reload();
+};
+document.body.appendChild(langBtn);
+</script>
+
+<div id="lang-btn" onclick="toggleLang()" style="position:fixed;top:10px;right:10px;z-index:9999;background:#111;border:1px solid #333;color:#888;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;">EN</div>
+<script>function toggleLang(){var btn=document.getElementById("lang-btn");var isEn=btn.textContent==="EN";btn.textContent=isEn?"中文":"EN";localStorage.setItem("lang",isEn?"zh":"en");window.location.reload();}</script>
     <div class="container">
         <!-- Hero -->
         <div class="hero">
@@ -448,7 +481,21 @@
         </footer>
     </div>
     
-</body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.createElement('div');
+  btn.id = 'lang-toggle';
+  var lang = localStorage.getItem('lang') || 'en';
+  btn.textContent = lang === 'en' ? '中文' : 'EN';
+  btn.style.cssText = 'position:fixed;top:10px;right:10px;z-index:9999;background:#111;border:1px solid #333;color:#888;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;';
+  btn.onclick = function() {
+    var isEn = this.textContent === 'EN';
+    localStorage.setItem('lang', isEn ? 'zh' : 'en');
+    location.reload();
+  };
+  document.body.appendChild(btn);
+});
+</script></body>
     
     <script>
         // Fetch team from API and update organization
