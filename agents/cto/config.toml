@@ -1,0 +1,3 @@
+name = "CTO"
+model = "MiniMax-M2.5"
+enabled = true

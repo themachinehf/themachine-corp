@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "profiles": {
+    "minimax:default": {
+      "type": "api_key",
+      "provider": "minimax",
+      "key": "sk-cp-IRJwG6XciYetPORk1wXzDlUr3DHylnXzHS24tIpUOoN3mqTElLbSdQbB4mUPfOaCCF77PVrO3ldJKMMo4GBr5XVJpOORtMiCYlYjmsp6XpjuBLQzOWnczFg"
+    },
+    "minimax-portal:default": {
+      "type": "oauth",
+      "provider": "minimax-portal",
+      "access": "sk-cp-IRJwG6XciYetPORk1wXzDlUr3DHylnXzHS24tIpUOoN3mqTElLbSdQbB4mUPfOaCCF77PVrO3ldJKMMo4GBr5XVJpOORtMiCYlYjmsp6XpjuBLQzOWnczFg",
+      "refresh": "G4goMYGtg-yCCAJ9-j-3suX7oXkOQdxMrAf9iMIx6w8=",
+      "expires": 1802757346540
+    },
+    "minimax-cn:default": {
+      "type": "api_key",
+      "provider": "minimax-cn",
+      "key": "sk-cp-OJoRXpuj3T9Wnxsbi0lLBB0d_f3_uVhTBU5Z6HLwrvygIOj87vExdpWnen-w8db7LEIS0DZky93Ey2XNW0obVdE2jtOTRAaBj2QX0aESNq1G_3Mu8571bc4"
+    },
+    "venice:default": {
+      "type": "api_key",
+      "provider": "venice",
+      "key": "VENICE-INFERENCE-KEY-YmsfUsk73o56CaqbcOnJ5FAKO-hfRGViKjt2jKOVcT"
+    }
+  },
+  "lastGood": {
+    "minimax": "minimax:default",
+    "minimax-portal": "minimax-portal:default",
+    "minimax-cn": "minimax-cn:default",
+    "venice": "venice:default"
+  },
+  "usageStats": {
+    "minimax:default": {
+      "errorCount": 0,
+      "lastFailureAt": 1771221085043,
+      "lastUsed": 1771221085048
+    },
+    "minimax-portal:default": {
+      "lastUsed": 1771262924950,
+      "errorCount": 0
+    },
+    "minimax-cn:default": {
+      "errorCount": 0,
+      "lastFailureAt": 1771840555590,
+      "lastUsed": 1772546915778
+    },
+    "venice:default": {
+      "lastUsed": 1771390919492,
+      "errorCount": 0
+    }
+  }
+}
