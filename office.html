@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THEMACHINE Corp. - Virtual Office</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0f;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+        #canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="scanlines"></div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const AGENTS = [
+            { name: 'THE MACHINE', role: 'CEO', color: '#FFD700', x: 0, y: 0 },
+            { name: 'Bill', role: 'CFO', color: '#00FF7F', x: 0, y: 0 },
+            { name: 'Alex', role: 'CTO', color: '#00BFFF', x: 0, y: 0 },
+            { name: 'Peter', role: 'CPO', color: '#9370DB', x: 0, y: 0 },
+            { name: 'May', role: 'CMO', color: '#FF69B4', x: 0, y: 0 },
+            { name: 'Sam', role: 'SEC', color: '#FF4444', x: 0, y: 0 },
+            { name: 'Dave', role: 'DEV', color: '#FFA500', x: 0, y: 0 },
+            { name: 'Ryan', role: 'Researcher', color: '#00FFFF', x: 0, y: 0 }
+        ];
+        
+        // Cat head pixel art (16x16)
+        const catHeads = [
+            // Row 1 - basic cat
+            [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
+            [0,0,1,2,2,1,1,1,1,1,2,2,1,0,0,0],
+            [0,1,2,2,2,2,1,1,1,2,2,2,2,1,0,0],
+            [0,1,2,2,3,2,2,1,2,2,3,2,2,1,0,0],
+            [0,1,2,2,2,2,2,1,2,2,2,2,2,1,0,0],
+            [0,1,1,2,2,2,2,1,2,2,2,2,1,1,0,0],
+            [0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+            [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,3,2,2,2,2,2,2,2,2,2,3,2,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [0,1,2,2,2,2,2,2,2,2,2,2,2,1,0,0],
+            [0,1,2,2,2,2,2,2,2,2,2,2,2,1,0,0],
+            [0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0],
+            [0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0],
+        ];
+        
+        const SPRITE_SIZE = 16;
+        const SCALE = 6;
+        
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        function initAgents() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) * 0.35;
+            
+            AGENTS.forEach((agent, i) => {
+                const angle = (i / AGENTS.length) * Math.PI * 2 - Math.PI / 2;
+                agent.baseX = centerX + Math.cos(angle) * radius;
+                agent.baseY = centerY + Math.sin(angle) * radius;
+                agent.x = agent.baseX;
+                agent.y = agent.baseY;
+                agent.targetX = agent.baseX;
+                agent.targetY = agent.baseY;
+                agent.floatOffset = Math.random() * Math.PI * 2;
+                agent.floatSpeed = 0.5 + Math.random() * 0.5;
+                agent.moveTimer = 0;
+                agent.status = ['工作中', '摸鱼中', '空闲中'][Math.floor(Math.random() * 3)];
+            });
+        }
+        
+        function drawCatHead(x, y, color, scale) {
+            ctx.save();
+            ctx.translate(x - (SPRITE_SIZE * scale) / 2, y - (SPRITE_SIZE * scale) / 2);
+            
+            // Draw shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.beginPath();
+            ctx.ellipse(SPRITE_SIZE * scale / 2, SPRITE_SIZE * scale + 5, SPRITE_SIZE * scale / 2.5, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw cat
+            for (let row = 0; row < SPRITE_SIZE; row++) {
+                for (let col = 0; col < SPRITE_SIZE; col++) {
+                    const pixel = catHeads[row][col];
+                    if (pixel > 0) {
+                        if (pixel === 1) {
+                            ctx.fillStyle = color;
+                        } else if (pixel === 2) {
+                            ctx.fillStyle = lightenColor(color, 30);
+                        } else if (pixel === 3) {
+                            ctx.fillStyle = '#000';
+                        }
+                        ctx.fillRect(col * scale, row * scale, scale, scale);
+                    }
+                }
+            }
+            
+            // Glow effect
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 20;
+            ctx.restore();
+        }
+        
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.min(255, (num >> 16) + amt);
+            const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+            const B = Math.min(255, (num & 0x0000FF) + amt);
+            return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+        }
+        
+        function update(time) {
+            AGENTS.forEach(agent => {
+                // Float animation
+                agent.floatOffset += agent.floatSpeed * 0.02;
+                
+                // Random movement
+                agent.moveTimer++;
+                if (agent.moveTimer > 200 + Math.random() * 300) {
+                    agent.moveTimer = 0;
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = 30 + Math.random() * 50;
+                    agent.targetX = agent.baseX + Math.cos(angle) * dist;
+                    agent.targetY = agent.baseY + Math.sin(angle) * dist;
+                }
+                
+                // Smooth movement
+                agent.x += (agent.targetX - agent.x) * 0.02;
+                agent.y += (agent.targetY - agent.y) * 0.02;
+                
+                // Apply float
+                agent.displayY = agent.y + Math.sin(agent.floatOffset) * 8;
+            });
+        }
+        
+        function draw() {
+            // Clear with dark background
+            ctx.fillStyle = '#0a0a0f';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+            ctx.lineWidth = 1;
+            const gridSize = 50;
+            for (let x = 0; x < canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            
+            // Draw agents (sorted by Y for depth)
+            const sortedAgents = [...AGENTS].sort((a, b) => a.displayY - b.displayY);
+            sortedAgents.forEach(agent => {
+                // Draw name
+                ctx.font = 'bold 14px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = agent.color;
+                ctx.shadowColor = agent.color;
+                ctx.shadowBlur = 10;
+                ctx.fillText(agent.name, agent.x, agent.displayY + SPRITE_SIZE * SCALE + 25);
+                
+                // Draw role
+                ctx.font = '10px Courier New';
+                ctx.fillStyle = '#666';
+                ctx.shadowBlur = 0;
+                ctx.fillText(agent.role, agent.x, agent.displayY + SPRITE_SIZE * SCALE + 40);
+                
+                // Draw status
+                ctx.font = 'bold 11px Courier New';
+                const statusColors = { '工作中': '#00FF7F', '摸鱼中': '#FFD700', '空闲中': '#888' };
+                ctx.fillStyle = statusColors[agent.status] || '#FFF';
+                ctx.fillText(agent.status, agent.x, agent.displayY + SPRITE_SIZE * SCALE + 55);
+                
+                // Draw cat head
+                drawCatHead(agent.x, agent.displayY, agent.color, SCALE);
+            });
+        }
+        
+        function gameLoop(time) {
+            update(time);
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        window.addEventListener('resize', () => {
+            resize();
+            initAgents();
+        });
+        
+        resize();
+        initAgents();
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>
