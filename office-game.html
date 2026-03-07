@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>THEMACHINE Corp. - Pixel Office</title>
+    <style>
+        body { margin: 0; background: #0a0a15; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Courier New'; overflow: hidden; }
+        #container { position: relative; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        canvas { width: 100%; height: auto; aspect-ratio: 4/3; max-height: 100vh; display: block; }
+        .info { position: fixed; bottom: 20px; color: #FFD700; font-size: 14px; text-align: center; z-index: 100; }
+        .controls { color: #888; font-size: 12px; margin-top: 5px; }
+        #interact-hint {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 100%);
+            border: 2px solid #FFD700; border-radius: 12px; padding: 12px 30px;
+            color: #fff; font-size: 16px; font-weight: bold; text-align: center;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); opacity: 0; transition: opacity 0.3s; z-index: 100;
+        }
+        #interact-hint.show { opacity: 1; animation: pulse 1s ease-in-out infinite; }
+    
+    #task-panel {
+        position: fixed; top: 20px; right: 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 100%);
+        border: 2px solid #FFD700; border-radius: 12px; padding: 15px;
+        color: #fff; font-size: 12px; z-index: 100; min-width: 180px;
+    }
+    #task-panel h3 { margin: 0 0 10px 0; color: #FFD700; font-size: 14px; }
+    .task-item { padding: 5px 0; border-bottom: 1px solid #444; }
+    .task-item:last-child { border-bottom: none; }
+    #assign-task {
+        position: fixed; top: 20px; left: 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4a 100%);
+        border: 2px solid #00FF7F; border-radius: 12px; padding: 15px;
+        color: #fff; font-size: 12px; z-index: 100; min-width: 160px;
+    }
+    #assign-task h3 { margin: 0 0 10px 0; color: #00FF7F; font-size: 14px; }
+    .agent-btn {
+        display: block; width: 100%; padding: 8px; margin: 5px 0;
+        background: #333; border: 1px solid #555; border-radius: 6px;
+        color: #fff; cursor: pointer; text-align: left;
+    }
+    .agent-btn:hover { background: #444; border-color: #FFD700; }
+    .agent-btn.working { border-color: #00FF7F; }
+    .agent-btn.fishing { border-color: #00BFFF; }
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+    .status-dot.working { background: #00FF7F; }
+    .status-dot.fishing { background: #00BFFF; }
+    .status-dot.toilet { background: #FF6B6B; }
+</style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="game"></canvas>
+    
+    <div id="task-panel">
+        <h3>📋 任务队列</h3>
+        <div id="task-list">
+            <div style="color: #888;">暂无任务</div>
+        </div>
+    </div>
+    
+    <div id="assign-task">
+        <h3>🎯 派发任务</h3>
+        <div id="agent-list"></div>
+    </div>
+</div>
+    <div id="interact-hint"></div>
+    <div class="info">
+        <div>🎮 8-Bit 像素办公室</div>
+        <div class="controls">方向键/WASD 移动 | E 交互 | 空格 坐下 | 1/2/3 表情 | Q 拿取</div>
+    </div>
+
+    <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    
+    // 逻辑分辨率 960x720 (20x15 tiles, 48px per tile)
+    const GAME_W = 960;
+    const GAME_H = 720;
+    const TILE = 48;
+    const MAP_W = 20;
+    const MAP_H = 15;
+    
+    canvas.width = GAME_W;
+    canvas.height = GAME_H;
+    
+    // ========== 像素风格调色板 ==========
+    const PIXEL_COLORS = {
+        // 墙壁/地板
+        floor: '#2d2d4a',
+        floorAlt: '#353552',
+        wall: '#1a1a2e',
+        wallTop: '#252540',
+        
+        // 木质家具
+        woodDark: '#5c3d2e',
+        woodMid: '#8B4513',
+        woodLight: '#CD853F',
+        
+        // 金属
+        metalDark: '#4a4a5e',
+        metalLight: '#7a7a8e',
+        
+        // 电子设备
+        screen: '#1a3a1a',
+        screenLight: '#3d8b3d',
+        
+        // 白色物品
+        white: '#e8e8f0',
+        whiteDark: '#c8c8d0',
+        
+        // 装饰色
+        water: '#00d4ff',
+        waterDark: '#0099bb',
+        gold: '#ffd700',
+        red: '#ff4444',
+        green: '#44ff44',
+        plant: '#228b22',
+        plantLight: '#32cd32',
+    };
+    
+    // ========== 像素绘制工具函数 ==========
+    function drawPixelRect(x, y, w, h, color) {
+        if (!color) return;
+        ctx.fillStyle = color;
+        ctx.fillRect(Math.floor(x), Math.floor(y), w, h);
+    }
+    
+    function drawPixelBorder(x, y, w, h, color, thickness = 1) {
+        ctx.fillStyle = color;
+        // 上
+        ctx.fillRect(x, y, w, thickness);
+        // 下
+        ctx.fillRect(x, y + h - thickness, w, thickness);
+        // 左
+        ctx.fillRect(x, y, thickness, h);
+        // 右
+        ctx.fillRect(x + w - thickness, y, thickness, h);
+    }
+    
+    // ========== 地板纹理 ==========
+    function drawFloorTile(x, y, size) {
+        const baseColor = ((x + y) % 2 === 0) ? PIXEL_COLORS.floor : PIXEL_COLORS.floorAlt;
+        drawPixelRect(x, y, size, size, baseColor);
+        // 添加像素点纹理
+        ctx.fillStyle = 'rgba(255,255,255,0.03)';
+        for (let i = 0; i < 3; i++) {
+            const px = x + Math.random() * (size - 2);
+            const py = y + Math.random() * (size - 2);
+            ctx.fillRect(px, py, 2, 2);
+        }
+    }
+    
+    // ========== 墙壁纹理 ==========
+    function drawWallTile(x, y, size) {
+        drawPixelRect(x, y, size, size, PIXEL_COLORS.wall);
+        // 砖块纹理
+        ctx.fillStyle = PIXEL_COLORS.wallTop;
+        for (let row = 0; row < 4; row++) {
+            const offset = (row % 2) * 4;
+            ctx.fillRect(x + offset, y + row * 8, size - 4, 1);
+        }
+    }
+    
+    // ========== 像素椅子 ==========
+    function drawPixelChair(x, y, facingRight = true) {
+        const flip = facingRight ? 1 : -1;
+        
+        // 椅背
+        drawPixelRect(x + 4 * flip, y, 4 * flip, 16, PIXEL_COLORS.woodMid);
+        drawPixelRect(x + 2 * flip, y + 2, 8 * flip, 12, PIXEL_COLORS.woodDark);
+        
+        // 椅座
+        drawPixelRect(x, y + 14, 16, 4, PIXEL_COLORS.woodLight);
+        drawPixelRect(x + 2, y + 16, 12, 2, PIXEL_COLORS.woodDark);
+        
+        // 椅腿
+        drawPixelRect(x + 2, y + 18, 2, 6, PIXEL_COLORS.woodDark);
+        drawPixelRect(x + 12, y + 18, 2, 6, PIXEL_COLORS.woodDark);
+        
+        // 高光
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.fillRect(x + 4 * flip, y + 2, 2, 10);
+    }
+    
+    // ========== 像素桌子 ==========
+    function drawPixelDesk(x, y) {
+        // 桌面
+        drawPixelRect(x, y, 48, 4, PIXEL_COLORS.woodLight);
+        drawPixelRect(x, y + 2, 48, 2, PIXEL_COLORS.woodDark);
+        
+        // 桌腿
+        drawPixelRect(x + 4, y + 4, 4, 20, PIXEL_COLORS.woodMid);
+        drawPixelRect(x + 40, y + 4, 4, 20, PIXEL_COLORS.woodMid);
+        
+        // 抽屉
+        drawPixelRect(x + 16, y + 4, 16, 8, PIXEL_COLORS.woodDark);
+        drawPixelRect(x + 20, y + 6, 8, 4, PIXEL_COLORS.gold);
+        
+        // 阴影
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(x + 4, y + 24, 40, 2);
+    }
+    
+    // ========== 像素电脑显示器 ==========
+    function drawPixelComputer(x, y) {
+        // 显示器边框
+        drawPixelRect(x, y, 24, 18, PIXEL_COLORS.metalDark);
+        drawPixelRect(x + 1, y + 1, 22, 14, PIXEL_COLORS.metalLight);
+        
+        // 屏幕
+        drawPixelRect(x + 2, y + 2, 20, 12, PIXEL_COLORS.screen);
+        
+        // 屏幕内容 (代码行)
+        drawPixelRect(x + 4, y + 4, 12, 2, PIXEL_COLORS.screenLight);
+        drawPixelRect(x + 4, y + 8, 16, 2, PIXEL_COLORS.screenLight);
+        drawPixelRect(x + 4, y + 12, 8, 2, PIXEL_COLORS.screenLight);
+        
+        // 底座
+        drawPixelRect(x + 8, y + 18, 8, 2, PIXEL_COLORS.metalDark);
+        drawPixelRect(x + 6, y + 20, 12, 2, PIXEL_COLORS.metalLight);
+        
+        // 键盘
+        drawPixelRect(x - 4, y + 22, 32, 4, PIXEL_COLORS.metalDark);
+        drawPixelRect(x - 2, y + 24, 28, 2, PIXEL_COLORS.metalLight);
+    }
+    
+    // ========== 像素饮水机 ==========
+    function drawPixelWaterCooler(x, y) {
+        // 主机
+        drawPixelRect(x + 2, y + 12, 20, 20, PIXEL_COLORS.white);
+        drawPixelBorder(x + 2, y + 12, 20, 20, PIXEL_COLORS.whiteDark, 1);
+        
+        // 水桶
+        drawPixelRect(x + 4, y, 16, 12, PIXEL_COLORS.waterDark);
+        drawPixelRect(x + 6, y + 2, 12, 8, PIXEL_COLORS.water);
+        
+        // 水滴
+        ctx.fillStyle = PIXEL_COLORS.water;
+        ctx.fillRect(x + 10, y + 14, 2, 2);
+        ctx.fillRect(x + 14, y + 16, 2, 2);
+        
+        // 出水口
+        drawPixelRect(x + 8, y + 22, 8, 4, PIXEL_COLORS.whiteDark);
+        
+        // 标签
+        drawPixelRect(x + 6, y + 20, 12, 2, PIXEL_COLORS.red);
+    }
+    
+    // ========== 像素白板 ==========
+    function drawPixelWhiteboard(x, y) {
+        // 边框
+        drawPixelRect(x, y, 48, 28, PIXEL_COLORS.metalDark);
+        
+        // 板面
+        drawPixelRect(x + 2, y + 2, 44, 24, PIXEL_COLORS.white);
+        
+        // 边框高光
+        ctx.fillStyle = PIXEL_COLORS.metalLight;
+        ctx.fillRect(x + 2, y, 44, 2);
+        
+        // 支架
+        drawPixelRect(x + 4, y + 28, 2, 10, PIXEL_COLORS.metalDark);
+        drawPixelRect(x + 42, y + 28, 2, 10, PIXEL_COLORS.metalDark);
+        
+        // 板书 (随机内容)
+        ctx.fillStyle = '#333';
+        ctx.fillRect(x + 6, y + 6, 20, 2);
+        ctx.fillRect(x + 6, y + 10, 30, 2);
+        ctx.fillRect(x + 6, y + 14, 15, 2);
+        ctx.fillRect(x + 6, y + 18, 25, 2);
+        
+        // 马克笔
+        drawPixelRect(x + 36, y + 8, 4, 4, PIXEL_COLORS.red);
+    }
+    
+    // ========== 像素盆栽 ==========
+    function drawPixelPlant(x, y) {
+        // 花盆
+        drawPixelRect(x + 4, y + 16, 16, 12, PIXEL_COLORS.woodDark);
+        drawPixelRect(x + 2, y + 26, 20, 4, PIXEL_COLORS.woodMid);
+        
+        // 叶子
+        drawPixelRect(x + 8, y + 10, 4, 8, PIXEL_COLORS.plant);
+        drawPixelRect(x + 4, y + 8, 4, 8, PIXEL_COLORS.plantLight);
+        drawPixelRect(x + 16, y + 8, 4, 8, PIXEL_COLORS.plantLight);
+        drawPixelRect(x + 10, y + 4, 4, 8, PIXEL_COLORS.plant);
+        drawPixelRect(x + 12, y + 2, 8, 4, PIXEL_COLORS.plantLight);
+    }
+    
+    // ========== 像素沙发 ==========
+    function drawPixelSofa(x, y) {
+        // 底座
+        drawPixelRect(x, y + 16, 32, 8, PIXEL_COLORS.red);
+        drawPixelRect(x + 2, y + 22, 28, 4, PIXEL_COLORS.metalDark);
+        
+        // 靠背
+        drawPixelRect(x, y + 4, 32, 14, PIXEL_COLORS.red);
+        drawPixelRect(x + 2, y + 6, 28, 10, PIXEL_COLORS.red);
+        
+        // 扶手
+        drawPixelRect(x, y + 8, 4, 12, PIXEL_COLORS.red);
+        drawPixelRect(x + 28, y + 8, 4, 12, PIXEL_COLORS.red);
+        
+        // 纹理
+        ctx.fillStyle = 'rgba(0,0,0,0.1)';
+        for (let i = 0; i < 3; i++) {
+            ctx.fillRect(x + 4 + i * 10, y + 8, 6, 10);
+        }
+    }
+    
+    // ========== 像素角色 (8-bit 风格) ==========
+    function drawPixelCharacter(x, y, color, name, role, status, statusColor, action, isPlayer = false, showEmote = null, facingRight = true) {
+        const bob = Math.sin(Date.now() / 200) * 1;
+        const h = isPlayer && player.isSitting ? 14 : 22;
+        const dir = facingRight ? 1 : -1;
+        
+        // 阴影
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(x + 10, y + h + 2, 12, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // ========== 身体 ==========
+        // 身体主体
+        ctx.fillStyle = color;
+        drawPixelRect(x + 2, y + 8 + bob, 16, h - 8, color);
+        
+        // 身体边缘（像素描边效果）
+        ctx.fillStyle = shadeColor(color, -30);
+        drawPixelRect(x + 2, y + h - 2 + bob, 16, 2, null); // 底部
+        drawPixelRect(x, y + 8 + bob, 2, h - 8, null); // 左
+        drawPixelRect(x + 18, y + 8 + bob, 2, h - 8, null); // 右
+        
+        // 高光
+        ctx.fillStyle = shadeColor(color, 30);
+        drawPixelRect(x + 4, y + 10 + bob, 4, h - 14, null);
+        
+        // ========== 头部 ==========
+        // 头发
+        ctx.fillStyle = shadeColor(color, -40);
+        drawPixelRect(x + 2, y + bob, 16, 6, null);
+        drawPixelRect(x + 4, y - 2 + bob, 12, 4, null);
+        
+        // 脸
+        ctx.fillStyle = '#FFE4C4';
+        drawPixelRect(x + 4, y + 4 + bob, 12, 8, null);
+        
+        // 眼睛 (像素点)
+        ctx.fillStyle = '#000';
+        if (action === 'idle') {
+            // 普通眼睛
+            drawPixelRect(x + 5, y + 6 + bob, 3, 3, null);
+            drawPixelRect(x + 12, y + 6 + bob, 3, 3, null);
+        } else if (action === 'typing') {
+            // 专注眼睛（向下看）
+            drawPixelRect(x + 5, y + 8 + bob, 3, 2, null);
+            drawPixelRect(x + 12, y + 8 + bob, 3, 2, null);
+        }
+        
+        // 眼白高光
+        ctx.fillStyle = '#FFF';
+        drawPixelRect(x + 5, y + 6 + bob, 1, 1, null);
+        drawPixelRect(x + 12, y + 6 + bob, 1, 1, null);
+        
+        // ========== 四肢 ==========
+        const armOffset = (action === 'typing') ? 4 : 0;
+        const legOffset = (action === 'typing') ? 0 : Math.floor(Math.sin(Date.now() / 300) * 2 * dir);
+        
+        // 手臂
+        ctx.fillStyle = shadeColor(color, -20);
+        if (action === 'typing') {
+            // 打字姿态 - 手臂向前
+            drawPixelRect(x + 2 * dir, y + 10 + bob, 6 * dir, 4, null);
+            drawPixelRect(x + 10 * dir, y + 10 + bob, 6 * dir, 4, null);
+        } else {
+            // 普通姿态 - 手臂下垂
+            drawPixelRect(x, y + 10 + bob, 4, 8 + legOffset, null);
+            drawPixelRect(x + 16, y + 10 + bob, 4, 8 - legOffset, null);
+        }
+        
+        // 腿
+        ctx.fillStyle = shadeColor(color, -40);
+        drawPixelRect(x + 4, y + h - 2 + bob, 4, 6 - legOffset, null);
+        drawPixelRect(x + 12, y + h - 2 + bob, 4, 6 + legOffset, null);
+        
+        // ========== 鞋子 ==========
+        ctx.fillStyle = '#333';
+        drawPixelRect(x + 2, y + h + 4 - legOffset, 6, 3, null);
+        drawPixelRect(x + 12, y + h + 4 + legOffset, 6, 3, null);
+        
+        // ========== 名字和状态 ==========
+        // 名字背景
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillRect(x - 2, y - 14 + bob, 24, 10);
+        
+        // 名字
+        ctx.font = 'bold 9px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 4;
+        ctx.fillText(name, x + 10, y - 6 + bob);
+        
+        // 职位
+        ctx.font = '7px Courier New';
+        ctx.fillStyle = '#AAA';
+        ctx.shadowBlur = 0;
+        ctx.fillText(role, x + 10, y + h + 10);
+        
+        // 状态
+        ctx.font = 'bold 8px Courier New';
+        ctx.fillStyle = statusColor;
+        ctx.fillText(status, x + 10, y + h + 20);
+        
+        // 表情
+        if (showEmote) {
+            ctx.font = '14px Arial';
+            ctx.fillText(showEmote, x + 10, y - 22 + bob);
+        }
+    }
+    
+    // 颜色加深/变亮辅助函数
+    function shadeColor(color, percent) {
+        const num = parseInt(color.replace('#', ''), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+        const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
+        const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+        return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+    
+    // 地图 - 重新设计布局
+    // 0=地板 1=墙 2=工位区 3=会议室 4=茶水间 5=老板办公室 6=门 7=植物 8=沙发区
+    const MAP = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], // 墙
+        [1,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1], // 入口(6)在左上，老板房(5)在右上
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1],
+        [1,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1], // 工位区
+        [1,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1],
+        [1,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1], // 工位区
+        [1,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1],
+        [1,0,0,0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0,1], // 会议室(3)在中间
+        [1,0,0,0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,1], // 茶水间(4)在右下
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], // 墙
+    ];
+    
+    const COLORS = {0:'#3d3d5c',1:'#1a1a2e',2:'#8B4513',3:'#CD853F',4:'#FF6B6B',5:'#00FFFF',6:'#FFFFFF',7:'#DAA520',8:'#32CD32',9:'#9400D3'};
+    
+    // 重新设计家具布局 (坐标已调整为 48px tile)
+    // 工位区(左侧): 4个工位
+    // 会议室(中间): 大会议桌+椅子
+    // 茶水间(右下): 饮水机
+    // 老板办公室(右上): 办公桌+椅子
+    const FURNITURE = [
+        // ========== 工位区 (左侧) - 4个工位 ==========
+        // 工位1 (x=3, y=3)
+        { type: 'desk', x: 3, y: 3, w: 2, h: 1, interactText: '查看' },
+        { type: 'chair', x: 4, y: 5, w: 1, h: 1, interactText: '坐下', facing: false },
+        { type: 'computer', x: 4, y: 2, w: 1, h: 1, interactText: '使用电脑' },
+        
+        // 工位2 (x=3, y=8)
+        { type: 'desk', x: 3, y: 8, w: 2, h: 1, interactText: '查看' },
+        { type: 'chair', x: 4, y: 10, w: 1, h: 1, interactText: '坐下', facing: false },
+        { type: 'computer', x: 4, y: 6, w: 1, h: 1, interactText: '使用电脑' },
+        
+        // 工位3 (x=24, y=2)
+        { type: 'desk', x: 24, y: 2, w: 2, h: 1, interactText: '查看' },
+        { type: 'chair', x: 25, y: 4, w: 1, h: 1, interactText: '坐下', facing: false },
+        { type: 'computer', x: 25, y: 0, w: 1, h: 1, interactText: '使用电脑' },
+        
+        // 工位4 (x=24, y=6)
+        { type: 'desk', x: 24, y: 6, w: 2, h: 1, interactText: '查看' },
+        { type: 'chair', x: 25, y: 8, w: 1, h: 1, interactText: '坐下', facing: false },
+        { type: 'computer', x: 25, y: 4, w: 1, h: 1, interactText: '使用电脑' },
+        
+        // ========== 会议室 (中间) - 大桌子 ==========
+        { type: 'desk', x: 14, y: 12, w: 4, h: 1, interactText: '会议桌' },
+        { type: 'chair', x: 14, y: 10, w: 1, h: 1, interactText: '坐下', facing: true },
+        { type: 'chair', x: 18, y: 10, w: 1, h: 1, interactText: '坐下', facing: true },
+        { type: 'chair', x: 14, y: 14, w: 1, h: 1, interactText: '坐下', facing: false },
+        { type: 'chair', x: 18, y: 14, w: 1, h: 1, interactText: '坐下', facing: false },
+        { type: 'whiteboard', x: 14, y: 9, w: 2, h: 1, interactText: '写字' },
+        
+        // ========== 茶水间 (右下) ==========
+        { type: 'water', x: 23, y: 17, w: 1, h: 1, interactText: '喝水' },
+        { type: 'plant', x: 26, y: 17, w: 1, h: 1, interactText: '欣赏植物' },
+        
+        // ========== 老板办公室 (右上) - 保留沙发 ==========
+        { type: 'sofa', x: 24, y: 9, w: 2, h: 1, interactText: '休息' },
+        
+        // ========== 入口装饰 ==========
+        { type: 'plant', x: 2, y: 20, w: 1, h: 1, interactText: '欣赏植物' },
+        { type: 'plant', x: 5, y: 20, w: 1, h: 1, interactText: '欣赏植物' },
+        
+        // ========== 走廊装饰 ==========
+        { type: 'plant', x: 12, y: 15, w: 1, h: 1, interactText: '欣赏植物' },
+        { type: 'plant', x: 20, y: 15, w: 1, h: 1, interactText: '欣赏植物' },
+    ];
+    
+    const agents = [
+        { x: 150, y: 120, color: '#FFD700', name: 'THE MACHINE', role: 'CEO', status: '工作中', statusColor: '#00FF7F', action: 'typing', timer: Math.random() * 100, facing: true },
+        { x: 300, y: 180, color: '#00FF7F', name: 'Bill', role: 'CFO', status: '工作中', statusColor: '#00FF7F', action: 'typing', timer: Math.random() * 100, facing: true },
+        { x: 570, y: 270, color: '#00BFFF', name: 'Alex', role: 'CTO', status: '摸鱼中', statusColor: '#FFD700', action: 'idle', timer: Math.random() * 100, facing: false },
+        { x: 450, y: 420, color: '#9370DB', name: 'Peter', role: 'CPO', status: '工作中', statusColor: '#00FF7F', action: 'typing', timer: Math.random() * 100, facing: true },
+        { x: 225, y: 300, color: '#FF69B4', name: 'May', role: 'CMO', status: '空闲中', statusColor: '#888888', action: 'idle', timer: Math.random() * 100, facing: true },
+        { x: 675, y: 225, color: '#FF4444', name: 'Sam', role: 'SEC', status: '工作中', statusColor: '#00FF7F', action: 'idle', timer: Math.random() * 100, facing: false },
+        { x: 420, y: 525, color: '#FFA500', name: 'Dave', role: 'DEV', status: '摸鱼中', statusColor: '#FFD700', action: 'idle', timer: Math.random() * 100, facing: true },
+        { x: 600, y: 450, color: '#00FFFF', name: 'Ryan', role: 'Researcher', status: '工作中', statusColor: '#00FF7F', action: 'typing', timer: Math.random() * 100, facing: false },
+    ];
+    
+    const player = { x: 240, y: 300, color: '#FF6B6B', isSitting: false, holding: null, showEmote: null, facing: true };
+    
+    const npcs = [
+        { x: 450, y: 225, color: '#FF9999', name: '访客A', dir: 0, timer: 0, facing: true },
+        { x: 675, y: 375, color: '#99FF99', name: '面试者', dir: 0, timer: 0, facing: false },
+        { x: 300, y: 525, color: '#9999FF', name: '快递员', dir: 0, timer: 0, facing: true },
+    ];
+    
+    const keys = {};
+    document.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; keys[e.code] = true; });
+    document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; keys[e.code] = false; });
+    
+    const hintEl = document.getElementById('interact-hint');
+    
+    function isSolid(x, y) {
+        const tx = Math.floor(x / TILE), ty = Math.floor(y / TILE);
+        if (ty < 0 || ty >= MAP_H || tx < 0 || tx >= MAP_W) return true;
+        if ([1,2,3,5,6,7,8].includes(MAP[ty][tx])) return true;
+        
+        // 家具碰撞检测
+        for (const f of FURNITURE) {
+            if (f.type === 'chair' || f.type === 'plant') continue; // 这些可以穿过
+            const fx = f.x * TILE, fy = f.y * TILE;
+            const fw = (f.w || 1) * TILE, fh = (f.h || 1) * TILE;
+            if (x >= fx && x <= fx + fw && y >= fy && y <= fy + fh) return true;
+        }
+        
+        return false;
+    }
+    
+    function getNearbyFurniture(px, py) {
+        const centerX = px + 10, centerY = py + 11;
+        for (const f of FURNITURE) {
+            const fx = f.x * TILE, fy = f.y * TILE;
+            const fw = (f.w || 1) * TILE, fh = (f.h || 1) * TILE;
+            if (centerX >= fx - 20 && centerX <= fx + fw + 20 &&
+                centerY >= fy - 20 && centerY <= fy + fh + 20) {
+                return f;
+            }
+        }
+        return null;
+    }
+    
+    function update() {
+        // 玩家移动
+        if (!player.isSitting) {
+            let vx = 0, vy = 0;
+            if (keys['a'] || keys['arrowleft']) { vx = -3; player.facing = false; }
+            if (keys['d'] || keys['arrowright']) { vx = 3; player.facing = true; }
+            if (keys['w'] || keys['arrowup']) vy = -3;
+            if (keys['s'] || keys['arrowdown']) vy = 3;
+            
+            let nx = player.x + vx, ny = player.y + vy;
+            if (!isSolid(nx, player.y) && !isSolid(nx + 18, player.y) && !isSolid(nx, player.y + 21) && !isSolid(nx + 18, player.y + 21)) player.x = nx;
+            if (!isSolid(player.x, ny) && !isSolid(player.x + 18, ny) && !isSolid(player.x, ny + 21) && !isSolid(player.x + 18, ny + 21)) player.y = ny;
+        }
+        
+        // 交互
+        if (keys['e'] && !keys.ePressed) {
+            keys.ePressed = true;
+            const f = getNearbyFurniture(player.x, player.y);
+            if (f) {
+                if (f.type === 'chair') { player.isSitting = !player.isSitting; }
+                else if (f.type === 'water') showHint('💧 喝水中...');
+                else if (f.type === 'whiteboard') showHint('📝 写点什么...');
+            }
+        }
+        if (!keys['e']) keys.ePressed = false;
+        
+        if (keys[' '] && player.isSitting) player.isSitting = false;
+        
+        // 表情
+        if (keys['1'] && !keys.p1) { player.showEmote = '👋'; keys.p1 = true; }
+        if (!keys['1']) keys.p1 = false;
+        if (keys['2'] && !keys.p2) { player.showEmote = '👍'; keys.p2 = true; }
+        if (!keys['2']) keys.p2 = false;
+        if (keys['3'] && !keys.p3) { player.showEmote = '👎'; keys.p3 = true; }
+        if (!keys['3']) keys.p3 = false;
+        
+        // Agent 更新
+        agents.forEach(a => {
+            a.timer++;
+            if (a.timer > 200 + Math.random() * 300) {
+                a.timer = 0;
+                a.action = Math.random() > 0.5 ? 'typing' : 'idle';
+                if (Math.random() > 0.7) {
+                    const statuses = ['工作中', '摸鱼中', '空闲中'];
+                    const colors = { '工作中': '#00FF7F', '摸鱼中': '#FFD700', '空闲中': '#888888' };
+                    a.status = statuses[Math.floor(Math.random() * 3)];
+                    a.statusColor = colors[a.status];
+                }
+            }
+            
+            let vx = 0, vy = 0;
+            if (a.timer % 3 === 0) {
+                if (Math.random() > 0.7) a.dir = Math.floor(Math.random() * 4);
+                if (a.dir === 0) vy = -1;
+                else if (a.dir === 1) vy = 1;
+                else if (a.dir === 2) { vx = -1; a.facing = false; }
+                else if (a.dir === 3) { vx = 1; a.facing = true; }
+                
+                const nx = a.x + vx, ny = a.y + vy;
+                if (!isSolid(nx, ny) && !isSolid(nx + 18, ny) && !isSolid(nx, ny + 21) && !isSolid(nx + 18, ny + 21)) {
+                    a.x = nx; a.y = ny;
+                } else a.dir = Math.floor(Math.random() * 4);
+            }
+        });
+        
+        // NPC 更新
+        npcs.forEach(n => {
+            n.timer++;
+            if (n.timer > 100 + Math.random() * 100) {
+                n.timer = 0;
+                n.dir = Math.floor(Math.random() * 4);
+            }
+            let vx = 0, vy = 0;
+            if (n.dir === 0) vy = -1;
+            else if (n.dir === 1) vy = 1;
+            else if (n.dir === 2) { vx = -1; n.facing = false; }
+            else if (n.dir === 3) { vx = 1; n.facing = true; }
+            
+            const nx = n.x + vx, ny = n.y + vy;
+            if (!isSolid(nx, ny) && !isSolid(nx + 18, ny) && !isSolid(nx, ny + 21) && !isSolid(nx + 18, ny + 21)) {
+                n.x = nx; n.y = ny;
+            } else n.dir = Math.floor(Math.random() * 4);
+        });
+    }
+    
+    function showHint(text) {
+        hintEl.textContent = text;
+        hintEl.classList.add('show');
+        setTimeout(() => hintEl.classList.remove('show'), 1500);
+    }
+    
+    function drawChar(x, y, color, name, role, status, statusColor, action, isPlayer = false, showEmote = null, facingRight = true) {
+        drawPixelCharacter(x, y, color, name, role, status, statusColor, action, isPlayer, showEmote, facingRight);
+    }
+    
+    function drawFurniture(f) {
+        const fx = f.x * TILE;
+        const fy = f.y * TILE;
+        
+        switch(f.type) {
+            case 'chair':
+                drawPixelChair(fx, fy, f.facing !== false);
+                break;
+            case 'desk':
+                drawPixelDesk(fx, fy);
+                break;
+            case 'computer':
+                drawPixelComputer(fx, fy);
+                break;
+            case 'water':
+                drawPixelWaterCooler(fx, fy);
+                break;
+            case 'whiteboard':
+                drawPixelWhiteboard(fx, fy);
+                break;
+            case 'plant':
+                drawPixelPlant(fx, fy);
+                break;
+            case 'sofa':
+                drawPixelSofa(fx, fy);
+                break;
+        }
+    }
+    
+    function draw() {
+        ctx.fillStyle = '#0a0a15';
+        ctx.fillRect(0, 0, GAME_W, GAME_H);
+        
+        // 地图 - 使用像素纹理
+        for (let y = 0; y < MAP_H; y++) {
+            for (let x = 0; x < MAP_W; x++) {
+                const t = MAP[y][x];
+                const tx = x * TILE;
+                const ty = y * TILE;
+                
+                if (t === 0) {
+                    // 地板
+                    drawFloorTile(tx, ty, TILE);
+                } else if (t === 1) {
+                    // 墙壁
+                    drawWallTile(tx, ty, TILE);
+                } else {
+                    // 其他物体（保留原有逻辑，但添加像素边框）
+                    ctx.fillStyle = COLORS[t];
+                    ctx.fillRect(tx + 1, ty + 1, TILE - 2, TILE - 2);
+                    
+                    // 像素描边
+                    ctx.strokeStyle = shadeColor(COLORS[t], -30);
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(tx + 1, ty + 1, TILE - 2, TILE - 2);
+                }
+            }
+        }
+        
+        // 绘制家具
+        FURNITURE.forEach(f => drawFurniture(f));
+        
+        // 交互高亮
+        const nearFurn = getNearbyFurniture(player.x, player.y);
+        if (nearFurn) {
+            const fx = nearFurn.x * TILE, fy = nearFurn.y * TILE;
+            ctx.strokeStyle = nearFurn.type === 'chair' ? '#FF6B6B' : nearFurn.type === 'water' ? '#00FFFF' : '#FFF';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(fx - 4, fy - 4, TILE * (nearFurn.w || 1) + 8, TILE * (nearFurn.h || 1) + 8);
+            ctx.setLineDash([]);
+            
+            showHint(`按E ${nearFurn.interactText}`);
+        }
+        
+        // 绘制 NPC
+        npcs.forEach(n => drawChar(n.x, n.y, n.color, n.name, '访客', '路过', '#888', 'idle', false, null, n.facing !== false));
+        
+        // 绘制 Agent
+        agents.sort((a, b) => a.y - b.y);
+        agents.forEach(a => drawChar(a.x, a.y, a.color, a.name, a.role, a.status, a.statusColor, a.action, false, null, a.facing !== false));
+        
+        // 绘制玩家
+        drawChar(player.x, player.y, player.color, '你', '玩家', player.isSitting ? '坐着' : '走动', '#FF6B6B', player.isSitting ? 'sitting' : 'idle', true, player.showEmote, player.facing !== false);
+    }
+    
+    function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
+    
+    loop();
+    </script>
+</body>
+</html>
