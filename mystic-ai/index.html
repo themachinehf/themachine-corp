@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Open Graph / Sharing -->
+    <meta property="og:title" content="Mystic AI - Discover Your Destiny">
+    <meta property="og:description" content="AI-powered tarot reading. Enter your birth info and unlock your mystical fortune.">
+    <meta property="og:image" content="https://mystic-ai-henna.vercel.app/og-image.png">
+    <meta property="og:url" content="https://mystic-ai-henna.vercel.app">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mystic AI">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mystic AI - Tarot Reading">
+    <meta name="twitter:description" content="AI-powered mystical fortune telling">
+    <meta name="twitter:image" content="https://mystic-ai-henna.vercel.app/og-image.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Performance: Defer non-critical JS -->
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="ambient-light"></div>
+    <div class="particles" id="particles"></div>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="language-switch">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="zh">中文</button>
+            </div>
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <div class="logo-icon">✦</div>
+            </div>
+            <h1 class="logo-text">MYSTIC AI</h1>
+            <p class="tagline">Discover Your Destiny Through AI</p>
+        </header>
+
+        <main class="main-content">
+            <div class="glass-card input-card" id="inputCard">
+                <div class="card-shine"></div>
+                <h2 class="section-title" data-i18n="formTitle">Enter Your Information</h2>
+                
+                <form id="mysticForm" class="mystic-form">
+                    <div class="form-group">
+                        <label for="name" data-i18n="nameLabel">Your Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                            <div class="input-glow"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="genderLabel">Gender</label>
+                        <div class="gender-selector">
+                            <label class="gender-btn">
+                                <input type="radio" name="gender" value="male">
+                                <span class="gender-content">
+                                    <span class="gender-icon">♂</span>
+                                    <span class="gender-text" data-i18n="male">Male</span>
+                                </span>
+                            </label>
+                            <label class="gender-btn">
+                                <input type="radio" name="gender" value="female">
+                                <span class="gender-content">
+                                    <span class="gender-icon">♀</span>
+                                    <span class="gender-text" data-i18n="female">Female</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="birthDateLabel">Date of Birth</label>
+                        <div class="date-selector">
+                            <div class="select-wrapper">
+                                <select id="birthYear" name="birthYear">
+                                    <option value="" data-i18n="yearLabel">Year</option>
+                                </select>
+                                <div class="select-glow"></div>
+                            </div>
+                            <div class="select-wrapper">
+                                <select id="birthMonth" name="birthMonth">
+                                    <option value="" data-i18n="monthLabel">Month</option>
+                                    <option value="01">Jan</option>
+                                    <option value="02">Feb</option>
+                                    <option value="03">Mar</option>
+                                    <option value="04">Apr</option>
+                                    <option value="05">May</option>
+                                    <option value="06">Jun</option>
+                                    <option value="07">Jul</option>
+                                    <option value="08">Aug</option>
+                                    <option value="09">Sep</option>
+                                    <option value="10">Oct</option>
+                                    <option value="11">Nov</option>
+                                    <option value="12">Dec</option>
+                                </select>
+                            </div>
+                            <div class="select-wrapper">
+                                <select id="birthDay" name="birthDay">
+                                    <option value="" data-i18n="dayLabel">Day</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="zodiac-display"><span data-i18n="zodiacLabel">Zodiac</span>: <span id="zodiacDisplay">-</span></p>
+                        <input type="hidden" id="birthDate" name="birthDate">
+                        <input type="hidden" id="zodiac" name="zodiac">
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="birthTimeLabel">Birth Hour (Chinese)</label>
+                        <div class="select-wrapper full-width">
+                            <select id="birthTime" name="birthTime">
+                                <option value="子">子 Zi (23:00-01:00)</option>
+                                <option value="丑">丑 Chou (01:00-03:00)</option>
+                                <option value="寅">寅 Yin (03:00-05:00)</option>
+                                <option value="卯">卯 Mao (05:00-07:00)</option>
+                                <option value="辰">辰 Chen (07:00-09:00)</option>
+                                <option value="巳">巳 Si (09:00-11:00)</option>
+                                <option value="午">午 Wu (11:00-13:00)</option>
+                                <option value="未">未 Wei (13:00-15:00)</option>
+                                <option value="申">申 Shen (15:00-17:00)</option>
+                                <option value="酉">酉 You (17:00-19:00)</option>
+                                <option value="戌">戌 Xu (19:00-21:00)</option>
+                                <option value="亥">亥 Hai (21:00-23:00)</option>
+                            </select>
+                            <div class="select-glow"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-bg"></span>
+                        <span class="btn-text">
+                            <span data-i18n="submitBtn">Reveal My Fortune</span>
+                            <span class="btn-icon">✦</span>
+                        </span>
+                        <span class="btn-particles"></span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="loading-container" id="loadingContainer" style="display: none;">
+                <div class="tarot-animation">
+                    <div class="tarot-card-wrapper"><div class="tarot-card flipping"></div></div>
+                    <div class="tarot-card-wrapper delay-1"><div class="tarot-card flipping"></div></div>
+                    <div class="tarot-card-wrapper delay-2"><div class="tarot-card flipping"></div></div>
+                </div>
+                <div class="loading-text-container">
+                    <p class="loading-text" id="loadingText"></p>
+                </div>
+                <div class="loading-dots"><span></span><span></span><span></span></div>
+            </div>
+
+            <div class="results-container" id="resultsContainer" style="display: none;">
+                <div class="tarot-reveal">
+                    <div class="tarot-card-container" id="tarotCard">
+                        <div class="tarot-card-face front">
+                            <div class="card-pattern"></div>
+                            <div class="card-symbol">✦</div>
+                        </div>
+                        <div class="tarot-card-face back">
+                            <div class="tarot-symbol-display" id="tarotImage"></div>
+                            <p class="tarot-name" id="tarotName"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card" id="personalityCard">
+                        <div class="card-header"><span class="card-icon">✦</span><h3 data-i18n="personalityTitle">Personality Analysis</h3></div>
+                        <div class="card-content" id="personalityContent"></div>
+                    </div>
+                    <div class="result-card" id="todayCard">
+                        <div class="card-header"><span class="card-icon">☀</span><h3 data-i18n="todayTitle">Today's Horoscope</h3></div>
+                        <div class="card-content" id="todayContent"></div>
+                    </div>
+                    <div class="result-card" id="weekCard">
+                        <div class="card-header"><span class="card-icon">☾</span><h3 data-i18n="weekTitle">This Week</h3></div>
+                        <div class="card-content" id="weekContent"></div>
+                    </div>
+                    <div class="result-card" id="monthCard">
+                        <div class="card-header"><span class="card-icon">★</span><h3 data-i18n="monthTitle">This Month</h3></div>
+                        <div class="card-content" id="monthContent"></div>
+                    </div>
+                    <div class="result-card wide" id="careerCard">
+                        <div class="card-header"><span class="card-icon">◆</span><h3 data-i18n="careerTitle">Career · Love · Wealth</h3></div>
+                        <div class="card-content" id="careerContent"></div>
+                    </div>
+                </div>
+
+                <button class="restart-btn" id="restartBtn">
+                    <span class="restart-icon">↺</span><span data-i18n="restartBtn">Read Again</span>
+                </button>
+                
+                <div class="share-container" id="shareContainer" style="display: none;">
+                    <button class="share-btn" id="shareBtn">
+                        <span class="share-icon">📤</span><span data-i18n="shareBtn">Share Result</span>
+                    </button>
+                </div>
+                
+                <button class="back-btn" id="backBtn" style="display: none;">
+                    <span class="back-icon">←</span><span data-i18n="backBtn">Back to History</span>
+                </button>
+            </div>
+        </main>
+
+        <section class="history-section" id="historySection">
+            <button class="history-toggle-btn" id="historyToggleBtn">
+                <span class="history-icon">📜</span><span data-i18n="historyTitle">Reading History</span>
+                <span class="history-count" id="historyCount">0</span>
+            </button>
+            <div class="history-panel" id="historyPanel" style="display: none;">
+                <div class="history-header">
+                    <h3 data-i18n="historyListTitle">Your Readings</h3>
+                    <button class="clear-history-btn" id="clearHistoryBtn" data-i18n="clearHistory">Clear All</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="empty-history" data-i18n="emptyHistory">No readings yet</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="newsletter-section" id="newsletterSection">
+            <div class="newsletter-card">
+                <div class="newsletter-icon-wrapper"><span class="newsletter-icon">✉️</span></div>
+                <h3 data-i18n="newsletterTitle">Stay Updated</h3>
+                <p class="newsletter-subtitle" data-i18n="newsletterSubtitle">Get notified about new readings</p>
+                <form id="newsletterForm" class="newsletter-form">
+                    <div class="input-wrapper">
+                        <input type="email" id="newsletterEmail" placeholder="your@email.com" required>
+                        <div class="input-glow"></div>
+                    </div>
+                    <button type="submit" class="newsletter-btn">
+                        <span data-i18n="newsletterBtn">Subscribe</span><span class="btn-icon">→</span>
+                    </button>
+                </form>
+                <p class="newsletter-note" data-i18n="newsletterNote">We respect your privacy</p>
+            </div>
+        </section>
+
+        <footer class="footer" id="footerSection">
+            <div class="donate-card">
+                <div class="donate-header">
+                    <div class="donate-icon-wrapper"><span class="donate-icon">♦</span></div>
+                    <h3 data-i18n="donateTitle">Support This Reading</h3>
+                    <p class="donate-subtitle" data-i18n="donateSubtitle">If this resonated with you, consider a tip</p>
+                </div>
+                <div class="wallet-display">
+                    <div class="wallet-label" data-i18n="donateLabel">Ethereum (ERC-20)</div>
+                    <div class="wallet-address-wrapper">
+                        <code class="wallet-address">0x44B82c81d3f5c712ACFaf3C6e760779A41b2ACE6</code>
+                        <button class="copy-btn" id="copyBtn" title="Click to copy">
+                            <span class="copy-icon">📋</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="donate-note" data-i18n="donateNote">Your support keeps the stars aligned ✨</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="donate.html" class="footer-link">Donate ✦</a>
+                <a href="about.html" class="footer-link">About</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+<div class="toast" id="toast"></div>

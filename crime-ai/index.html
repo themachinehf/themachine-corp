@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE MACHINE | Crime Prediction System</title>
+    <meta name="description" content="AI-powered crime prediction and threat analysis system">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta http-equiv="Cache-Control" content="max-age=60">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-panel: #111;
+            --bg-card: #1a1a1a;
+            --border: #333;
+            --text: #0f0;
+            --text-dim: #006600;
+            --accent: #00ff00;
+            --danger: #ff0000;
+            --warning: #ffaa00;
+            --safe: #00ff00;
+            --scanline: rgba(0, 255, 0, 0.03);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            font-size: 13px;
+            overflow-x: hidden;
+        }
+        
+        /* CRT Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                var(--scanline),
+                var(--scanline) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        .container { max-width: 1800px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 2px solid var(--text-dim);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            letter-spacing: 8px;
+            color: var(--text);
+            text-shadow: 0 0 10px var(--text);
+        }
+        
+        .logo .version {
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+        
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .clock { font-size: 16px; color: var(--accent); }
+        
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px 350px;
+            gap: 20px;
+        }
+        
+        @media (max-width: 1400px) {
+            .main-grid { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+        
+        /* Panels */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--text-dim);
+            border-radius: 4px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--text), transparent);
+        }
+        
+        .panel-title {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--text-dim);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title::before {
+            content: '►';
+            color: var(--accent);
+        }
+        
+        /* Numbers Display */
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .number-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .number-card.critical { border-color: var(--danger); }
+        .number-card.high { border-color: var(--warning); }
+        .number-card.elevated { border-color: #ff6600; }
+        
+        .number-card .label {
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        
+        .number-card .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .number-card.critical .value { color: var(--danger); }
+        .number-card.high .value { color: var(--warning); }
+        .number-card.elevated .value { color: #ff6600; }
+        
+        /* Threat Feed */
+        .threat-feed {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .threat-item {
+            background: var(--bg-card);
+            border-left: 3px solid var(--danger);
+            padding: 12px;
+            margin-bottom: 8px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .threat-item .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .threat-item .number {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--danger);
+        }
+        
+        .threat-item .time {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+        
+        .threat-item .content {
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .threat-item .tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            font-size: 9px;
+            padding: 2px 6px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+        
+        .tag.danger { border-color: var(--danger); color: var(--danger); }
+        
+        /* Analysis Input */
+        .analysis-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .analysis-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--text-dim);
+            color: var(--text);
+            font-family: inherit;
+            padding: 12px;
+            font-size: 13px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .analysis-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: inherit;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .analyze-btn:hover {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+        
+        /* Result */
+        .result-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bg-dark);
+            border: 1px solid var(--accent);
+        }
+        
+        .result-box.show { display: block; }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-level {
+            font-size: 14px;
+            padding: 4px 12px;
+            border: 1px solid;
+        }
+        
+        .result-level.critical { border-color: var(--danger); color: var(--danger); }
+        .result-level.high { border-color: var(--warning); color: var(--warning); }
+        .result-level.medium { border-color: #ffaa00; color: #ffaa00; }
+        .result-level.low { border-color: var(--safe); color: var(--safe); }
+        
+        .result-score {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .result-details {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+        
+        .result-details div {
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .stat-box {
+            background: var(--bg-card);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-box .value {
+            font-size: 24px;
+            color: var(--accent);
+        }
+        
+        .stat-box .label {
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+        
+        /* Map/Heatmap placeholder */
+        .heatmap {
+            background: var(--bg-card);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            font-size: 11px;
+            border: 1px dashed var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .heatmap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(255,0,0,0.15) 0%, transparent 25%),
+                radial-gradient(circle at 70% 60%, rgba(255,165,0,0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 80%, rgba(255,0,0,0.1) 0%, transparent 15%);
+            animation: heatPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes heatPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .heatmap-dots {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 3px;
+            width: 80%;
+            height: 70%;
+        }
+        
+        .heatmap-dot {
+            border-radius: 50%;
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* Terminal */
+        .terminal {
+            background: #000;
+            border: 1px solid var(--text-dim);
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+        
+        .terminal .line {
+            margin-bottom: 4px;
+            color: var(--text-dim);
+        }
+        
+        .terminal .line .time { color: #666; }
+        .terminal .line .highlight { color: var(--accent); }
+        .terminal .line .danger { color: var(--danger); }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+        }
+        
+        .loading.show { display: block; }
+        
+        .scanner {
+            width: 50px;
+            height: 2px;
+            background: var(--accent);
+            margin: 0 auto 10px;
+            animation: scan 1s infinite;
+        }
+        
+        @keyframes scan {
+            0%, 100% { transform: translateX(-50px); }
+            50% { transform: translateX(50px); }
+        }
+        
+        /* Prediction */
+        .prediction-box {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-panel));
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .prediction-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .prediction-value {
+            font-size: 20px;
+        }
+        
+        .prediction-value.elevated { color: var(--warning); }
+        .prediction-value.low { color: var(--safe); }
+        
+        .hotspots {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .hotspot {
+            padding: 4px 10px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid var(--danger);
+            font-size: 10px;
+            color: var(--danger);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--text-dim); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text); }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-panel);
+            border: 1px solid var(--danger);
+            padding: 15px 20px;
+            color: var(--text);
+            font-size: 12px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+        }
+        
+        .toast.success { border-color: var(--safe); }
+        .toast.warning { border-color: var(--warning); }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Loading state for buttons */
+        .analyze-btn.loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>THE MACHINE</h1>
+                <span class="version">V2.5.3 // CRIME PREDICTION SYSTEM</span>
+            </div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="blink">●</span>
+                    <span>MONITORING</span>
+                </div>
+                <div class="status-item">
+                    <span>SOURCES:</span>
+                    <span>47 ACTIVE</span>
+                </div>
+                <div class="clock" id="clock">00:00:00</div>
+            </div>
+        </header>
+        
+        <div class="main-grid">
+            <div class="left-column">
+                <!-- Numbers - Threat Levels -->
+                <div class="panel">
+                    <div class="panel-title">THREAT CLASSIFICATION</div>
+                    <div class="numbers-grid">
+                        <div class="number-card critical">
+                            <div class="label">CLASS 1</div>
+                            <div class="value" id="criticalCount">0</div>
+                        </div>
+                        <div class="number-card high">
+                            <div class="label">CLASS 2</div>
+                            <div class="value" id="highCount">0</div>
+                        </div>
+                        <div class="number-card elevated">
+                            <div class="label">CLASS 3</div>
+                            <div class="value" id="mediumCount">0</div>
+                        </div>
+                        <div class="number-card">
+                            <div class="label">MONITORED</div>
+                            <div class="value" id="monitoredCount">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analysis -->
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="panel-title">THREAT ANALYSIS ENGINE</div>
+                    <div class="analysis-box">
+                        <textarea class="analysis-input" id="analysisInput" placeholder="Enter text, social media post, or conversation snippet for threat analysis..."></textarea>
+                        <button class="analyze-btn" onclick="analyzeText()">ANALYZE</button>
+                    </div>
+                    
+                    <div class="loading" id="loading">
+                        <div class="scanner"></div>
+                        <div>PROCESSING DATA...</div>
+                    </div>
+                    
+                    <div class="result-box" id="resultBox">
+                        <div class="result-header">
+                            <span class="result-level" id="resultLevel">CLASS 2</span>
+                            <span class="result-score" id="resultScore">75</span>
+                        </div>
+                        <div class="result-details">
+                            <div>RISK LEVEL: <span id="riskLevel">HIGH</span></div>
+                            <div>PROBABILITY: <span id="probability">75%</span></div>
+                            <div>THREATS DETECTED: <span id="threatCount">3</span></div>
+                            <div>CATEGORIES: <span id="categories">physical_violence, harassment</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prediction -->
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="panel-title">CRIME PREDICTION MODEL</div>
+                    <div class="prediction-box">
+                        <div class="prediction-header">
+                            <span>CITYWIDE RISK</span>
+                            <span class="prediction-value" id="citywideRisk">ELEVATED</span>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="value" id="predictedCrimes">12</div>
+                                <div class="label">PREDICTED INCIDENTS</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="confidence">87%</div>
+                                <div class="label">CONFIDENCE</div>
+                            </div>
+                        </div>
+                        <div class="hotspots" id="hotspots">
+                            <span class="hotspot">DOWNTOWN</span>
+                            <span class="hotspot">TRANSIT HUB</span>
+                            <span class="hotspot">SCHOOL ZONE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="middle-column">
+                <!-- Real-time Feed -->
+                <div class="panel">
+                    <div class="panel-title">REAL-TIME THREAT FEED</div>
+                    <div class="threat-feed" id="threatFeed">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                
+                <!-- Terminal -->
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="panel-title">SYSTEM LOG</div>
+                    <div class="terminal" id="terminal">
+                        <div class="line"><span class="time">[SYSTEM]</span> <span class="highlight">The Machine initialized</span></div>
+                        <div class="line"><span class="time">[SYSTEM]</span> Threat database loaded</div>
+                        <div class="line"><span class="time">[SYSTEM]</span> Monitoring 47 data sources</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <!-- Stats -->
+                <div class="panel">
+                    <div class="panel-title">SYSTEM STATISTICS</div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="value" id="totalThreats">0</div>
+                            <div class="label">TOTAL THREATS</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="value" id="analyzedCount">0</div>
+                            <div class="label">ANALYZED</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="value" id="uptime">0:00</div>
+                            <div class="label">UPTIME</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="value" id="sources">47</div>
+                            <div class="label">SOURCES</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Heatmap -->
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="panel-title">THREAT HEATMAP</div>
+                    <div class="heatmap">
+                        <div class="heatmap-dots" id="heatmapDots">
+                            <!-- Populated by JS with animated dots -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Analysis -->
+                <div class="panel" style="margin-top: 20px;">
+                    <div class="panel-title">QUICK STATS</div>
+                    <div style="font-size: 11px; color: var(--text-dim);">
+                        <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">
+                            <span style="color: var(--danger);">●</span> VIOLENCE: <span id="statViolence">0</span>
+                        </div>
+                        <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">
+                            <span style="color: #ff6600;">●</span> TERRORISM: <span id="statTerrorism">0</span>
+                        </div>
+                        <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">
+                            <span style="color: var(--warning);">●</span> HARASSMENT: <span id="statHarassment">0</span>
+                        </div>
+                        <div style="padding: 8px 0;">
+                            <span style="color: #ffaa00;">●</span> SELF-HARM: <span id="statSelfHarm">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Local storage cache helper
+        const Cache = {
+            get: (key) => {
+                try {
+                    const item = localStorage.getItem('crimeai_' + key);
+                    if (!item) return null;
+                    const { data, expiry } = JSON.parse(item);
+                    if (Date.now() > expiry) {
+                        localStorage.removeItem('crimeai_' + key);
+                        return null;
+                    }
+                    return data;
+                } catch { return null; }
+            },
+            set: (key, data, minutes = 5) => {
+                try {
+                    localStorage.setItem('crimeai_' + key, JSON.stringify({
+                        data,
+                        expiry: Date.now() + minutes * 60000
+                    }));
+                } catch {}
+            }
+        };
+        
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // Uptime
+        let startTime = Date.now();
+        function updateUptime() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const hours = Math.floor(elapsed / 3600);
+            const mins = Math.floor((elapsed % 3600) / 60);
+            document.getElementById('uptime').textContent = hours + ':' + mins.toString().padStart(2, '0');
+        }
+        setInterval(updateUptime, 60000);
+        updateUptime();
+        
+        // Terminal logging
+        function log(msg, type = '') {
+            const terminal = document.getElementById('terminal');
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            const line = document.createElement('div');
+            line.className = 'line';
+            line.innerHTML = `<span class="time">[${time}]</span> <span class="${type}">${msg}</span>`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+            
+            // Keep last 50 lines
+            while (terminal.children.length > 50) {
+                terminal.removeChild(terminal.firstChild);
+            }
+        }
+        
+        // Debounce helper for performance
+        function debounce(fn, delay) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+        
+        // Toast notifications
+        function showToast(message, type = 'error') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+        
+        // API Base - Improved detection with fallback
+        const API_BASE = (() => {
+            const host = window.location.hostname;
+            const port = window.location.port;
+            // Local development detection
+            if (host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0') {
+                return port ? `http://localhost:${port}` : 'http://localhost:8000';
+            }
+            // Production - use same origin
+            return '';
+        })();
+        
+        // Error handling wrapper
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            log('Runtime error: ' + msg, 'danger');
+            return false;
+        };
+        
+        // Unhandled promise rejection
+        window.addEventListener('unhandledrejection', function(event) {
+            log('Promise rejection: ' + event.reason, 'danger');
+        });
+        
+        // Retry helper with exponential backoff
+        async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response;
+                } catch (e) {
+                    if (i === retries - 1) throw e;
+                    await new Promise(r => setTimeout(r, delay * (i + 1)));
+                }
+            }
+        }
+        
+        // Generate random number
+        function generateNumber() {
+            return 'N-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+        
+        // Analyze text with retry
+        async function analyzeText() {
+            const input = document.getElementById('analysisInput');
+            const text = input.value.trim();
+            const btn = document.querySelector('.analyze-btn');
+            
+            if (!text) {
+                log('Please enter text to analyze', 'danger');
+                showToast('Please enter text to analyze', 'warning');
+                return;
+            }
+            
+            btn.classList.add('loading');
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('resultBox').classList.remove('show');
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                
+                const response = await fetchWithRetry(`${API_BASE}/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text }),
+                    signal: controller.signal
+                }, 3, 1500);
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                const raw = await response.json();
+                const data = raw.data || raw;
+                displayResult(data);
+                log(`Analyzed: "${text.substring(0, 30)}..." - ${data.analysis.threat_level.toUpperCase()}`, 
+                    data.analysis.threat_level === 'low' ? 'highlight' : 'danger');
+                showToast('Analysis complete', 'success');
+                
+                document.getElementById('analyzedCount').textContent = 
+                    parseInt(document.getElementById('analyzedCount').textContent) + 1;
+            } catch (e) {
+                if (e.name === 'AbortError') {
+                    log('Analysis timeout - using local fallback', 'danger');
+                    showToast('Using offline mode (timeout)', 'warning');
+                } else {
+                    log('Analysis failed: ' + e.message + ' - Using offline mode', 'danger');
+                    showToast('Using offline mode', 'warning');
+                }
+                // Show demo result on error
+                showDemoResult();
+            } finally {
+                btn.classList.remove('loading');
+                document.getElementById('loading').classList.remove('show');
+            }
+        }
+        
+        // Demo result fallback
+        function showDemoResult() {
+            const levels = ['low', 'medium', 'high', 'critical'];
+            const level = levels[Math.floor(Math.random() * 3)];
+            const scores = { critical: 95, high: 75, medium: 55, low: 25 };
+            
+            document.getElementById('resultLevel').textContent = level.toUpperCase();
+            document.getElementById('resultLevel').className = 'result-level ' + level;
+            document.getElementById('resultScore').textContent = scores[level];
+            document.getElementById('riskLevel').textContent = level.toUpperCase();
+            document.getElementById('probability').textContent = scores[level] + '%';
+            document.getElementById('threatCount').textContent = Math.floor(Math.random() * 5) + 1;
+            document.getElementById('categories').textContent = 'demo_mode';
+            document.getElementById('resultBox').classList.add('show');
+        }
+        
+        // Display result
+        function displayResult(data) {
+            const analysis = data.analysis;
+            const prediction = data.prediction;
+            
+            const level = analysis.threat_level;
+            const levelMap = { critical: 'CLASS 1', high: 'CLASS 2', medium: 'CLASS 3', low: 'CLASS 4' };
+            
+            document.getElementById('resultLevel').textContent = levelMap[level];
+            document.getElementById('resultLevel').className = 'result-level ' + level;
+            document.getElementById('resultScore').textContent = analysis.threat_score;
+            document.getElementById('riskLevel').textContent = prediction.risk_level;
+            document.getElementById('probability').textContent = prediction.probability + '%';
+            document.getElementById('threatCount').textContent = analysis.found_threats.length;
+            
+            const cats = [...new Set(analysis.found_threats.map(t => t.category))];
+            document.getElementById('categories').textContent = cats.length ? cats.join(', ') : 'none';
+            
+            document.getElementById('resultBox').classList.add('show');
+        }
+        
+        // Load statistics (with cache)
+        async function loadStats() {
+            const cached = Cache.get('stats');
+            if (cached) {
+                document.getElementById('totalThreats').textContent = cached.total_threats;
+                document.getElementById('criticalCount').textContent = cached.by_level?.critical || 0;
+                document.getElementById('highCount').textContent = cached.by_level?.high || 0;
+                document.getElementById('mediumCount').textContent = cached.by_level?.medium || 0;
+                document.getElementById('monitoredCount').textContent = cached.by_level?.low || 0;
+                document.getElementById('statViolence').textContent = cached.by_level?.critical || 0;
+                document.getElementById('statTerrorism').textContent = cached.by_level?.critical || 0;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/statistics`);
+                const raw = await response.json();
+                const stats = raw.data || raw;
+                
+                Cache.set('stats', stats, 2);
+                
+                document.getElementById('totalThreats').textContent = stats.total_threats;
+                document.getElementById('criticalCount').textContent = stats.by_level.critical || 0;
+                document.getElementById('highCount').textContent = stats.by_level.high || 0;
+                document.getElementById('mediumCount').textContent = stats.by_level.medium || 0;
+                document.getElementById('monitoredCount').textContent = stats.by_level.low || 0;
+                
+                document.getElementById('statViolence').textContent = stats.by_level.critical || 0;
+                document.getElementById('statTerrorism').textContent = stats.by_level.critical || 0;
+            } catch (e) {
+                if (!cached) document.getElementById('totalThreats').textContent = Math.floor(Math.random() * 50);
+            }
+        }
+        
+        // Load threats
+        async function loadThreats() {
+            try {
+                const response = await fetch(`${API_BASE}/threats?limit=20`);
+                const raw = await response.json();
+                const data = raw.data || raw;
+                
+                const feed = document.getElementById('threatFeed');
+                
+                if (data.threats.length === 0) {
+                    feed.innerHTML = '<div style="text-align: center; color: var(--text-dim); padding: 20px;">No threats detected</div>';
+                    return;
+                }
+                
+                feed.innerHTML = data.threats.map(t => {
+                    const levelClass = t.analysis.threat_level === 'critical' ? 'critical' : 
+                                      t.analysis.threat_level === 'high' ? 'high' : 'elevated';
+                    return `
+                        <div class="threat-item">
+                            <div class="header">
+                                <span class="number">${generateNumber()}</span>
+                                <span class="time">${new Date(t.detected_at).toLocaleTimeString()}</span>
+                            </div>
+                            <div class="content">${t.text.substring(0, 100)}...</div>
+                            <div class="tags">
+                                <span class="tag danger">${t.analysis.threat_level.toUpperCase()}</span>
+                                <span class="tag">SCORE: ${t.analysis.threat_score}</span>
+                                <span class="tag">${t.source}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                log('Failed to load threats: ' + e.message, 'danger');
+            }
+        }
+        
+        // Load prediction
+        async function loadPrediction() {
+            try {
+                const response = await fetch(`${API_BASE}/prediction`);
+                const raw = await response.json();
+                const pred = raw.data || raw;
+                
+                const riskClass = pred.citywide_risk === 'elevated' ? 'elevated' : 
+                                 pred.citywide_risk === 'high' ? 'elevated' : 'low';
+                document.getElementById('citywideRisk').textContent = pred.citywide_risk.toUpperCase();
+                document.getElementById('citywideRisk').className = 'prediction-value ' + riskClass;
+                document.getElementById('predictedCrimes').textContent = pred.predicted_crimes;
+                document.getElementById('confidence').textContent = pred.confidence === 'high' ? '87%' : '65%';
+                
+                // Handle new factors if available
+                if (pred.factors) {
+                    log(`Time: ${pred.factors.time_of_day}, Weekend: ${pred.factors.weekend || false}`, 'highlight');
+                }
+                
+                const hotspots = document.getElementById('hotspots');
+                if (pred.hotspots && pred.hotspots.length > 0) {
+                    hotspots.innerHTML = pred.hotspots.map(h => `<span class="hotspot">${h.toUpperCase()}</span>`).join('');
+                }
+            } catch (e) {
+                // Demo data
+            }
+        }
+        
+        // Enter key to analyze
+        document.getElementById('analysisInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) analyzeText();
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Shift+A: Focus analysis input
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                document.getElementById('analysisInput').focus();
+            }
+            // Ctrl+R: Refresh data
+            if (e.ctrlKey && e.key === 'r' && e.shiftKey) {
+                e.preventDefault();
+                loadStats();
+                loadThreats();
+                loadPrediction();
+                log('Data refreshed manually', 'highlight');
+            }
+            // Escape: Clear input
+            if (e.key === 'Escape') {
+                document.getElementById('analysisInput').value = '';
+                document.getElementById('resultBox').classList.remove('show');
+            }
+        });
+        
+        // Initial load - deferred for performance
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadThreats();
+            loadPrediction();
+        });
+        
+        // Auto refresh - slower interval for performance
+        setInterval(() => {
+            loadStats();
+            loadThreats();
+            loadPrediction();
+        }, 30000); // Increased from 10000ms to 30000ms
+        
+        log('Dashboard loaded successfully', 'highlight');
+        
+        // Initialize heatmap
+        function initHeatmap() {
+            const container = document.getElementById('heatmapDots');
+            if (!container) return;
+            
+            const dotColors = [
+                'rgba(255,0,0,0.8)', 'rgba(255,100,0,0.6)', 
+                'rgba(255,165,0,0.5)', 'rgba(255,200,0,0.3)',
+                'rgba(0,255,0,0.1)'
+            ];
+            
+            for (let i = 0; i < 32; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'heatmap-dot';
+                const colorIdx = Math.floor(Math.random() * 3); // Higher chance of danger
+                const size = 4 + Math.random() * 10;
+                dot.style.width = size + 'px';
+                dot.style.height = size + 'px';
+                dot.style.backgroundColor = dotColors[colorIdx];
+                dot.style.animationDelay = (Math.random() * 2) + 's';
+                container.appendChild(dot);
+            }
+        }
+        initHeatmap();
+    </script>
+</body>
+</html>
