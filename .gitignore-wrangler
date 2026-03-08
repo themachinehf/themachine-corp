@@ -1,0 +1,14 @@
+game/
+# 排除
+node_modules/
+*.log
+*.log.*
+dist/
+build/
+.vscode/
+.DS_Store
+# 不排除
+!autonomy/*.js
+!autonomy/*.json
+!*.html
+!*.md

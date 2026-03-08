@@ -1,0 +1,2 @@
+# Route /office/* to the office static export
+/office/* /office/index.html 200
