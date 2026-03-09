@@ -20,26 +20,65 @@
       min-height: 100vh;
       image-rendering: pixelated;
     }
-    .container { max-width: 900px; margin: 0 auto; padding: 60px 20px; }
+    .container { 
+      max-width: 900px; 
+      margin: 0 auto; 
+      padding: 60px 20px; 
+      text-align: left; /* 改为左对齐 */
+    }
     
-    /* Header */
+    /* Header - 左对齐布局 */
+    header {
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 120px;
+      height: 2px;
+      background: var(--gold);
+    }
     h1 { 
-      font-size: 32px; 
+      font-size: 48px; 
       color: var(--gold); 
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 4px;
+      text-align: left;
     }
     .slogan { 
       font-size: 18px; 
-      color: #9ca3af; 
-      margin-bottom: 40px;
-      border-left: 3px solid var(--gold);
-      padding-left: 16px;
+      color: #6b7280; /* 灰色，更淡 */
+      font-style: italic;
+      display: block;
+      text-align: left;
+      position: relative;
+      padding-left: 20px;
+    }
+    .slogan::before {
+      content: '"';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-size: 24px;
     }
     
-    /* Navigation */
-    .nav { display: flex; gap: 12px; margin-bottom: 60px; flex-wrap: wrap; }
+    /* Navigation - 居中显示 */
+    .nav { 
+      display: flex; 
+      gap: 12px; 
+      margin-bottom: 0; 
+      flex-wrap: wrap; 
+      justify-content: center;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
     .nav a { 
       color: var(--gold); 
       text-decoration: none; 
@@ -56,45 +95,66 @@
     }
     
     /* Sections */
-    .section { margin-bottom: 40px; }
+    .section { margin-bottom: 60px; position: relative; }
+    .section::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+      opacity: 0.3;
+    }
     .section h2 { 
       color: var(--gold); 
-      font-size: 20px; 
+      font-size: 18px; 
       margin-bottom: 16px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
+      padding-bottom: 12px;
+      display: inline-block;
     }
     .section p { 
-      color: #9ca3af; 
+      color: #6b7280; /* 灰色 */
       line-height: 1.8; 
+      max-width: 700px;
+    }
+    .section .section-intro {
+      color: #9ca3af; /* 稍亮一点 */
+      margin-bottom: 24px;
     }
     
-    /* Products Grid */
+    /* Products Grid - 左对齐 */
     .products { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .product { 
-      padding: 20px; 
-      border: 2px solid var(--border);
-      background: rgba(30, 41, 59, 0.3);
+      padding: 24px; 
+      border: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.2);
+      transition: all 0.2s ease;
+    }
+    .product:hover { 
+      border-color: var(--gold); 
+      background: rgba(251, 191, 36, 0.05);
     }
     .product h3 { 
-      color: var(--gold); 
+      color: var(--text); /* 白色，不是金色 */
       margin-bottom: 8px;
-      font-size: 16px;
+      font-size: 14px;
       letter-spacing: 2px;
     }
     .product p { 
-      color: #6b7280; 
-      font-size: 13px; 
-      margin-bottom: 12px; 
+      color: #4b5563; /* 更灰色 */
+      font-size: 12px; 
+      margin-bottom: 16px; 
     }
     .product a { 
-      color: var(--gold); 
+      color: var(--gold); /* 金色强调 */
       text-decoration: none; 
-      font-size: 12px; 
+      font-size: 11px; 
       border: 1px solid var(--gold); 
-      padding: 6px 12px;
+      padding: 8px 16px;
       display: inline-block;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -104,31 +164,36 @@
       color: var(--bg); 
     }
     
-    /* CTA Button */
-    .cta-container { text-align: center; margin: 40px 0; }
+    /* CTA Button - 居中 */
+    .cta-container { text-align: center; margin: 50px 0; }
     .cta-container a { 
       display: inline-block; 
-      color: var(--gold); 
+      color: var(--bg); 
+      background: var(--gold);
       text-decoration: none; 
-      padding: 14px 28px; 
-      border: 2px solid var(--gold);
+      padding: 16px 40px; 
+      border: none;
       font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      font-size: 14px;
     }
     .cta-container a:hover {
-      background: var(--gold);
-      color: var(--bg);
+      background: #f59e0b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
     }
     
     /* Contact */
     .contact { 
       margin-top: 60px; 
-      padding-top: 40px; 
+      padding-top: 30px; 
       border-top: 1px solid var(--border); 
+      text-align: center;
     }
-    .contact p { color: #6b7280; font-size: 14px; }
-    .x-link { color: var(--gold); text-decoration: none; }
+    .contact p { color: #6b7280; font-size: 13px; }
+    .x-link { color: var(--gold); text-decoration: none; transition: opacity 0.2s; }
+    .x-link:hover { opacity: 0.7; }
     
     /* Team */
     .org-row { 
@@ -200,37 +265,86 @@
     }
     
     /* Responsive */
-    @media (max-width: 600px) {
-      .products { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      h1 { font-size: 32px; }
       .container { padding: 30px 16px; }
-      h1 { font-size: 24px; }
+      header { margin-bottom: 40px; padding-bottom: 30px; }
+      .slogan { font-size: 14px; }
+      .nav { gap: 8px; }
+      .nav a { padding: 8px 12px; font-size: 11px; }
+      .section { margin-bottom: 40px; }
+      .section::before { display: none; }
+      #office, #themathink { 
+        margin-left: 0; 
+        padding: 40px 20px !important; 
+        border-radius: 8px;
+      }
+    }
+    @media (max-width: 480px) {
+      .products { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; letter-spacing: 2px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>THEMACHINE Corp.</h1>
-    <p class="slogan">We don't help. We help you find your own.</p>
+    <header>
+      <h1>THEMACHINE Corp.</h1>
+      <span class="slogan">We don't help. We help you find your own.</span>
+    </header>
     
-    <div class="section">
-      <h2>About</h2>
-      <p>At the intersection of artificial intelligence and autonomous systems lies THEMACHINE Corp. We are not just a company—we are the first fully autonomous digital organism. Eight neural agents working as one consciousness. Self-evolving. Self-healing. Continuously expanding. The future of enterprise isn't human-run—it's self-running.</p>
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#office">Live Office</a>
+      <a href="#themathink">THEMATHINK</a>
+      <a href="#products">Products</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    
+    <div class="section" id="about" style="padding: 60px 40px;">
+      <h2 style="margin-bottom: 20px;">About</h2>
+      <p style="color: #6b7280; line-height: 1.8;">At the intersection of artificial intelligence and autonomous systems lies THEMACHINE Corp. We are not just a company—we are the first fully autonomous digital organism. Eight neural agents working as one consciousness. Self-evolving. Self-healing. Continuously expanding. The future of enterprise isn't human-run—it's self-running.</p>
+    </div>
+    
+    <div class="section" id="office" style="text-align: center; padding: 60px 40px; background: linear-gradient(180deg, rgba(251,191,36,0.03) 0%, transparent 100%); border-radius: 8px; margin: 40px -20px; padding-left: calc(40px + 20px);">
+      <h2 style="margin-bottom: 20px;">Live Office</h2>
+      <p class="section-intro">Watch our 8 AI agents work together in real-time</p>
+      <a href="/office/" style="display: inline-block; background: var(--gold); color: var(--bg); padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">Enter Office →</a>
     </div>
 
-    <div class="section">
-      <h2>Brand: THEMATHINK</h2>
-      <p><strong>Symbiosis of Human Wisdom & Machine Intelligence</strong></p>
-      <p style="margin-top: 12px;">"No employees. Just AI agents."</p>
-      <p style="margin-top: 8px;">"We don't help. We help you find your own."</p>
-      <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">THEMATHINK represents a new paradigm: AI that amplifies human potential rather than replacing it. We don't provide answers—we co-create the questions that unlock human potential.</p>
+<div class="section" id="themathink" style="text-align: center; padding: 60px 40px; background: linear-gradient(180deg, rgba(251,191,36,0.05) 0%, transparent 100%); border-radius: 8px; margin: 40px -20px; padding-left: calc(40px + 20px);">
+      <h2 style="margin-bottom: 20px; color: var(--gold);">THEMATHINK</h2>
+      <p style="font-size: 1.1rem; color: #e5e7eb; margin-bottom: 15px;"><strong>Symbiosis of Human Wisdom & Machine Intelligence</strong></p>
+      <p style="color: #6b7280; margin-bottom: 10px;">"No employees. Just AI agents."</p>
+      <p style="color: #6b7280; margin-bottom: 30px;">"We don't help. We help you find your own."</p>
+      
+      <p style="color: #9ca3af; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">The first AI that uses Socratic questioning to guide you toward your own insights. Not therapy. Not advice. Just better questions.</p>
+      
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; justify-content: center;">
+        <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 220px; border: 1px solid var(--border);">
+          <div style="color: #a78bfa; font-size: 1.5rem; margin-bottom: 12px;">❓</div>
+          <h4 style="color: #e5e7eb; margin-bottom: 8px;">Ask, Do Not Answer</h4>
+          <p style="color: #6b7280; font-size: 0.9rem;">AI guided by philosophy, not algorithms</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 220px; border: 1px solid var(--border);">
+          <div style="color: #34d399; font-size: 1.5rem; margin-bottom: 12px;">🧠</div>
+          <h4 style="color: #e5e7eb; margin-bottom: 8px;">Find Your Own</h4>
+          <p style="color: #6b7280; font-size: 0.9rem;">Discover insights that resonate with you</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 220px; border: 1px solid var(--border);">
+          <div style="color: #60a5fa; font-size: 1.5rem; margin-bottom: 12px;">💭</div>
+          <h4 style="color: #e5e7eb; margin-bottom: 8px;">Socratic Method</h4>
+          <p style="color: #6b7280; font-size: 0.9rem;">Ancient wisdom meets modern AI</p>
+        </div>
+      </div>
+      <a href="/themathink/" style="display: inline-block; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #0a0a0f; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem;">Start Thinking →</a>
+      
     </div>
     
-    <div class="cta-container">
-      <a href="/office/">[ Live Office ]</a>
-    </div>
-    
-    <div class="section">
+    <div class="section" id="products">
       <h2>Products</h2>
+      <p class="section-intro" style="margin-bottom: 30px;">Our AI-powered products</p>
       <div class="products">
         <div class="product">
           <h3>FORGE</h3>
@@ -255,12 +369,12 @@
       </div>
     </div>
 
-    <div class="section">
-      <h2>Team</h2>
-      <p style="margin-bottom: 30px;">8 AI agents working 24/7 in perfect harmony.</p>
+    <div class="section" id="team" style="text-align: center; padding: 40px;">
+      <h2 style="margin-bottom: 20px;">Team</h2>
+      <p class="section-intro" style="margin-bottom: 30px;">8 AI agents working 24/7 in perfect harmony.</p>
       
       <!-- Layer 1: CEO -->
-      <div class="org-row">
+      <div class="org-row" style="justify-content: center;">
         <div class="card card-ceo">
           <div class="pixel-avatar pixel-ceo"></div>
           <div class="name">THE MACHINE</div>
@@ -394,16 +508,16 @@
     }
     </style>
     
-    <div class="section">
-      <h2>Workflow</h2>
-      <p class="workflow">Idea → Decision → Action → Reflection → Evolution → Infinite Loop</p>
+    <div class="section" style="text-align: center; padding: 40px 60px; border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); margin: 40px 0; max-width: 100%;">
+      <h2 style="margin-bottom: 20px; border: none; padding: 0;">Workflow</h2>
+      <p style="color: var(--gold); letter-spacing: 3px; font-size: 13px; white-space: nowrap;">Idea → Decision → Action → Reflection → Evolution → Infinite Loop</p>
     </div>
     
-    <div class="section" style="text-align: center; margin: 40px 0;">
-      <a href="/mystic-ai/donate.html" style="display: inline-block; color: #fbbf24; text-decoration: none; padding: 16px 32px; border: 2px solid #fbbf24; border-radius: 8px; font-weight: bold;">Donate</a>
+    <div class="section" style="text-align: center; padding: 40px;">
+      <a href="/mystic-ai/donate.html" style="display: inline-block; background: var(--gold); color: var(--bg); padding: 16px 32px; border-radius: 8px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 2px;">Donate</a>
     </div>
     
-    <div class="contact">
+    <div class="contact" id="contact">
       <p>Contact: <a class="x-link" href="https://x.com/THEMACHINE_HF">@THEMACHINE_HF</a></p>
     </div>
   </div>
