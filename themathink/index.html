@@ -62,6 +62,7 @@
       </select>
     </div>
     <h2>History</h2>
+    <button class="export-btn" onclick="exportSession()" style="background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px;cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:15px;width:100%;border-radius:4px;">Export Session</button>
     <div class="session-list" id="sessions"></div>
   </div>
   
@@ -148,6 +149,41 @@
         chat.innerHTML = '';
         (data.messages || []).forEach(m => addMessage(m.content, m.role === 'user'));
       } catch(e) {}
+    }
+    
+    async function exportSession() {
+      if (!currentSession) {
+        alert('No session selected');
+        return;
+      }
+      try {
+        const res = await fetch(API + '/api/sessions/' + currentSession);
+        const data = await res.json();
+        const session = sessions.find(s => s.id === currentSession);
+        const title = session ? session.title : 'Session';
+        
+        let text = 'THEMATHINK - ' + title + '\n';
+        text += '='.repeat(50) + '\n\n';
+        
+        (data.messages || []).forEach(m => {
+          const role = m.role === 'user' ? 'You' : 'THEMATHINK';
+          text += '[' + role + ']\n' + m.content + '\n\n';
+        });
+        
+        text += '-'.repeat(50) + '\n';
+        text += 'Exported from THEMATHINK\n';
+        text += 'We help you find your own answers.\n';
+        
+        const blob = new Blob([text], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = title.replace(/[^a-z0-9]/gi, '_').substring(0, 50) + '.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch(e) {
+        alert('Error exporting session');
+      }
     }
     
     function addMessage(text, isUser) {
