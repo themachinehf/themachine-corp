@@ -1,0 +1,12 @@
+{
+  "agents": [
+    { "id": "nexus", "action": "working", "x": 480, "y": 100, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "cfo", "action": "working", "x": 200, "y": 250, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "cto", "action": "thinking", "x": 760, "y": 250, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "cpo", "action": "working", "x": 300, "y": 400, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "cmo", "action": "coffee", "x": 660, "y": 400, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "sec", "action": "idle", "x": 150, "y": 500, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "dev", "action": "working", "x": 810, "y": 500, "timestamp": "2026-03-09T08:30:00Z" },
+    { "id": "researcher", "action": "thinking", "x": 480, "y": 550, "timestamp": "2026-03-09T08:30:00Z" }
+  ]
+}
