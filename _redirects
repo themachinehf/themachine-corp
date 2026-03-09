@@ -1,1 +1,8 @@
 /* /index.html 200
+
+/knowledge /knowledge.html 200
+
+/fund /fund.html 200
+
+/office /office/index.html 200
+/office/* /office/index.html 200

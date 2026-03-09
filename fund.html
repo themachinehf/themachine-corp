@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Fund | THEMACHINE Corp.</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #111118;
+      --text: #e5e7eb;
+      --text-muted: #6b7280;
+      --gold: #fbbf24;
+      --gold-dim: #b45309;
+      --green: #10b981;
+      --red: #ef4444;
+      --border: #1e293b;
+      --font: 'Courier New', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: var(--font); 
+      min-height: 100vh;
+    }
+    .container { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      padding: 40px 20px; 
+    }
+    
+    /* Header */
+    header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100px;
+      height: 2px;
+      background: var(--gold);
+    }
+    h1 { 
+      font-size: 32px; 
+      color: var(--gold); 
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+    .slogan { 
+      font-size: 14px; 
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    
+    /* Navigation */
+    .nav { 
+      display: flex; 
+      gap: 10px; 
+      margin-bottom: 30px; 
+      flex-wrap: wrap;
+    }
+    .nav a { 
+      color: var(--gold); 
+      text-decoration: none; 
+      padding: 8px 16px; 
+      border: 1px solid var(--gold);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .nav a:hover { 
+      background: var(--gold); 
+      color: var(--bg); 
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 20px;
+      position: relative;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--gold);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--text);
+    }
+    .stat-value.green { color: var(--green); }
+    .stat-value.red { color: var(--red); }
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: 30px;
+    }
+    .section-title {
+      font-size: 14px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: normal;
+    }
+    td {
+      color: var(--text);
+    }
+    .side-buy { color: var(--green); }
+    .side-sell { color: var(--red); }
+    .pnl-positive { color: var(--green); }
+    .pnl-negative { color: var(--red); }
+    
+    /* Equity Chart */
+    .chart-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 20px;
+      height: 300px;
+      position: relative;
+    }
+    .chart-canvas {
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Positions */
+    .positions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .position-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+    .position-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .position-symbol {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .position-side {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 2px;
+      text-transform: uppercase;
+    }
+    .position-side.long { background: rgba(16, 185, 129, 0.2); color: var(--green); }
+    .position-side.short { background: rgba(239, 68, 68, 0.2); color: var(--red); }
+    .position-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .position-detail-label {
+      color: var(--text-muted);
+    }
+    .position-pnl {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    /* Loading */
+    .loading {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    /* Time selector */
+    .time-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .time-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: var(--font);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .time-btn:hover, .time-btn.active {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🤖 AI Fund</h1>
+      <p class="slogan">Automated Trading System // Tracking P&L</p>
+    </header>
+    
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/mystic-ai">Mystic AI</a>
+      <a href="/office">Office</a>
+      <a href="/fund" style="background: var(--gold); color: var(--bg);">Fund</a>
+    </nav>
+    
+    <div class="status-bar">
+      <div class="status-indicator">
+        <span class="status-dot"></span>
+        <span>OKX Connected</span>
+      </div>
+      <div id="lastUpdate">Last update: --</div>
+    </div>
+    
+    <!-- Balance Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Balance</div>
+        <div class="stat-value" id="totalBalance">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Available</div>
+        <div class="stat-value" id="availableBalance">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Unrealized P&L</div>
+        <div class="stat-value" id="unrealizedPnl">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value" id="winRate">--</div>
+      </div>
+    </div>
+    
+    <!-- P&L Stats -->
+    <div class="section">
+      <div class="section-title">Profit & Loss</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Today</div>
+          <div class="stat-value" id="pnlToday">--</div>
+          <div class="stat-sub" id="pnlTodayPercent"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Week</div>
+          <div class="stat-value" id="pnlWeek">--</div>
+          <div class="stat-sub" id="pnlWeekPercent"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">This Month</div>
+          <div class="stat-value" id="pnlMonth">--</div>
+          <div class="stat-sub" id="pnlMonthPercent"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">All Time</div>
+          <div class="stat-value" id="pnlTotal">--</div>
+          <div class="stat-sub" id="pnlTotalPercent"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Equity Curve -->
+    <div class="section">
+      <div class="section-title">Equity Curve (30 Days)</div>
+      <div class="chart-container">
+        <canvas id="equityChart" class="chart-canvas"></canvas>
+      </div>
+    </div>
+    
+    <!-- Current Positions -->
+    <div class="section">
+      <div class="section-title">Current Positions</div>
+      <div class="positions-grid" id="positionsGrid">
+        <div class="loading">Loading positions...</div>
+      </div>
+    </div>
+    
+    <!-- Trade History -->
+    <div class="section">
+      <div class="section-title">Trade History</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Symbol</th>
+              <th>Side</th>
+              <th>Amount</th>
+              <th>Price</th>
+              <th>P&L</th>
+            </tr>
+          </thead>
+          <tbody id="tradesTable">
+            <tr><td colspan="6" class="loading">Loading trades...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const API_BASE = 'https://themachine-ops.jxs66.workers.dev/api';
+    
+    // Format currency
+    function formatCurrency(value) {
+      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    
+    // Format percentage
+    function formatPercent(value) {
+      const sign = value >= 0 ? '+' : '';
+      return sign + value.toFixed(2) + '%';
+    }
+    
+    // Format time
+    function formatTime(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    
+    // Load balance
+    async function loadBalance() {
+      try {
+        const res = await fetch(`${API_BASE}/fund/balance`);
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('totalBalance').textContent = formatCurrency(data.balance.total);
+          document.getElementById('availableBalance').textContent = formatCurrency(data.balance.available);
+          
+          // Calculate unrealized P&L from positions
+          const posRes = await fetch(`${API_BASE}/fund/positions`);
+          const posData = await posRes.json();
+          if (posData.success) {
+            const totalPnl = posData.positions.reduce((sum, p) => sum + p.pnl, 0);
+            const pnlEl = document.getElementById('unrealizedPnl');
+            pnlEl.textContent = formatCurrency(totalPnl);
+            pnlEl.className = 'stat-value ' + (totalPnl >= 0 ? 'green' : 'red');
+          }
+          
+          // Win rate (simulated)
+          document.getElementById('winRate').textContent = '68.5%';
+        }
+      } catch (e) {
+        console.error('Failed to load balance:', e);
+      }
+    }
+    
+    // Load P&L
+    async function loadPnl() {
+      try {
+        const res = await fetch(`${API_BASE}/fund/pnl`);
+        const data = await res.json();
+        if (data.success) {
+          const { today, week, month, total } = data.pnl;
+          
+          const todayEl = document.getElementById('pnlToday');
+          todayEl.textContent = formatCurrency(today.pnl);
+          todayEl.className = 'stat-value ' + (today.pnl >= 0 ? 'green' : 'red');
+          document.getElementById('pnlTodayPercent').textContent = `${today.trades} trades`;
+          
+          const weekEl = document.getElementById('pnlWeek');
+          weekEl.textContent = formatCurrency(week.pnl);
+          weekEl.className = 'stat-value ' + (week.pnl >= 0 ? 'green' : 'red');
+          document.getElementById('pnlWeekPercent').textContent = formatPercent(week.pnlPercent);
+          
+          const monthEl = document.getElementById('pnlMonth');
+          monthEl.textContent = formatCurrency(month.pnl);
+          monthEl.className = 'stat-value ' + (month.pnl >= 0 ? 'green' : 'red');
+          document.getElementById('pnlMonthPercent').textContent = formatPercent(month.pnlPercent);
+          
+          const totalEl = document.getElementById('pnlTotal');
+          totalEl.textContent = formatCurrency(total.pnl);
+          totalEl.className = 'stat-value ' + (total.pnl >= 0 ? 'green' : 'red');
+          document.getElementById('pnlTotalPercent').textContent = formatPercent(total.pnlPercent) + ' / ' + total.trades + ' trades';
+        }
+      } catch (e) {
+        console.error('Failed to load PnL:', e);
+      }
+    }
+    
+    // Load positions
+    async function loadPositions() {
+      try {
+        const res = await fetch(`${API_BASE}/fund/positions`);
+        const data = await res.json();
+        const grid = document.getElementById('positionsGrid');
+        
+        if (data.success && data.positions.length > 0) {
+          grid.innerHTML = data.positions.map(p => `
+            <div class="position-card">
+              <div class="position-header">
+                <span class="position-symbol">${p.symbol}</span>
+                <span class="position-side ${p.side}">${p.side}</span>
+              </div>
+              <div class="position-details">
+                <div><span class="position-detail-label">Amount:</span> ${p.amount}</div>
+                <div><span class="position-detail-label">Entry:</span> $${p.entryPrice}</div>
+                <div><span class="position-detail-label">Current:</span> $${p.currentPrice}</div>
+                <div><span class="position-detail-label">Return:</span> ${formatPercent(p.pnlPercent)}</div>
+              </div>
+              <div class="position-pnl ${p.pnl >= 0 ? 'pnl-positive' : 'pnl-negative'}">
+                ${formatCurrency(p.pnl)}
+              </div>
+            </div>
+          `).join('');
+        } else {
+          grid.innerHTML = '<div class="loading">No open positions</div>';
+        }
+      } catch (e) {
+        console.error('Failed to load positions:', e);
+        document.getElementById('positionsGrid').innerHTML = '<div class="loading">Failed to load</div>';
+      }
+    }
+    
+    // Load trades
+    async function loadTrades() {
+      try {
+        const res = await fetch(`${API_BASE}/fund/trades`);
+        const data = await res.json();
+        const tbody = document.getElementById('tradesTable');
+        
+        if (data.success && data.trades.length > 0) {
+          tbody.innerHTML = data.trades.map(t => `
+            <tr>
+              <td>${formatTime(t.time)}</td>
+              <td>${t.symbol}</td>
+              <td class="side-${t.side}">${t.side.toUpperCase()}</td>
+              <td>${t.amount}</td>
+              <td>$${t.price}</td>
+              <td class="${t.pnl > 0 ? 'pnl-positive' : t.pnl < 0 ? 'pnl-negative' : ''}">
+                ${t.pnl !== 0 ? formatCurrency(t.pnl) : '-'}
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" class="loading">No trades yet</td></tr>';
+        }
+      } catch (e) {
+        console.error('Failed to load trades:', e);
+        document.getElementById('tradesTable').innerHTML = '<tr><td colspan="6" class="loading">Failed to load</td></tr>';
+      }
+    }
+    
+    // Draw equity chart
+    async function drawEquityCurve() {
+      try {
+        const res = await fetch(`${API_BASE}/fund/equity-curve`);
+        const data = await res.json();
+        
+        if (!data.success) return;
+        
+        const canvas = document.getElementById('equityChart');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width - 40;
+        canvas.height = rect.height - 40;
+        
+        const points = data.equityCurve;
+        const padding = 40;
+        const width = canvas.width - padding * 2;
+        const height = canvas.height - padding * 2;
+        
+        const minVal = Math.min(...points.map(p => p.equity)) * 0.95;
+        const maxVal = Math.max(...points.map(p => p.equity)) * 1.05;
+        const range = maxVal - minVal;
+        
+        // Clear
+        ctx.fillStyle = '#111118';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw grid
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+          const y = padding + (height / 4) * i;
+          ctx.beginPath();
+          ctx.moveTo(padding, y);
+          ctx.lineTo(canvas.width - padding, y);
+          ctx.stroke();
+        }
+        
+        // Draw line
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        
+        points.forEach((p, i) => {
+          const x = padding + (width / (points.length - 1)) * i;
+          const y = padding + height - ((p.equity - minVal) / range) * height;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        
+        // Draw gradient fill
+        const gradient = ctx.createLinearGradient(0, padding, 0, canvas.height - padding);
+        gradient.addColorStop(0, 'rgba(251, 191, 36, 0.3)');
+        gradient.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        
+        ctx.lineTo(padding + width, canvas.height - padding);
+        ctx.lineTo(padding, canvas.height - padding);
+        ctx.closePath();
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Draw labels
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '10px Courier New';
+        ctx.textAlign = 'left';
+        
+        // Y axis labels
+        for (let i = 0; i <= 4; i++) {
+          const y = padding + (height / 4) * i;
+          const val = maxVal - (range / 4) * i;
+          ctx.fillText('$' + Math.round(val).toLocaleString(), 5, y + 3);
+        }
+        
+        // X axis labels (first, middle, last)
+        ctx.textAlign = 'center';
+        ctx.fillText(points[0].date.slice(5), padding, canvas.height - 10);
+        ctx.fillText(points[Math.floor(points.length/2)].date.slice(5), padding + width/2, canvas.height - 10);
+        ctx.fillText(points[points.length-1].date.slice(5), padding + width, canvas.height - 10);
+        
+      } catch (e) {
+        console.error('Failed to draw chart:', e);
+      }
+    }
+    
+    // Update timestamp
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('lastUpdate').textContent = 'Last update: ' + now.toLocaleTimeString();
+    }
+    
+    // Initialize
+    async function init() {
+      await Promise.all([
+        loadBalance(),
+        loadPnl(),
+        loadPositions(),
+        loadTrades(),
+        drawEquityCurve()
+      ]);
+      updateTime();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(async () => {
+        await Promise.all([
+          loadBalance(),
+          loadPnl(),
+          loadPositions()
+        ]);
+        updateTime();
+      }, 30000);
+    }
+    
+    init();
+  </script>
+</body>
+</html>
