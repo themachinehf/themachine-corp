@@ -11,21 +11,16 @@
     
     .sidebar { width: 280px; background: linear-gradient(180deg, #0f0f14 0%, #0a0a0f 100%); border-right: 2px solid var(--border); padding: 30px 20px; display: flex; flex-direction: column; }
     .sidebar h2 { color: var(--gold); font-size: 12px; letter-spacing: 3px; margin-bottom: 25px; text-transform: uppercase; }
-    .new-btn { background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%); color: var(--bg); border: none; padding: 14px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; border-radius: 4px; transition: all 0.2s; }
-    .new-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(251,191,36,0.3); }
-    
-    .new-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 2px solid var(--border); color: var(--text); font-family: inherit; border-radius: 4px; margin-bottom: 25px; display: none; }
-    .new-input.show { display: block; }
-    .new-input:focus { outline: none; border-color: var(--gold); }
+    .new-btn { background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%); color: var(--bg); border: none; padding: 14px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; border-radius: 4px; }
+    .new-btn:hover { transform: translateY(-2px); }
     
     .mode-select { margin-bottom: 25px; }
     .mode-select label { display: block; font-size: 11px; color: #6b7280; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .mode-select select { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 2px solid var(--border); color: var(--text); font-family: inherit; border-radius: 4px; cursor: pointer; }
-    .mode-select select:focus { outline: none; border-color: var(--gold); }
+    .mode-select select { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 2px solid var(--border); color: var(--text); border-radius: 4px; }
     
     .session-list { flex: 1; overflow-y: auto; }
-    .session-item { padding: 14px 12px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; font-size: 13px; border-radius: 4px; transition: all 0.2s; }
-    .session-item:hover { border-color: var(--gold); background: rgba(251,191,36,0.05); }
+    .session-item { padding: 14px 12px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; font-size: 13px; border-radius: 4px; }
+    .session-item:hover { border-color: var(--gold); }
     .session-item.active { border-color: var(--gold); background: rgba(251,191,36,0.1); }
     
     .main { flex: 1; display: flex; flex-direction: column; padding: 40px 60px; max-width: 900px; margin: 0 auto; }
@@ -38,9 +33,13 @@
     .input-area { display: flex; gap: 15px; }
     input { flex: 1; padding: 18px 24px; background: rgba(255,255,255,0.03); border: 2px solid var(--border); color: var(--text); font-family: inherit; font-size: 14px; border-radius: 4px; }
     input:focus { outline: none; border-color: var(--gold); }
-    button { padding: 18px 36px; background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%); color: var(--bg); border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; transition: all 0.2s; }
-    button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(251,191,36,0.3); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    button { padding: 18px 36px; background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%); color: var(--bg); border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; }
+    button:hover { transform: translateY(-2px); }
+    button:disabled { opacity: 0.5; }
+    
+    .user-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .user-info { color: #6b7280; font-size: 14px; }
+    .logout-btn { background: transparent; border: 1px solid var(--border); color: #6b7280; padding: 8px 16px; font-size: 12px; }
     
     @media (max-width: 768px) {
       body { flex-direction: column; }
@@ -53,7 +52,7 @@
   <div class="sidebar">
     <h2>Think</h2>
     <button class="new-btn" onclick="toggleNewInput()">+ New Session</button>
-    <input type="text" id="newTitle" class="new-input" placeholder="What to think about? (Enter)" onkeypress="handleNewEnter(event)">
+    <input type="text" id="newTitle" placeholder="What to think about?" style="display:none;width:100%;padding:12px;background:rgba(255,255,255,0.03);border:2px solid var(--border);color:var(--text);margin-bottom:20px;border-radius:4px;" onkeypress="handleNewEnter(event)">
     <div class="mode-select">
       <label>Philosophy Mode</label>
       <select id="mode">
@@ -67,6 +66,11 @@
   </div>
   
   <div class="main">
+    <div class="user-bar">
+      <div class="user-info" id="userInfo">Guest Mode</div>
+      <button class="logout-btn" onclick="goToAccount()">Account</button>
+    </div>
+        
     <h1>THEMATHINK</h1>
     <p class="tagline">We don't help. We help you find your own.</p>
     <div id="chat"></div>
@@ -80,11 +84,21 @@
     const API = 'https://themathink.jxs66.workers.dev';
     let currentSession = null;
     let sessions = [];
+    let user = JSON.parse(localStorage.getItem('user') || 'null');
+    
+    // Show user info
+    if (user) {
+      document.getElementById('userInfo').textContent = user.email || 'Logged in';
+    }
+    
+    function goToAccount() {
+      window.location.href = '/account.html';
+    }
     
     function toggleNewInput() {
       const input = document.getElementById('newTitle');
-      input.classList.toggle('show');
-      if (input.classList.contains('show')) input.focus();
+      input.style.display = input.style.display === 'none' ? 'block' : 'none';
+      if (input.style.display === 'block') input.focus();
     }
     
     function handleNewEnter(e) {
@@ -103,9 +117,9 @@
         currentSession = data.session.id;
         document.getElementById('chat').innerHTML = '';
         document.getElementById('newTitle').value = '';
-        document.getElementById('newTitle').classList.remove('show');
+        document.getElementById('newTitle').style.display = 'none';
         loadSessions();
-      } catch(e) {}
+      } catch(e) { alert('Error creating session'); }
     }
     
     async function loadSessions() {
@@ -114,7 +128,7 @@
         const data = await res.json();
         sessions = data.sessions || [];
         renderSessions();
-      } catch(e) {}
+      } catch(e) { console.log(e); }
     }
     
     function renderSessions() {
