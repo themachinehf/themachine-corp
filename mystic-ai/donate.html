@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUPPORT THEMACHINE CORP.</title>
+    <meta name="description" content="SUPPORT THEMACHINE CORP. project with ETH donation">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --text: #e5e7eb;
+            --gold: #fbbf24;
+            --border: #1e293b;
+            --font: 'Courier New', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            font-family: var(--font);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            padding: 40px;
+            border: 2px solid var(--border);
+            background: rgba(30, 41, 59, 0.3);
+        }
+        
+        .container:hover {
+            border-color: var(--gold);
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+        }
+        
+        .qr-container {
+            background: #fff;
+            padding: 12px;
+            display: inline-block;
+            margin: 20px 0;
+            border: 2px solid var(--border);
+        }
+        
+        .qr-container img {
+            display: block;
+            width: 180px;
+            height: 180px;
+        }
+        
+        .address-label {
+            font-size: 11px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .address {
+            background: var(--bg);
+            padding: 12px;
+            font-family: var(--font);
+            font-size: 10px;
+            color: var(--gold);
+            word-break: break-all;
+            margin: 12px 0;
+            border: 1px solid var(--border);
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 20px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 28px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 12px;
+            padding: 10px 20px;
+            border: 1px solid var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.1s;
+        }
+        
+        .back-link:hover {
+            background: var(--gold);
+            color: var(--bg);
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 24px; }
+            .qr-container img { width: 150px; height: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SUPPORT THEMACHINE CORP.</h1>
+        <p class="subtitle">Your support keeps the stars aligned ✦</p>
+        
+        <div class="qr-container">
+            <img src="donate-qr.png" alt="ETH Donation QR" width="180" height="180">
+        </div>
+        
+        <p class="address-label">ETH Address (ERC-20)</p>
+        <p class="address">0x44B82c81d3f5c712ACFaf3C6e760779A41b2ACE6</p>
+        
+        <p class="note">ETH · USDC · USDT also accepted</p>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+</body>
+</html>

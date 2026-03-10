@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOCIAL | THEMACHINE Corp.</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --text: #e5e7eb;
+      --gold: #fbbf24;
+      --border: #1e293b;
+      --font: 'Courier New', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: var(--font); 
+      min-height: 100vh;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+    
+    h1 { 
+      font-size: 48px; 
+      color: var(--gold); 
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+    }
+    
+    .back { 
+      display: inline-block; 
+      color: var(--gold); 
+      text-decoration: none; 
+      margin-bottom: 40px;
+      border: 1px solid var(--gold);
+      padding: 8px 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .back:hover { 
+      background: var(--gold); 
+      color: var(--bg); 
+    }
+    
+    .section { margin-bottom: 40px; }
+    .section h2 { 
+      color: var(--gold); 
+      font-size: 18px; 
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .section p { 
+      color: #9ca3af; 
+      line-height: 1.8; 
+    }
+    
+    .price { 
+      font-size: 24px; 
+      color: #22c55e; 
+      margin: 20px 0;
+      border: 1px solid #22c55e;
+      display: inline-block;
+      padding: 8px 16px;
+    }
+    
+    .features {
+      background: rgba(30, 41, 59, 0.3);
+      border: 2px solid var(--border);
+      padding: 20px;
+    }
+    .features p {
+      color: var(--text);
+      line-height: 2;
+    }
+    
+    .cta { 
+      display: inline-block; 
+      background: transparent;
+      color: var(--gold); 
+      padding: 14px 28px; 
+      border: 2px solid var(--gold);
+      text-decoration: none; 
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 20px;
+    }
+    .cta:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+    
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; letter-spacing: 4px; }
+      .container { padding: 30px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back">← Back</a>
+    <h1>SOCIAL</h1>
+    <div class="price">$5/mo</div>
+    
+    <div class="section">
+      <h2>AI-Powered Social Media Manager</h2>
+      <p>Manage all your social media accounts with AI. Schedule posts, analyze engagement, and grow your audience.</p>
+    </div>
+    
+    <div class="section">
+      <h2>Features</h2>
+      <div class="features">
+        <p>• Multi-platform scheduling<br>• AI-generated captions<br>• Analytics dashboard<br>• Engagement tracking</p>
+      </div>
+    </div>
+    
+    <a href="#" class="cta">[ Coming Soon ]</a>
+  </div>
+</body>
+</html>

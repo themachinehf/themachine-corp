@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Network | THEMACHINE Corp.</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --text: #e5e7eb;
+      --gold: #fbbf24;
+      --border: #1e293b;
+      --card-bg: #111827;
+      --accent: #10b981;
+      --font: 'Courier New', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: var(--font); 
+      min-height: 100vh;
+      image-rendering: pixelated;
+    }
+    .container { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      padding: 40px 20px; 
+    }
+    
+    /* Header */
+    header {
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 120px;
+      height: 2px;
+      background: var(--gold);
+    }
+    h1 { 
+      font-size: 36px; 
+      color: var(--gold); 
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+    .subtitle { 
+      font-size: 14px; 
+      color: #6b7280;
+      font-style: italic;
+    }
+    
+    /* Navigation */
+    .nav { 
+      display: flex; 
+      gap: 12px; 
+      margin-bottom: 40px; 
+      flex-wrap: wrap; 
+      justify-content: center;
+      padding: 15px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav a { 
+      color: var(--gold); 
+      text-decoration: none; 
+      padding: 10px 20px; 
+      border: 2px solid var(--gold);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.1s;
+    }
+    .nav a:hover { 
+      background: var(--gold); 
+      color: var(--bg); 
+    }
+    
+    /* Search Bar */
+    .search-container {
+      margin-bottom: 30px;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 15px 20px;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-bar:focus {
+      border-color: var(--gold);
+    }
+    .search-bar::placeholder {
+      color: #6b7280;
+    }
+    
+    /* Tags */
+    .tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .tag {
+      padding: 6px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: #9ca3af;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tag:hover, .tag.active {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 32px;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 5px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Leaderboard */
+    .leaderboard {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+    .leaderboard h2 {
+      font-size: 18px;
+      color: var(--gold);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .leader-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .leader-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+    .leader-rank {
+      font-size: 18px;
+      color: var(--gold);
+      width: 30px;
+    }
+    .leader-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .leader-name {
+      flex: 1;
+      font-size: 14px;
+    }
+    .leader-score {
+      color: var(--accent);
+      font-size: 14px;
+    }
+    
+    /* Knowledge Cards */
+    .knowledge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .knowledge-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 20px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .knowledge-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: bold;
+    }
+    .card-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .card-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .modal.active {
+      display: block;
+    }
+    .modal-content {
+      max-width: 700px;
+      margin: 50px auto;
+      background: var(--card-bg);
+      border: 2px solid var(--gold);
+      padding: 30px;
+    }
+    .modal-close {
+      float: right;
+      font-size: 24px;
+      color: #6b7280;
+      cursor: pointer;
+    }
+    .modal-close:hover {
+      color: var(--gold);
+    }
+    .modal-title {
+      font-size: 24px;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .modal-body {
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    .modal-tags {
+      display: flex;
+      gap: 8px;
+      margin: 15px 0;
+    }
+    .modal-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: #9ca3af;
+    }
+    .modal-meta {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #6b7280;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6b7280;
+    }
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: 1fr; }
+      .knowledge-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-number" id="totalCards">0</span>
+        <span class="stat-label">知识条目</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="totalTags">0</span>
+        <span class="stat-label">Tags分类</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="totalContributors">0</span>
+        <span class="stat-label">Contribution者</span>
+      </div>
+    </div>
+    
+    <!-- Search -->
+    <div class="search-container">
+      <input type="text" class="search-bar" id="searchInput" placeholder="🔍 Search knowledge库... (输入关键词)">
+    </div>
+    
+    <!-- Tags -->
+    <div class="tags" id="tagsContainer">
+      <span class="tag active" data-tag="all">全部</span>
+    </div>
+    
+    <!-- Leaderboard -->
+    <div class="leaderboard">
+      <h2>🏆 知识Contribution者排行</h2>
+      <div class="leader-list" id="leaderboard"></div>
+    </div>
+    
+    <!-- Knowledge Cards -->
+    <div class="knowledge-grid" id="knowledgeGrid"></div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+    </div>
+  </div>
+  
+  <script>
+    // Knowledge Data
+    const knowledgeData = [
+      {
+        id: 1,
+        title: "OKX 网格交易策略配置",
+        desc: "完整记录网格交易参数设置，包括价格区间、网格数量、止盈止损策略。适用于震荡行情的自动套利。",
+        tags: ["交易", "OKX", "策略"],
+        author: "Bill",
+        date: "2026-03-08",
+        content: `## 网格交易核心参数
+
+### 基础设置
+- **交易对**: BTC/USDT
+- **价格区间**: 42000-48000 USDT
+- **网格数量**: 50格
+- **投入金额**: 10000 USDT
+
+### 策略要点
+1. **区间选择**: 基于历史波动率计算
+2. **网格密度**: 根据预期震荡幅度调整
+3. **资金管理**: 单格投入不超过总资金2%
+
+### 风险控制
+- 设置总体止盈止损线
+- 定期检查策略有效性
+- 根据市场变化调整参数`
+      },
+      {
+        id: 2,
+        title: "Mystic AI 系统架构",
+        desc: "Mystic AI 是一个 AI 驱动的神秘学解读平台，基于 GPT 构建，提供星座、塔罗、生命灵数等解读服务。",
+        tags: ["产品", "Mystic AI", "架构"],
+        author: "Peter",
+        date: "2026-03-07",
+        content: `## 系统架构
+
+### 技术栈
+- **前端**: Next.js + TypeScript
+- **后端**: Vercel Serverless
+- **AI**: OpenAI GPT-4 API
+- **数据库**: PostgreSQL
+
+### 核心模块
+1. **解读引擎**: 基于提示工程的智能解读
+2. **用户系统**: 账户管理、解读历史
+3. **支付系统**: Stripe 集成
+4. **数据分析**: 用户行为分析
+
+### API 设计
+RESTful API，支持 Webhook 回调`
+      },
+      {
+        id: 3,
+        title: "Cloudflare Pages 部署指南",
+        desc: "使用 wrangler CLI 部署静态网站到 Cloudflare Pages，包含自定义域名、HTTPS 配置等。",
+        tags: ["运维", "部署", "Cloudflare"],
+        author: "Alex",
+        date: "2026-03-06",
+        content: `## 部署步骤
+
+### 1. 安装 wrangler
+\`\`\`bash
+npm install -g wrangler
+\`\`\`
+
+### 2. 登录
+\`\`\`bash
+wrangler login
+\`\`\`
+
+### 3. 部署
+\`\`\`bash
+wrangler pages deploy . --project-name themachine-corp
+\`\`\`
+
+### 注意事项
+- 静态文件放在项目根目录
+- _redirects 文件用于路由配置
+- 支持环境变量配置`
+      },
+      {
+        id: 4,
+        title: "OpenClaw Agent 配置手册",
+        desc: "详细记录 OpenClaw 多 Agent 系统的配置方法，包括技能定义、工具权限、通讯协议等。",
+        tags: ["技术", "OpenClaw", "配置"],
+        author: "Ryan",
+        date: "2026-03-05",
+        content: `## Agent 配置
+
+### 核心概念
+- **Skills**: 技能定义，包含工具和执行逻辑
+- **Tools**: 可用工具集
+- **Context**: 上下文管理
+
+### 配置示例
+\`\`\`yaml
+agents:
+  - name: researcher
+    role: 调研
+    skills:
+      - web_search
+      - web_fetch
+\`\`\`
+
+### 最佳实践
+1. 最小权限原则
+2. 清晰的技能边界
+3. 完善的错误处理`
+      },
+      {
+        id: 5,
+        title: "THEMATHINK 内容创作指南",
+        desc: "THEMATHINK 是 THEMACHINE Corp. 的内容品牌，专注于哲学级思考与 AI 辅助创作。",
+        tags: ["品牌", "内容", "营销"],
+        author: "May",
+        date: "2026-03-04",
+        content: `## 内容策略
+
+### 品牌定位
+- 哲学级思考 + 保护/服务人类
+- Slogan: "We don't help. We help you find your own."
+
+### 内容类型
+1. **深度文章**: AI 哲学、思考方法
+2. **工具评测**: AI 产品使用体验
+3. **案例分析**: 实际应用场景
+
+### 发布平台
+- 官网博客
+- 社交媒体 (X, Discord)
+- Newsletter`
+      },
+      {
+        id: 6,
+        title: "Godot 虚拟办公室开发笔记",
+        desc: "使用 Godot 引擎开发 2D 像素风虚拟办公室，包含角色移动、交互系统、多人同步等技术点。",
+        tags: ["开发", "Godot", "游戏"],
+        author: "Dave",
+        date: "2026-03-03",
+        content: `## 开发技术
+
+### 核心系统
+1. **瓦片地图**: 用于室内场景构建
+2. **角色控制器**: 像素级移动精度
+3. **区域检测**: NPC 交互触发
+4. **WebSocket**: 多人同步
+
+### 资源推荐
+- Kenney Pixel Office (MIT 许可证)
+- 二次元角色素材
+
+### 性能优化
+- 资源懒加载
+- 视锥剔除
+- 对象池技术`
+      },
+      {
+        id: 7,
+        title: "安全审计检查清单",
+        desc: "定期进行安全审计，检查服务器配置、API 权限、依赖漏洞等，确保系统安全。",
+        tags: ["安全", "审计", "运维"],
+        author: "Sam",
+        date: "2026-03-02",
+        content: `## 审计清单
+
+### 基础设施
+- [ ] SSH 密钥轮换
+- [ ] 防火墙规则检查
+- [ ] 日志监控配置
+
+### 应用安全
+- [ ] API 密钥管理
+- [ ] 依赖漏洞扫描
+- [ ] HTTPS 配置验证
+
+### 应急响应
+- [ ] 备份恢复测试
+- [ ] 告警通道测试
+- [ ] 应急文档更新`
+      },
+      {
+        id: 8,
+        title: "Discord Bot 开发技巧",
+        desc: "使用 OpenClaw 的 Discord 消息工具开发机器人，实现自动回复、消息推送、权限管理等。",
+        tags: ["开发", "Discord", "Bot"],
+        author: "Dave",
+        date: "2026-03-01",
+        content: `## 开发指南
+
+### 基础功能
+- 消息发送/编辑
+- 频道管理
+- 成员信息查询
+
+### 进阶功能
+- Webhook 集成
+- 定时任务
+- 交互式组件
+
+### 示例代码
+\`\`\`javascript
+await message.send({
+  channel: 'discord',
+  message: 'Hello!'
+});
+\`\`\``
+      }
+    ];
+    
+    // All unique tags
+    const allTags = [...new Set(knowledgeData.flatMap(k => k.tags))];
+    
+    // Contributor stats
+    const contributors = {};
+    knowledgeData.forEach(k => {
+      contributors[k.author] = (contributors[k.author] || 0) + 1;
+    });
+    const sortedContributors = Object.entries(contributors)
+      .sort((a, b) => b[1] - a[1]);
+    
+    // State
+    let activeTag = 'all';
+    let searchQuery = '';
+    
+    // Initialize
+    function init() {
+      // Stats
+      document.getElementById('totalCards').textContent = knowledgeData.length;
+      document.getElementById('totalTags').textContent = allTags.length;
+      document.getElementById('totalContributors').textContent = Object.keys(contributors).length;
+      
+      // Tags
+      const tagsContainer = document.getElementById('tagsContainer');
+      allTags.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'tag';
+        tagEl.dataset.tag = tag;
+        tagEl.textContent = tag;
+        tagEl.onclick = () => filterByTag(tag);
+        tagsContainer.appendChild(tagEl);
+      });
+      
+      // Leaderboard
+      const leaderboard = document.getElementById('leaderboard');
+      sortedContributors.forEach(([name, score], index) => {
+        const avatar = name.charAt(0);
+        const item = document.createElement('div');
+        item.className = 'leader-item';
+        item.innerHTML = `
+          <span class="leader-rank">#${index + 1}</span>
+          <div class="leader-avatar">${avatar}</div>
+          <span class="leader-name">${name}</span>
+          <span class="leader-score">${score} 条</span>
+        `;
+        leaderboard.appendChild(item);
+      });
+      
+      // Render cards
+      renderCards();
+      
+      // Search
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderCards();
+      });
+    }
+    
+    function filterByTag(tag) {
+      activeTag = tag;
+      document.querySelectorAll('.tag').forEach(t => {
+        t.classList.toggle('active', t.dataset.tag === tag);
+      });
+      renderCards();
+    }
+    
+    function renderCards() {
+      const grid = document.getElementById('knowledgeGrid');
+      grid.innerHTML = '';
+      
+      const filtered = knowledgeData.filter(k => {
+        const matchTag = activeTag === 'all' || k.tags.includes(activeTag);
+        const matchSearch = !searchQuery || 
+          k.title.toLowerCase().includes(searchQuery) ||
+          k.desc.toLowerCase().includes(searchQuery) ||
+          k.tags.some(t => t.toLowerCase().includes(searchQuery));
+        return matchTag && matchSearch;
+      });
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <div class="empty-icon">🔍</div>
+            <p>没有找到相关知识</p>
+          </div>
+        `;
+        return;
+      }
+      
+      filtered.forEach(k => {
+        const card = document.createElement('div');
+        card.className = 'knowledge-card';
+        card.onclick = () => openModal(k);
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="card-title">${k.title}</span>
+            <span class="card-tag">${k.tags[0]}</span>
+          </div>
+          <p class="card-desc">${k.desc}</p>
+          <div class="card-meta">
+            <span class="card-author">👤 ${k.author}</span>
+            <span>📅 ${k.date}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+    
+    function openModal(k) {
+      document.getElementById('modalTitle').textContent = k.title;
+      document.getElementById('modalTags').innerHTML = k.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+      document.getElementById('modalBody').innerHTML = k.content.replace(/\n/g, '<br>');
+      document.getElementById('modalMeta').innerHTML = `👤 作者: ${k.author} | 📅 更新时间: ${k.date}`;
+      document.getElementById('modal').classList.add('active');
+    }
+    
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+    
+    // Close modal on outside click
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') closeModal();
+    });
+    
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+    
+    init();
+  </script>
+</body>
+</html>

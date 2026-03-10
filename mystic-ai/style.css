@@ -1,0 +1,681 @@
+/* ========== Mystic AI - Terminal Pixel Style ========== */
+:root {
+  --bg: #0a0a0f;
+  --text: #e5e7eb;
+  --gold: #fbbf24;
+  --border: #1e293b;
+  --font: 'Courier New', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ========== Container ========== */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ========== Header ========== */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.language-switch {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.lang-btn:hover,
+.lang-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.logo-container {
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.logo-icon {
+    font-size: 48px;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.logo-text {
+    font-size: 32px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    margin-bottom: 8px;
+}
+
+.tagline {
+    color: #6b7280;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* ========== Cards ========== */
+.glass-card {
+    background: rgba(30, 41, 59, 0.3);
+    border: 2px solid var(--border);
+    padding: 32px;
+    margin-bottom: 24px;
+}
+
+.glass-card:hover {
+    border-color: var(--gold);
+}
+
+/* ========== Form Elements ========== */
+.section-title {
+    color: var(--gold);
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: var(--text);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.input-wrapper input,
+.select-wrapper select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+}
+
+.input-wrapper input:focus,
+.select-wrapper select:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.input-wrapper input::placeholder {
+    color: #4b5563;
+}
+
+/* ========== Gender Selector ========== */
+.gender-selector {
+    display: flex;
+    gap: 12px;
+}
+
+.gender-btn {
+    flex: 1;
+    cursor: pointer;
+}
+
+.gender-btn input {
+    display: none;
+}
+
+.gender-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    transition: all 0.1s;
+}
+
+.gender-btn input:checked + .gender-content {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.gender-icon {
+    font-size: 18px;
+}
+
+/* ========== Date Selector ========== */
+.date-selector {
+    display: flex;
+    gap: 12px;
+}
+
+.select-wrapper {
+    flex: 1;
+}
+
+.select-wrapper select {
+    appearance: none;
+    cursor: pointer;
+}
+
+/* ========== Zodiac Display ========== */
+.zodiac-display {
+    margin-top: 12px;
+    color: var(--gold);
+    font-size: 14px;
+}
+
+/* ========== Submit Button ========== */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--font);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.1s;
+}
+
+.submit-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+}
+
+.btn-icon {
+    margin-left: 8px;
+}
+
+/* ========== Loading ========== */
+.loading-container {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.tarot-animation {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.tarot-card-wrapper {
+    width: 60px;
+    height: 90px;
+    perspective: 1000px;
+}
+
+.tarot-card {
+    width: 100%;
+    height: 100%;
+    background: var(--border);
+    border: 2px solid var(--gold);
+    animation: flip 1.5s ease-in-out infinite;
+}
+
+.delay-1 .tarot-card { animation-delay: 0.2s; }
+.delay-2 .tarot-card { animation-delay: 0.4s; }
+
+@keyframes flip {
+    0%, 100% { transform: rotateY(0deg); }
+    50% { transform: rotateY(180deg); }
+}
+
+.loading-text {
+    color: var(--gold);
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+.loading-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    margin: 0 4px;
+    animation: blink 1.4s infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* ========== Results ========== */
+.results-container {
+    text-align: center;
+}
+
+.tarot-reveal {
+    margin-bottom: 32px;
+}
+
+.tarot-card-container {
+    display: inline-block;
+    width: 120px;
+    height: 180px;
+    perspective: 1000px;
+}
+
+.tarot-card-face {
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    border: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-symbol {
+    font-size: 48px;
+    color: var(--gold);
+}
+
+.tarot-symbol-display {
+    font-size: 64px;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.tarot-name {
+    color: var(--gold);
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+/* ========== Results Grid ========== */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.result-card {
+    background: rgba(30, 41, 59, 0.3);
+    border: 2px solid var(--border);
+    padding: 20px;
+    text-align: left;
+}
+
+.result-card:hover {
+    border-color: var(--gold);
+}
+
+.result-card.wide {
+    grid-column: span 2;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.card-icon {
+    color: var(--gold);
+    font-size: 16px;
+}
+
+.card-header h3 {
+    color: var(--gold);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: normal;
+}
+
+.card-content {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* ========== Buttons ========== */
+.restart-btn,
+.back-btn,
+.share-btn {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 24px;
+    font-family: var(--font);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin: 8px;
+    transition: all 0.1s;
+}
+
+.restart-btn:hover,
+.back-btn:hover,
+.share-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+}
+
+/* ========== History ========== */
+.history-section {
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+}
+
+.history-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.history-toggle-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.history-icon {
+    font-size: 16px;
+}
+
+.history-count {
+    background: var(--gold);
+    color: var(--bg);
+    padding: 2px 8px;
+    font-size: 11px;
+}
+
+.history-panel {
+    margin-top: 16px;
+    background: rgba(30, 41, 59, 0.3);
+    border: 2px solid var(--border);
+    padding: 20px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.history-header h3 {
+    color: var(--gold);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: normal;
+}
+
+.clear-history-btn {
+    background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 6px 12px;
+    font-family: var(--font);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.history-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.empty-history {
+    color: #6b7280;
+    text-align: center;
+    padding: 20px;
+}
+
+/* ========== Newsletter ========== */
+.newsletter-section {
+    margin-top: 40px;
+}
+
+.newsletter-card {
+    background: rgba(30, 41, 59, 0.3);
+    border: 2px solid var(--border);
+    padding: 32px;
+    text-align: center;
+}
+
+.newsletter-card:hover {
+    border-color: var(--gold);
+}
+
+.newsletter-icon-wrapper {
+    margin-bottom: 16px;
+}
+
+.newsletter-icon {
+    font-size: 32px;
+}
+
+.newsletter-card h3 {
+    color: var(--gold);
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.newsletter-subtitle {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.newsletter-form .input-wrapper {
+    flex: 1;
+}
+
+.newsletter-btn {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 20px;
+    font-family: var(--font);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.newsletter-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+}
+
+.newsletter-note {
+    color: #6b7280;
+    font-size: 11px;
+}
+
+/* ========== Footer ========== */
+.footer {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.donate-card {
+    background: rgba(30, 41, 59, 0.3);
+    border: 2px solid var(--border);
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.donate-card:hover {
+    border-color: var(--gold);
+}
+
+.donate-header {
+    margin-bottom: 16px;
+}
+
+.donate-icon-wrapper {
+    margin-bottom: 8px;
+}
+
+.donate-icon {
+    font-size: 24px;
+    color: var(--gold);
+}
+
+.donate-header h3 {
+    color: var(--gold);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: normal;
+}
+
+.donate-subtitle {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.wallet-display {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px;
+    margin: 16px 0;
+}
+
+.wallet-label {
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.wallet-address-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.wallet-address {
+    font-family: var(--font);
+    font-size: 11px;
+    color: var(--gold);
+    word-break: break-all;
+}
+
+.copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.copy-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.donate-note {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.footer-link {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid transparent;
+    padding: 8px 16px;
+}
+
+.footer-link:hover {
+    border-color: var(--gold);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 600px) {
+    .container { padding: 20px 16px; }
+    .logo-text { font-size: 24px; letter-spacing: 4px; }
+    .glass-card { padding: 20px; }
+    .results-grid { grid-template-columns: 1fr; }
+    .result-card.wide { grid-column: span 1; }
+    .date-selector { flex-direction: column; }
+    .gender-selector { flex-direction: column; }
+    .newsletter-form { flex-direction: column; }
+}
