@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@libsql/client';
 
-// Cloudflare D1
-// @ts-ignore
-const DB = process.env.DB;
+const client = createClient({
+  url: 'libsql://themachine.turso.io',
+  authToken: process.env.TURSO_AUTH_TOKEN
+});
 
 function hashPassword(password: string): string {
   let hash = 0;
@@ -19,34 +20,37 @@ function generateId(): string {
 }
 
 // Login
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
     
     if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
+      return Response.json({ error: 'Email and password required' }, { status: 400 });
     }
 
     const passwordHash = hashPassword(password);
     
-    // Find user
-    const user = await DB.prepare(
-      'SELECT id, email, subscription, subscription_expires_at FROM users WHERE email = ? AND password_hash = ?'
-    ).bind(email, passwordHash).first();
+    const result = await client.execute({
+      sql: 'SELECT id, email, subscription, subscription_expires_at FROM users WHERE email = ? AND password_hash = ?',
+      args: [email, passwordHash]
+    });
 
-    if (!user) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    if (result.rows.length === 0) {
+      return Response.json({ error: 'Invalid credentials' }, { status: 401 });
     }
+
+    const user = result.rows[0];
 
     // Create session
     const sessionId = generateId();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
-    await DB.prepare(
-      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
-    ).bind(sessionId, user.id, expiresAt).run();
+    await client.execute({
+      sql: 'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
+      args: [sessionId, user.id, expiresAt]
+    });
 
-    return NextResponse.json({
+    return Response.json({
       success: true,
       user: {
         id: user.id,
@@ -59,6 +63,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return Response.json({ error: 'Internal error' }, { status: 500 });
   }
 }

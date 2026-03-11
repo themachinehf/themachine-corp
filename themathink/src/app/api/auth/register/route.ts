@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@libsql/client';
 
-// Cloudflare D1 - uses wrangler bindings in Edge runtime
-// @ts-ignore
-const DB = process.env.DB;
+const client = createClient({
+  url: 'libsql://themachine.turso.io',
+  authToken: process.env.TURSO_AUTH_TOKEN
+});
 
 function hashPassword(password: string): string {
   let hash = 0;
@@ -19,40 +20,43 @@ function generateId(): string {
 }
 
 // Register
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
     
     if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
+      return Response.json({ error: 'Email and password required' }, { status: 400 });
     }
 
     // Check if user exists
-    const existing = await DB.prepare(
-      'SELECT id FROM users WHERE email = ?'
-    ).bind(email).first();
+    const existing = await client.execute({
+      sql: 'SELECT id FROM users WHERE email = ?',
+      args: [email]
+    });
 
-    if (existing) {
-      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+    if (existing.rows.length > 0) {
+      return Response.json({ error: 'User already exists' }, { status: 400 });
     }
 
     // Create user
     const userId = generateId();
     const passwordHash = hashPassword(password);
     
-    await DB.prepare(
-      'INSERT INTO users (id, email, password_hash, subscription) VALUES (?, ?, ?, ?)'
-    ).bind(userId, email, passwordHash, 'free').run();
+    await client.execute({
+      sql: 'INSERT INTO users (id, email, password_hash, subscription) VALUES (?, ?, ?, ?)',
+      args: [userId, email, passwordHash, 'free']
+    });
 
     // Create session
     const sessionId = generateId();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
-    await DB.prepare(
-      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
-    ).bind(sessionId, userId, expiresAt).run();
+    await client.execute({
+      sql: 'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
+      args: [sessionId, userId, expiresAt]
+    });
 
-    return NextResponse.json({
+    return Response.json({
       success: true,
       user: { id: userId, email, subscription: 'free' },
       sessionId
@@ -60,6 +64,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     console.error('Register error:', error);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return Response.json({ error: 'Internal error' }, { status: 500 });
   }
 }
