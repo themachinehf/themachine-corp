@@ -244,9 +244,14 @@
         const body = { message: text, mode };
         if (currentSession) body.session_id = currentSession;
         
+        const sessionId = localStorage.getItem('sessionId');
+        
         const res = await fetch(API + '/api/auth/chat', {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'x-session-id': sessionId || ''
+          },
           body: JSON.stringify(body)
         });
         const data = await res.json();

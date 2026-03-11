@@ -307,7 +307,7 @@ export default {
 
 // 哲学聊天处理
 async function handleChat(request: Request, env: Env): Promise<Response> {
-  const sessionId = getCookieValue('session_id', request.headers.get('Cookie'));
+  const sessionId = request.headers.get('x-session-id') || getCookieValue('session_id', request.headers.get('Cookie'));
   
   if (!sessionId) {
     return errorResponse('Not authenticated', 401);
