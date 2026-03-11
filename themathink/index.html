@@ -220,9 +220,24 @@
     async function send() {
       const text = document.getElementById('msg').value.trim();
       if (!text) return;
+      
+      // 检查每日限制 (localStorage)
+      const today = new Date().toISOString().split('T')[0];
+      let usage = JSON.parse(localStorage.getItem('daily_usage') || '{}');
+      if (usage.date !== today) usage = { date: today, count: 0 };
+      
+      if (usage.count >= 5) {
+        alert('You\'ve used your 5 free thoughts today. Upgrade to PRO for unlimited!');
+        return;
+      }
+      
       addMessage(text, true);
       document.getElementById('msg').value = '';
       document.getElementById('send').disabled = true;
+      
+      // 更新使用计数
+      usage.count++;
+      localStorage.setItem('daily_usage', JSON.stringify(usage));
       
       try {
         const mode = document.getElementById('mode').value;
@@ -236,12 +251,15 @@
         });
         const data = await res.json();
         
-        if (data.session_id && !currentSession) {
-          currentSession = data.session_id;
-          loadSessions();
+        if (data.error) {
+          addMessage(data.error, false);
+        } else {
+          if (data.session_id && !currentSession) {
+            currentSession = data.session_id;
+            loadSessions();
+          }
+          addMessage(data.reply || "I'm here to help you think.", false);
         }
-        
-        addMessage(data.reply || data.error || "I'm here to help you think.", false);
       } catch(e) {
         addMessage("I'm having trouble thinking right now.", false);
       }
