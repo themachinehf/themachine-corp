@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
 
-const client = createClient({
-  url: 'libsql://themachine.turso.io',
-  authToken: process.env.TURSO_AUTH_TOKEN
-});
+// Cloudflare D1 - uses wrangler bindings in Edge runtime
+// @ts-ignore
+const DB = process.env.DB;
 
-// Simple hash function (in production, use bcrypt)
 function hashPassword(password: string): string {
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
@@ -31,12 +28,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user exists
-    const existing = await client.execute({
-      sql: 'SELECT id FROM users WHERE email = ?',
-      args: [email]
-    });
+    const existing = await DB.prepare(
+      'SELECT id FROM users WHERE email = ?'
+    ).bind(email).first();
 
-    if (existing.rows.length > 0) {
+    if (existing) {
       return NextResponse.json({ error: 'User already exists' }, { status: 400 });
     }
 
@@ -44,19 +40,17 @@ export async function POST(req: NextRequest) {
     const userId = generateId();
     const passwordHash = hashPassword(password);
     
-    await client.execute({
-      sql: 'INSERT INTO users (id, email, password_hash) VALUES (?, ?, ?)',
-      args: [userId, email, passwordHash]
-    });
+    await DB.prepare(
+      'INSERT INTO users (id, email, password_hash, subscription) VALUES (?, ?, ?, ?)'
+    ).bind(userId, email, passwordHash, 'free').run();
 
     // Create session
     const sessionId = generateId();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
-    await client.execute({
-      sql: 'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
-      args: [sessionId, userId, expiresAt]
-    });
+    await DB.prepare(
+      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(sessionId, userId, expiresAt).run();
 
     return NextResponse.json({
       success: true,

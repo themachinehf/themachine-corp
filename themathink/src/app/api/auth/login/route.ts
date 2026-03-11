@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@libsql/client';
 
-const client = createClient({
-  url: 'libsql://themachine.turso.io',
-  authToken: process.env.TURSO_AUTH_TOKEN
-});
+// Cloudflare D1
+// @ts-ignore
+const DB = process.env.DB;
 
 function hashPassword(password: string): string {
   let hash = 0;
@@ -32,25 +30,21 @@ export async function POST(req: NextRequest) {
     const passwordHash = hashPassword(password);
     
     // Find user
-    const result = await client.execute({
-      sql: 'SELECT id, email, subscription, subscription_expires_at FROM users WHERE email = ? AND password_hash = ?',
-      args: [email, passwordHash]
-    });
+    const user = await DB.prepare(
+      'SELECT id, email, subscription, subscription_expires_at FROM users WHERE email = ? AND password_hash = ?'
+    ).bind(email, passwordHash).first();
 
-    if (result.rows.length === 0) {
+    if (!user) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
-
-    const user = result.rows[0];
 
     // Create session
     const sessionId = generateId();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
-    await client.execute({
-      sql: 'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
-      args: [sessionId, user.id, expiresAt]
-    });
+    await DB.prepare(
+      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)'
+    ).bind(sessionId, user.id, expiresAt).run();
 
     return NextResponse.json({
       success: true,
