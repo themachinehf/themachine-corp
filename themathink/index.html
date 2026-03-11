@@ -115,14 +115,29 @@
     
     async function createSession() {
       const title = document.getElementById('newTitle').value.trim() || 'New Thought';
+      const sessionId = localStorage.getItem('sessionId');
+      if (!sessionId) {
+        alert('Please log in first');
+        window.location.href = '/login.html';
+        return;
+      }
       try {
         const res = await fetch(API + '/api/auth/session', {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-session-id': sessionId
+          },
           body: JSON.stringify({title})
         });
+        
+        if (!res.ok) {
+          alert('Error creating session');
+          return;
+        }
+        
         const data = await res.json();
-        currentSession = data.session.id;
+        currentSession = data.session?.id;
         document.getElementById('chat').innerHTML = '';
         document.getElementById('newTitle').value = '';
         document.getElementById('newTitle').style.display = 'none';
@@ -167,6 +182,10 @@
       renderSessions();
       try {
         const res = await fetch(API + '/api/auth/session/' + id);
+        if (!res.ok) {
+          console.log('Error loading session');
+          return;
+        }
         const data = await res.json();
         const chat = document.getElementById('chat');
         chat.innerHTML = '';
@@ -181,6 +200,10 @@
       }
       try {
         const res = await fetch(API + '/api/auth/session/' + currentSession);
+        if (!res.ok) {
+          alert('Error loading session');
+          return;
+        }
         const data = await res.json();
         const session = sessions.find(s => s.id === currentSession);
         const title = session ? session.title : 'Session';
@@ -248,10 +271,22 @@
         
         const res = await fetch(API + '/api/auth/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-session-id': sessionId || ''
+          },
           credentials: 'include',
           body: JSON.stringify(body)
         });
+        
+        // Check response status
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: 'Request failed' }));
+          addMessage(errorData.error || 'Request failed with status ' + res.status, false);
+          document.getElementById('send').disabled = false;
+          return;
+        }
+        
         const data = await res.json();
         
         if (data.error) {
