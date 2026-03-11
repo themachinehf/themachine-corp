@@ -685,26 +685,25 @@ async function handleDashboardLogs(request, env) {
   <title>THEMACHINE Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-primary: #0a0a0f;
       --bg-secondary: #12121a;
       --bg-card: #1a1a24;
       --bg-card-hover: #222230;
-      --gold-primary: #d4a853;
-      --gold-secondary: #f0c95c;
-      --gold-muted: #8a7339;
-      --gold-glow: rgba(212, 168, 83, 0.15);
-      --text-primary: #f5f5f7;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
+      --gold-primary: #fbbf24;
+      --gold-secondary: #fcd34d;
+      --gold-muted: #b45309;
+      --gold-glow: rgba(251, 191, 36, 0.15);
+      --text-primary: #e5e7eb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
       --accent-blue: #60a5fa;
       --accent-green: #4ade80;
       --accent-red: #f87171;
       --accent-purple: #a78bfa;
-      --border-color: rgba(212, 168, 83, 0.12);
-      --border-glow: rgba(212, 168, 83, 0.25);
+      --border-color: rgba(251, 191, 36, 0.12);
+      --border-glow: rgba(251, 191, 36, 0.25);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -712,11 +711,11 @@ async function handleDashboardLogs(request, env) {
     body {
       background: var(--bg-primary);
       color: var(--text-primary);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Courier New', Courier, monospace;
       min-height: 100vh;
       line-height: 1.6;
       background-image: 
-        radial-gradient(ellipse at 20% 0%, rgba(212, 168, 83, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 0%, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
         radial-gradient(ellipse at 80% 100%, rgba(96, 165, 250, 0.05) 0%, transparent 50%);
     }
 
@@ -771,7 +770,7 @@ async function handleDashboardLogs(request, env) {
     .btn {
       padding: 10px 20px;
       border-radius: 8px;
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Courier New', Courier, monospace;
       font-weight: 500;
       font-size: 14px;
       cursor: pointer;
@@ -863,7 +862,7 @@ async function handleDashboardLogs(request, env) {
     .stat-icon.escalated { background: rgba(167, 139, 250, 0.15); }
 
     .stat-number {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Courier New', Courier, monospace;
       font-size: 36px;
       font-weight: 700;
       color: var(--text-primary);
@@ -1005,7 +1004,7 @@ async function handleDashboardLogs(request, env) {
     }
 
     .agent-stat-num {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Courier New', Courier, monospace;
       font-size: 18px;
       font-weight: 600;
       color: var(--text-primary);
