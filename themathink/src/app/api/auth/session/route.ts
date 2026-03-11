@@ -5,13 +5,28 @@ const client = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN
 });
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, x-session-id',
+};
+
+function json(data: any, status = 200) {
+  return Response.json(data, { status, headers: corsHeaders });
+}
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return new Response(null, { headers: corsHeaders });
+}
+
 // Verify session / Get current user
 export async function GET(req: Request) {
   try {
     const sessionId = req.headers.get('x-session-id');
     
     if (!sessionId) {
-      return Response.json({ error: 'No session' }, { status: 401 });
+      return json({ error: 'No session' }, 401);
     }
 
     const result = await client.execute({
@@ -23,11 +38,11 @@ export async function GET(req: Request) {
     });
 
     if (result.rows.length === 0) {
-      return Response.json({ error: 'Invalid or expired session' }, { status: 401 });
+      return json({ error: 'Invalid or expired session' }, 401);
     }
 
     const user = result.rows[0];
-    return Response.json({
+    return json({
       user: {
         id: user.id,
         email: user.email,
@@ -38,7 +53,7 @@ export async function GET(req: Request) {
 
   } catch (error) {
     console.error('Session verify error:', error);
-    return Response.json({ error: 'Internal error' }, { status: 500 });
+    return json({ error: 'Internal error' }, 500);
   }
 }
 
@@ -54,9 +69,9 @@ export async function DELETE(req: Request) {
       });
     }
 
-    return Response.json({ success: true });
+    return json({ success: true });
   } catch (error) {
     console.error('Logout error:', error);
-    return Response.json({ error: 'Internal error' }, { status: 500 });
+    return json({ error: 'Internal error' }, 500);
   }
 }
