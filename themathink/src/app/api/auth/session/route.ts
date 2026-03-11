@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 
 const client = createClient({
@@ -7,12 +6,12 @@ const client = createClient({
 });
 
 // Verify session / Get current user
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   try {
     const sessionId = req.headers.get('x-session-id');
     
     if (!sessionId) {
-      return NextResponse.json({ error: 'No session' }, { status: 401 });
+      return Response.json({ error: 'No session' }, { status: 401 });
     }
 
     const result = await client.execute({
@@ -24,11 +23,11 @@ export async function GET(req: NextRequest) {
     });
 
     if (result.rows.length === 0) {
-      return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
+      return Response.json({ error: 'Invalid or expired session' }, { status: 401 });
     }
 
     const user = result.rows[0];
-    return NextResponse.json({
+    return Response.json({
       user: {
         id: user.id,
         email: user.email,
@@ -39,12 +38,12 @@ export async function GET(req: NextRequest) {
 
   } catch (error) {
     console.error('Session verify error:', error);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return Response.json({ error: 'Internal error' }, { status: 500 });
   }
 }
 
 // Logout
-export async function DELETE(req: NextRequest) {
+export async function DELETE(req: Request) {
   try {
     const sessionId = req.headers.get('x-session-id');
     
@@ -55,9 +54,9 @@ export async function DELETE(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ success: true });
+    return Response.json({ success: true });
   } catch (error) {
     console.error('Logout error:', error);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    return Response.json({ error: 'Internal error' }, { status: 500 });
   }
 }
