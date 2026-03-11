@@ -1,7 +1,7 @@
 import { createClient } from '@libsql/client';
 
 const client = createClient({
-  url: 'libsql://themachine.turso.io',
+  url: 'libsql://themachinecorp-themachinehf.aws-ap-northeast-1.turso.io',
   authToken: process.env.TURSO_AUTH_TOKEN
 });
 
