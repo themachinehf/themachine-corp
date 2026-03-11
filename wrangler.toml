@@ -1,0 +1,15 @@
+name = "themachine-auth"
+main = "functions/auth.ts"
+compatibility_date = "2024-01-01"
+
+[vars]
+ENV = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "themachine-auth-db"
+database_id = "b1a4fcce-fd89-40cd-bfd1-975c591cf709"
+
+[[kv_namespaces]]
+binding = "AUTH_KV"
+id = "86606b92145c414ebeacd0543b545d6b"
