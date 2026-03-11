@@ -1,17 +1,17 @@
 import { createClient } from '@libsql/client';
 
-const client = createClient({
-  url: 'libsql://themachinecorp-themachinehf.aws-ap-northeast-1.turso.io',
-  authToken: TURSO_AUTH_TOKEN
-});
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, x-session-id',
 };
 
-export async function onRequestGet({ request }) {
+export async function onRequestGet({ request, env }) {
+  const client = createClient({
+    url: 'libsql://themachinecorp-themachinehf.aws-ap-northeast-1.turso.io',
+    authToken: env.TURSO_AUTH_TOKEN
+  });
+
   const sessionId = request.headers.get('x-session-id');
   
   if (!sessionId) {
@@ -50,14 +50,19 @@ export async function onRequestGet({ request }) {
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Internal error' }), {
+    return new Response(JSON.stringify({ error: 'Internal error: ' + error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
 }
 
-export async function onRequestDelete({ request }) {
+export async function onRequestDelete({ request, env }) {
+  const client = createClient({
+    url: 'libsql://themachinecorp-themachinehf.aws-ap-northeast-1.turso.io',
+    authToken: env.TURSO_AUTH_TOKEN
+  });
+
   const sessionId = request.headers.get('x-session-id');
   
   if (sessionId) {
