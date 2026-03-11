@@ -5,6 +5,16 @@ const client = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN
 });
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, x-session-id',
+};
+
+function json(data: any, status = 200) {
+  return Response.json(data, { status, headers: corsHeaders });
+}
+
 function hashPassword(password: string): string {
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
@@ -19,13 +29,18 @@ function generateId(): string {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
+// Handle CORS preflight
+export async function OPTIONS() {
+  return new Response(null, { headers: corsHeaders });
+}
+
 // Login
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
     
     if (!email || !password) {
-      return Response.json({ error: 'Email and password required' }, { status: 400 });
+      return json({ error: 'Email and password required' }, 400);
     }
 
     const passwordHash = hashPassword(password);
@@ -36,12 +51,11 @@ export async function POST(req: Request) {
     });
 
     if (result.rows.length === 0) {
-      return Response.json({ error: 'Invalid credentials' }, { status: 401 });
+      return json({ error: 'Invalid credentials' }, 401);
     }
 
     const user = result.rows[0];
 
-    // Create session
     const sessionId = generateId();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
@@ -50,7 +64,7 @@ export async function POST(req: Request) {
       args: [sessionId, user.id, expiresAt]
     });
 
-    return Response.json({
+    return json({
       success: true,
       user: {
         id: user.id,
@@ -63,6 +77,6 @@ export async function POST(req: Request) {
 
   } catch (error) {
     console.error('Login error:', error);
-    return Response.json({ error: 'Internal error' }, { status: 500 });
+    return json({ error: 'Internal error' }, 500);
   }
 }
