@@ -1,18 +1,15 @@
 // NOWPayments API 配置
-const NOWPAYMENTS_API_KEY = 'JBG405W-FRS4Z2C-MNRADGW-XN9VY8X';
 const NOWPAYMENTS_API_URL = 'https://api.nowpayments.io/v1';
 
 // PRO 套餐配置
 const PRO_PRICE_USD = 5;
 
-// 存储已完成的支付
+// 存储已完成的支付（注意：Cloudflare Functions 是无状态的，每次请求可能不保留）
 const completedPayments = new Map();
 
 export async function onRequestPost(context) {
-  try {
-    const { request } = context;
-    const body = await request.json();
-    const { plan, userId, email } = body;
+  const { request, env } = context;
+  const NOWPAYMENTS_API_KEY = env.NOWPAYMENTS_API_KEY;
 
     // 验证请求
     if (plan !== 'pro') {
@@ -33,7 +30,7 @@ export async function onRequestPost(context) {
       price_amount: PRO_PRICE_USD,
       price_currency: 'usd',
       pay_currency: 'usdt',
-      ipn_callback_url: `${siteUrl}/api/payment/callback?order_id=${orderId}`,
+      ipn_callback_url: `${siteUrl}/functions/payment/callback?order_id=${orderId}`,
       order_id: orderId,
       order_description: `THEMATHINK PRO Subscription - $${PRO_PRICE_USD}/month`,
       purchaser_email: email || '',
@@ -96,7 +93,8 @@ export async function onRequestPost(context) {
 
 // GET 请求 - 获取支付状态
 export async function onRequestGet(context) {
-  const { request } = context;
+  const { request, env } = context;
+  const NOWPAYMENTS_API_KEY = env.NOWPAYMENTS_API_KEY;
   const url = new URL(request.url);
   const paymentId = url.searchParams.get('payment_id');
   const orderId = url.searchParams.get('order_id');
@@ -109,14 +107,6 @@ export async function onRequestGet(context) {
   }
 
   try {
-    // 如果有 orderId，先检查本地存储
-    if (orderId && completedPayments.has(orderId)) {
-      return new Response(
-        JSON.stringify(completedPayments.get(orderId)),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
     let targetPaymentId = paymentId;
 
     if (targetPaymentId) {

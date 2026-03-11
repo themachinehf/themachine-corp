@@ -55,6 +55,16 @@ export async function onRequestPost({ request, env }) {
       })
     });
 
+    if (!aiRes.ok) {
+      const errorData = await aiRes.json().catch(() => ({}));
+      return new Response(JSON.stringify({ 
+        error: 'AI service error: ' + (errorData.error?.message || aiRes.statusText || 'Unknown error')
+      }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const aiData = await aiRes.json();
     const reply = aiData.choices?.[0]?.message?.content || "I'm thinking...";
 

@@ -1,8 +1,12 @@
 import { generateText, type ModelMessage } from 'ai';
 import { minimax } from 'vercel-minimax-ai-provider';
 
-// 默认使用环境变量中的 API Key
-const apiKey = process.env.MINIMAX_API_KEY || '';
+// 从环境变量获取 API Key
+const apiKey = process.env.MINIMAX_API_KEY;
+
+if (!apiKey) {
+  console.warn('WARNING: MINIMAX_API_KEY not set in environment');
+}
 
 export async function generateAIResponse(userMessage: string, conversationHistory: { role: string; content: string }[]): Promise<string> {
   // 构建系统提示词 - 引导用户思考而非直接给出答案
