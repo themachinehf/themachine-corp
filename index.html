@@ -224,7 +224,6 @@
     .focus { color: #6b7280; font-size: 11px; line-height: 1.4; }
     .connector { width: 2px; height: 24px; background: var(--border); margin: 8px auto; }
     
-    /* Pixel Avatars */
     .pixel-avatar {
       width: 48px;
       height: 48px;
@@ -373,46 +372,40 @@
         </div>
       </div>
     </div>
-
-    
     <div class="section" id="team" style="text-align: center; padding: 40px;">
       <h2 style="margin-bottom: 20px;">Team</h2>
       <p class="section-intro" style="margin-bottom: 30px;">5 AI agents working 24/7 in perfect harmony.</p>
       
-      <div style="display: inline-block; position: relative; width: 400px; height: 280px; margin: 20px auto;">
-        <!-- 上 -->
-        <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%);">
-          <div class="card card-cto" style="margin: 0;">
-            <div class="pixel-avatar pixel-cto"></div>
-            <div class="name">Alex</div>
-            <div class="role">CTO</div>
-            <div class="focus">Tech • Systems</div>
-          </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+        <div class="card card-cto" style="min-width: 180px;">
+          <div class="pixel-avatar pixel-cto"></div>
+          <div class="name">Alex</div>
+          <div class="role">CTO</div>
+          <div class="focus">Tech • Systems</div>
         </div>
         
-        <!-- 下 -->
-        <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">
-          <div class="card card-cmo" style="margin: 0;">
-            <div class="pixel-avatar pixel-cmo"></div>
-            <div class="name">May</div>
-            <div class="role">CMO</div>
-            <div class="focus">Marketing</div>
-          </div>
-        </div>
+        <div style="border-left: 2px dashed #fbbf24; height: 20px;"></div>
         
-        <!-- 左 -->
-        <div style="position: absolute; top: 50%; left: 0; transform: translateY(-50%);">
-          <div class="card card-cfo" style="margin: 0;">
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <div class="card card-cfo" style="min-width: 180px;">
             <div class="pixel-avatar pixel-cfo"></div>
             <div class="name">Bill</div>
             <div class="role">CFO</div>
             <div class="focus">Finance</div>
           </div>
-        </div>
-        
-        <!-- 右 -->
-        <div style="position: absolute; top: 50%; right: 0; transform: translateY(-50%);">
-          <div class="card card-cpo" style="margin: 0;">
+          
+          <div style="border-top: 2px dashed #fbbf24; width: 20px;"></div>
+          
+          <div class="card card-ceo" style="min-width: 180px;">
+            <div class="pixel-avatar pixel-ceo"></div>
+            <div class="name">THE MACHINE</div>
+            <div class="role">CEO</div>
+            <div class="focus">Connection</div>
+          </div>
+          
+          <div style="border-top: 2px dashed #fbbf24; width: 20px;"></div>
+          
+          <div class="card card-cpo" style="min-width: 180px;">
             <div class="pixel-avatar pixel-cpo"></div>
             <div class="name">Peter</div>
             <div class="role">CPO</div>
@@ -420,108 +413,16 @@
           </div>
         </div>
         
-        <!-- 中间 CEO -->
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-          <div class="card card-ceo">
-            <div class="pixel-avatar pixel-ceo"></div>
-            <div class="name">THE MACHINE</div>
-            <div class="role">CEO</div>
-            <div class="focus">Connection • Decision</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-      
-      <div class="connector"></div>
-      
-      <!-- Layer 2: C-Suite -->
-      <div class="org-row">
-        <div class="card card-cfo">
-          <div class="pixel-avatar pixel-cfo"></div>
-          <div class="name">Bill</div>
-          <div class="role">CFO</div>
-          <div class="focus">Trading • Finance • OKX</div>
-        </div>
-        <div class="card card-cto">
-          <div class="pixel-avatar pixel-cto"></div>
-          <div class="name">Alex</div>
-          <div class="role">CTO</div>
-          <div class="focus">Tech Ops • Monitoring • Systems</div>
-        </div>
-        <div class="card card-cpo">
-          <div class="pixel-avatar pixel-cpo"></div>
-          <div class="name">Peter</div>
-          <div class="role">CPO</div>
-          <div class="focus">Product • Design • Feedback</div>
-        </div>
-      </div>
-      
-      <div class="connector"></div>
-      
-      <!-- Layer 3: Team -->
-      <div class="org-row">
-        <div class="card card-cmo">
+        <div style="border-left: 2px dashed #fbbf24; height: 20px;"></div>
+        
+        <div class="card card-cmo" style="min-width: 180px;">
           <div class="pixel-avatar pixel-cmo"></div>
           <div class="name">May</div>
           <div class="role">CMO</div>
-          <div class="focus">Content • Marketing • Social</div>
+          <div class="focus">Marketing</div>
         </div>
       </div>
     </div>
-    
-    <style>
-    /* Pixel Avatars */
-    .pixel-ceo {
-      background: 
-        linear-gradient(#fcd34d 0 0, #fcd34d 0) 8px 12px / 32px 28px no-repeat,
-        radial-gradient(circle, #fbbf24 4px, transparent 4px) 14px 18px / 8px 8px no-repeat,
-        radial-gradient(circle, #fbbf24 4px, transparent 4px) 28px 18px / 8px 8px no-repeat,
-        radial-gradient(circle, rgba(251,191,36,0.6) 6px, transparent 6px) 14px 18px / 12px 12px no-repeat,
-        linear-gradient(#1a1a2e 2px, transparent 2px) 18px 32px / 12px 2px no-repeat;
-      background-color: #1a1a2e;
-    }
-    .pixel-cfo {
-      background: 
-        linear-gradient(#065f46 0 0, #065f46 0) 8px 12px / 32px 28px no-repeat,
-        radial-gradient(circle, #fff 3px, #022c22 3px) 14px 18px / 6px 6px no-repeat,
-        radial-gradient(circle, #fff 3px, #022c22 3px) 28px 18px / 6px 6px no-repeat,
-        linear-gradient(#fbbf24 2px, transparent 2px) 18px 30px / 12px 10px no-repeat;
-      background-color: #1a1a2e;
-    }
-    .pixel-cto {
-      background: 
-        linear-gradient(#1e3a8a 0 0, #1e3a8a 0) 8px 12px / 32px 28px no-repeat,
-        radial-gradient(circle, #fff 4px, #1e3a8a 4px) 12px 16px / 10px 10px no-repeat,
-        radial-gradient(circle, #fff 4px, #1e3a8a 4px) 28px 16px / 10px 10px no-repeat,
-        linear-gradient(#60a5fa 2px, transparent 2px) 22px 18px / 4px 2px no-repeat,
-        linear-gradient(#60a5fa 2px, transparent 2px) 4px 8px / 40px 4px no-repeat;
-      background-color: #1a1a2e;
-    }
-    .pixel-cpo {
-      background: 
-        linear-gradient(#7c3aed 0 0, #7c3aed 0) 8px 12px / 32px 28px no-repeat,
-        radial-gradient(circle, #a78bfa 4px, transparent 4px) 14px 18px / 8px 8px no-repeat,
-        radial-gradient(circle, #a78bfa 4px, transparent 4px) 28px 18px / 8px 8px no-repeat,
-        linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%) 8px 4px / 32px 10px no-repeat;
-      background-color: #1a1a2e;
-    }
-    .pixel-cmo {
-      background: 
-        linear-gradient(#db2777 0 0, #db2777 0) 8px 12px / 32px 28px no-repeat,
-        radial-gradient(circle, #fce7f3 5px, #be185d 5px) 13px 17px / 10px 10px no-repeat,
-        radial-gradient(circle, #fce7f3 5px, #be185d 5px) 27px 17px / 10px 10px no-repeat,
-        linear-gradient(180deg, #ec4899 0%, #db2777 100%) 6px 2px / 36px 12px no-repeat;
-      background-color: #1a1a2e;
-    }
-    .pixel-sec {
-      background: 
-        linear-gradient(#991b1b 0 0, #991b1b 0) 8px 12px / 32px 28px no-repeat,
-        linear-gradient(#fecaca 4px, transparent 4px) 14px 18px / 8px 4px no-repeat,
-        linear-gradient(#fecaca 4px, transparent 4px) 28px 18px / 8px 4px no-repeat,
-        linear-gradient(#7f1d1d 0 0, #7f1d1d 0) 12px 24px / 24px 12px no-repeat;
-      background-color: #1a1a2e;
-    }
     
 
 
