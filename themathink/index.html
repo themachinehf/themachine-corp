@@ -89,7 +89,7 @@
   </div>
 
   <script>
-    const API = '';
+    const API = 'https://themathink.jxs66.workers.dev';
     let currentSession = null;
     let sessions = [];
     let user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -116,7 +116,7 @@
     async function createSession() {
       const title = document.getElementById('newTitle').value.trim() || 'New Thought';
       try {
-        const res = await fetch(API + '/themathink/api/auth/session', {
+        const res = await fetch(API + '/api/auth/session', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({title})
@@ -137,7 +137,7 @@
           sessions = [];
           return;
         }
-        const res = await fetch(API + '/themathink/api/auth/session', {
+        const res = await fetch(API + '/api/auth/session', {
           headers: { 'x-session-id': sessionId }
         });
         if (!res.ok) {
@@ -166,7 +166,7 @@
       currentSession = id;
       renderSessions();
       try {
-        const res = await fetch(API + '/themathink/api/auth/session/' + id);
+        const res = await fetch(API + '/api/auth/session/' + id);
         const data = await res.json();
         const chat = document.getElementById('chat');
         chat.innerHTML = '';
@@ -180,7 +180,7 @@
         return;
       }
       try {
-        const res = await fetch(API + '/themathink/api/auth/session/' + currentSession);
+        const res = await fetch(API + '/api/auth/session/' + currentSession);
         const data = await res.json();
         const session = sessions.find(s => s.id === currentSession);
         const title = session ? session.title : 'Session';
@@ -229,7 +229,7 @@
         const body = { message: text, mode };
         if (currentSession) body.session_id = currentSession;
         
-        const res = await fetch(API + '/themathink/api/auth/chat', {
+        const res = await fetch(API + '/api/auth/chat', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(body)
