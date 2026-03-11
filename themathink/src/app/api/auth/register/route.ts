@@ -5,6 +5,23 @@ const client = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN
 });
 
+// Auto-create tables on startup
+client.execute(`CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  subscription TEXT DEFAULT 'free',
+  subscription_expires_at TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+)`).catch(() => {});
+
+client.execute(`CREATE TABLE IF NOT EXISTS sessions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+)`).catch(() => {});
+
 function hashPassword(password: string): string {
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
