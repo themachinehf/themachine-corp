@@ -1,5 +1,4 @@
 // NOWPayments API 配置
-const NOWPAYMENTS_API_KEY = 'JBG405W-FRS4Z2C-MNRADGW-XN9VY8X';
 const NOWPAYMENTS_API_URL = 'https://api.nowpayments.io/v1';
 
 // PRO 套餐配置
@@ -9,10 +8,8 @@ const PRO_PRICE_USD = 5;
 const completedPayments = new Map();
 
 export async function onRequestPost(context) {
-  try {
-    const { request } = context;
-    const body = await request.json();
-    const { plan, userId, email } = body;
+  const { request, env } = context;
+  const NOWPAYMENTS_API_KEY = env.NOWPAYMENTS_API_KEY;
 
     // 验证请求
     if (plan !== 'pro') {
@@ -96,7 +93,8 @@ export async function onRequestPost(context) {
 
 // GET 请求 - 获取支付状态
 export async function onRequestGet(context) {
-  const { request } = context;
+  const { request, env } = context;
+  const NOWPAYMENTS_API_KEY = env.NOWPAYMENTS_API_KEY;
   const url = new URL(request.url);
   const paymentId = url.searchParams.get('payment_id');
   const orderId = url.searchParams.get('order_id');
