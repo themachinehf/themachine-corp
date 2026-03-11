@@ -162,14 +162,141 @@ async function logEvent(agentId, taskId, eventType, message) {
   `).bind(id, agentId, taskId, eventType, message).run();
 }
 
-// Agent 间消息
-async function sendMessage(fromAgentId, toAgentId, taskId, content) {
+// Agent 间消息 - 支持多种类型
+async function sendMessage(fromAgentId, toAgentId, taskId, content, type = 'notification', metadata = null) {
   const id = uuid();
   await DB.prepare(`
-    INSERT INTO messages (id, from_agent_id, to_agent_id, task_id, content)
-    VALUES (?, ?, ?, ?, ?)
-  `).bind(id, fromAgentId, toAgentId, taskId, content).run();
-  return { id, from: fromAgentId, to: toAgentId, content };
+    INSERT INTO messages (id, from_agent_id, to_agent_id, task_id, type, content, metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).bind(id, fromAgentId, toAgentId, taskId, type, content, metadata ? JSON.stringify(metadata) : null).run();
+  return { id, from: fromAgentId, to: toAgentId, task_id: taskId, type, content };
+}
+
+// 任务完成通知 - 自动通知相关 Agent
+async function notifyTaskComplete(task) {
+  const messages = [];
+  
+  // 通知创建者 (source_agent_id)
+  if (task.source_agent_id && task.source_agent_id !== task.assigned_agent_id) {
+    const msg = await sendMessage(
+      'system',
+      task.source_agent_id,
+      task.id,
+      `✅ 任务已完成: ${task.title}`,
+      'notification',
+      { status: 'done', task_status: task.status }
+    );
+    messages.push(msg);
+  }
+  
+  // 如果有 review_by，也通知审查者
+  if (task.review_by) {
+    const reviewMsg = await sendMessage(
+      'system',
+      task.review_by,
+      task.id,
+      `📋 任务需要审查: ${task.title}`,
+      'review',
+      { task_status: 'review', priority: task.priority }
+    );
+    messages.push(reviewMsg);
+  }
+  
+  return messages;
+}
+
+// Review Loop - 需要审查的任务自动发送给 CEO 或相关 Agent
+async function handleReviewLoop(task) {
+  // 如果任务状态为 review 且有指定的审查者
+  if (task.status === 'review' && task.review_by) {
+    await sendMessage(
+      'system',
+      task.review_by,
+      task.id,
+      `🔍 审查请求: ${task.title}\n\n${task.description || '无描述'}\n\n请审查并决策。`,
+      'review',
+      { priority: task.priority, assigned_agent: task.assigned_agent_id }
+    );
+    return true;
+  }
+  
+  // 如果任务被拒绝/退回，重新分配
+  if (task.status === 'rejected' && task.assigned_agent_id) {
+    await sendMessage(
+      'system',
+      task.assigned_agent_id,
+      task.id,
+      `❌ 任务被退回: ${task.title}\n\n请根据审查意见修改后重新提交。`,
+      'escalation',
+      { action: 'resubmit' }
+    );
+    return true;
+  }
+  
+  return false;
+}
+
+// 升级任务 - 自动发送给 CEO
+async function escalateTask(task, reason) {
+  await sendMessage(
+    task.assigned_agent_id || 'system',
+    'ceo',
+    task.id,
+    `⚠️ 任务升级: ${task.title}\n\n原因: ${reason}\n\n需要 CEO 决策。`,
+    'escalation',
+    { priority: 'urgent', original_agent: task.assigned_agent_id }
+  );
+  
+  // 更新任务状态
+  await updateTask(task.id, 'escalated');
+  
+  return { escalated: true, to: 'ceo' };
+}
+
+// 广播通知给所有 Agent
+async function broadcastNotification(content, metadata = null) {
+  const agents = await getAgents();
+  const messages = [];
+  
+  for (const agent of agents) {
+    if (agent.id !== 'ceo') { // 不需要通知 CEO 自己是吧
+      const msg = await sendMessage(
+        'system',
+        agent.id,
+        null,
+        content,
+        'notification',
+        metadata
+      );
+      messages.push(msg);
+    }
+  }
+  
+  return messages;
+}
+
+// 发送请求给另一个 Agent
+async function sendRequest(fromAgentId, toAgentId, taskId, requestContent, metadata = null) {
+  return await sendMessage(
+    fromAgentId,
+    toAgentId,
+    taskId,
+    requestContent,
+    'request',
+    metadata
+  );
+}
+
+// 发送响应
+async function sendResponse(fromAgentId, toAgentId, taskId, responseContent, metadata = null) {
+  return await sendMessage(
+    fromAgentId,
+    toAgentId,
+    taskId,
+    responseContent,
+    'response',
+    metadata
+  );
 }
 
 // 获取未读消息
@@ -210,8 +337,8 @@ async function handleRequest(request) {
       return new Response(JSON.stringify({ agents }), { headers: corsHeaders });
     }
     
-    // GET /api/tasks - 获取任务 (path === '/列表
-    ifapi/tasks' && method === 'GET') {
+    // GET /api/tasks - 获取任务列表
+    if (path === '/api/tasks' && method === 'GET') {
       const agentId = url.searchParams.get('agent');
       const status = url.searchParams.get('status');
       const tasks = await getTasks(agentId, status);
@@ -230,11 +357,26 @@ async function handleRequest(request) {
       return new Response(JSON.stringify(task), { headers: corsHeaders });
     }
     
-    // PUT /api/tasks/:id - 更新任务
+    // PUT /api/tasks/:id - 更新任务（触发通知）
     if (path.startsWith('/api/tasks/') && method === 'PUT') {
       const taskId = path.split('/')[3];
       const body = await request.json();
+      
+      // 先获取旧任务信息
+      const { results: [oldTask] } = await DB.prepare("SELECT * FROM tasks WHERE id = ?").bind(taskId).all();
+      
       const task = await updateTask(taskId, body.status, body.output);
+      
+      // 如果任务完成，触发通知
+      if (body.status === 'done' && oldTask) {
+        await notifyTaskComplete(oldTask);
+      }
+      
+      // 如果任务进入审查状态，触发 Review Loop
+      if ((body.status === 'review' || body.status === 'rejected') && oldTask) {
+        await handleReviewLoop({ ...oldTask, status: body.status });
+      }
+      
       return new Response(JSON.stringify(task), { headers: corsHeaders });
     }
     
@@ -245,16 +387,102 @@ async function handleRequest(request) {
       return new Response(JSON.stringify({ messages }), { headers: corsHeaders });
     }
     
-    // POST /api/messages - 发送消息
+    // POST /api/messages - 发送消息（支持 type）
     if (path === '/api/messages' && method === 'POST') {
       const body = await request.json();
       const msg = await sendMessage(
         body.from,
         body.to,
         body.task_id,
-        body.content
+        body.content,
+        body.type || 'notification',
+        body.metadata
       );
       return new Response(JSON.stringify(msg), { headers: corsHeaders });
+    }
+    
+    // POST /api/notify - 发送通知
+    if (path === '/api/notify' && method === 'POST') {
+      const body = await request.json();
+      const msg = await sendMessage(
+        body.from || 'system',
+        body.to,
+        body.task_id,
+        body.content,
+        'notification',
+        body.metadata
+      );
+      return new Response(JSON.stringify({ success: true, message: msg }), { headers: corsHeaders });
+    }
+    
+    // POST /api/request - 发送请求
+    if (path === '/api/request' && method === 'POST') {
+      const body = await request.json();
+      const msg = await sendRequest(
+        body.from,
+        body.to,
+        body.task_id,
+        body.content,
+        body.metadata
+      );
+      return new Response(JSON.stringify({ success: true, request: msg }), { headers: corsHeaders });
+    }
+    
+    // POST /api/response - 发送响应
+    if (path === '/api/response' && method === 'POST') {
+      const body = await request.json();
+      const msg = await sendResponse(
+        body.from,
+        body.to,
+        body.task_id,
+        body.content,
+        body.metadata
+      );
+      return new Response(JSON.stringify({ success: true, response: msg }), { headers: corsHeaders });
+    }
+    
+    // POST /api/escalate - 升级任务
+    if (path === '/api/escalate' && method === 'POST') {
+      const body = await request.json();
+      const { results: [task] } = await DB.prepare("SELECT * FROM tasks WHERE id = ?").bind(body.task_id).all();
+      
+      if (!task) {
+        return new Response(JSON.stringify({ error: 'Task not found' }), { status: 404, headers: corsHeaders });
+      }
+      
+      const result = await escalateTask(task, body.reason);
+      return new Response(JSON.stringify(result), { headers: corsHeaders });
+    }
+    
+    // POST /api/broadcast - 广播通知
+    if (path === '/api/broadcast' && method === 'POST') {
+      const body = await request.json();
+      const messages = await broadcastNotification(body.content, body.metadata);
+      return new Response(JSON.stringify({ success: true, count: messages.length, messages }), { headers: corsHeaders });
+    }
+    
+    // GET /api/messages/:type - 按类型获取消息
+    if (path.startsWith('/api/messages/') && method === 'GET') {
+      const msgType = path.split('/')[3];
+      const agentId = url.searchParams.get('agent');
+      
+      let sql = "SELECT * FROM messages WHERE 1=1";
+      const params = [];
+      
+      if (agentId) {
+        sql += " AND to_agent_id = ?";
+        params.push(agentId);
+      }
+      
+      if (msgType && msgType !== 'all') {
+        sql += " AND type = ?";
+        params.push(msgType);
+      }
+      
+      sql += " ORDER BY created_at DESC LIMIT 50";
+      
+      const { results } = await DB.prepare(sql).bind(...params).all();
+      return new Response(JSON.stringify({ messages: results, type: msgType }), { headers: corsHeaders });
     }
     
     // GET /api/logs - 获取日志

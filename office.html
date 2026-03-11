@@ -104,6 +104,7 @@
     
     <div class="tabs">
       <button class="tab active" data-tab="office">🏠 Office</button>
+      <button class="tab" data-tab="dashboard">📊 Dashboard</button>
       <button class="tab" data-tab="war">⚔️ War Room</button>
       <button class="tab" data-tab="fund">💰 Fund</button>
       <button class="tab" data-tab="lab">💡 Lab</button>
@@ -114,6 +115,13 @@
     <div class="tab-content active" id="tab-office">
       <div class="iframe-container">
         <iframe src="/office/"></iframe>
+      </div>
+    </div>
+    
+    <!-- Dashboard Tab -->
+    <div class="tab-content" id="tab-dashboard">
+      <div class="iframe-container" style="aspect-ratio: auto; min-height: 80vh;">
+        <iframe src="/dashboard.html" style="height: 90vh;"></iframe>
       </div>
     </div>
     

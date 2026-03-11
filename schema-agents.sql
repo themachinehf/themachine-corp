@@ -39,12 +39,15 @@ CREATE TABLE IF NOT EXISTS agent_logs (
 );
 
 -- 消息传递 (Agent 间通信)
+-- type: request(请求), response(响应), notification(通知), review(审查), escalation(升级)
 CREATE TABLE IF NOT EXISTS messages (
   id TEXT PRIMARY KEY,
   from_agent_id TEXT NOT NULL,
   to_agent_id TEXT NOT NULL,
   task_id TEXT,
+  type TEXT DEFAULT 'notification', -- request, response, notification, review, escalation
   content TEXT NOT NULL,
+  metadata JSON, -- 额外数据（如优先级、状态等）
   read_at TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
