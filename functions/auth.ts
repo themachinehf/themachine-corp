@@ -8,6 +8,82 @@ interface Env {
   COOKIE_DOMAIN: string;
 }
 
+// Agent 能力映射 - 关键词匹配
+const AGENT_KEYWORDS: Record<string, string[]> = {
+  // CTO: 技术、代码、开发、架构、系统、API、部署、数据库
+  cto: [
+    '技术', '代码', '开发', '编程', '架构', '系统', 'api', 'API', '部署', '数据库',
+    'server', '服务器', 'cloudflare', 'wrangler', 'd1', 'database', 'dev',
+    'debug', 'bug', 'fix', 'error', 'issue', 'deploy', 'git', 'github',
+    'python', 'javascript', 'typescript', 'node', 'rust', 'html', 'css',
+    'nextjs', 'next.js', 'react', 'frontend', 'backend', 'fullstack',
+    'infrastructure', '运维', '监控', 'monitoring'
+  ],
+  
+  // CFO: 交易、财务、投资、资金、收益、网格
+  cfo: [
+    '交易', '财务', '投资', '资金', '收益', '网格', '量化', 'trading',
+    'finance', 'okx', 'binance', 'crypto', '加密货币', 'token', 'coin',
+    'profit', 'loss', '盈利', '亏损', '策略', 'strategy', 'backtest',
+    '回测', 'portfolio', '仓位', '止损', '止盈', '杠杆', '合约'
+  ],
+  
+  // CMO: 营销、内容、推广、社交、品牌、文案
+  cmo: [
+    '营销', '内容', '推广', '社交', '品牌', '文案', 'marketing', 'content',
+    'social', 'twitter', 'telegram', 'discord', 'facebook', 'instagram',
+    '文章', '博客', 'post', '帖子', '视频', '短视频', 'youtube', 'tiktok',
+    'seo', '广告', 'campaign', '活动', '运营', '增长', '粉丝', 'follower'
+  ],
+  
+  // CPO: 产品、设计、功能、体验、需求
+  cpo: [
+    '产品', '设计', '功能', '体验', '需求', 'product', 'design', 'feature',
+    'ui', 'ux', 'interface', '界面', '交互', 'prototype', '原型',
+    'mvp', 'roadmap', '路线图', 'spec', '规格', 'PRD', '需求文档',
+    '用户体验', '用户研究', '测试', 'testing', 'qa'
+  ],
+  
+  // SEC: 安全、审计、权限、备份、风险
+  sec: [
+    '安全', '审计', '权限', '备份', '风险', 'security', 'audit', 'permission',
+    'backup', 'risk', 'vulnerability', '漏洞', '渗透', 'penetration',
+    'auth', 'authentication', 'authorization', 'oauth', 'jwt', 'token',
+    'ssl', 'tls', 'https', '加密', 'encryption', 'firewall', 'waf'
+  ]
+};
+
+// 根据关键词自动分配 Agent
+function autoAssignAgent(title: string, description: string): string | null {
+  const text = `${title} ${description || ''}`.toLowerCase();
+  
+  // 统计每个 Agent 的匹配分数
+  const scores: Record<string, number> = {};
+  
+  for (const [agentId, keywords] of Object.entries(AGENT_KEYWORDS)) {
+    scores[agentId] = 0;
+    for (const keyword of keywords) {
+      if (text.includes(keyword.toLowerCase())) {
+        scores[agentId]++;
+      }
+    }
+  }
+  
+  // 找出最高分数的 Agent
+  let bestAgent: string | null = null;
+  let bestScore = 0;
+  
+  for (const [agentId, score] of Object.entries(scores)) {
+    if (score > bestScore) {
+      bestScore = score;
+      bestAgent = agentId;
+    }
+  }
+  
+  // 如果匹配分数 >= 1 才自动分配，否则返回 null
+  return bestScore >= 1 ? bestAgent : null;
+}
+
 interface User {
   id: string;
   email: string;
@@ -254,6 +330,123 @@ async function handleVerifyEmail(request: Request, env: Env): Promise<Response> 
 // 主处理函数
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+
+// Agent Handlers
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8).toString(16));
+  });
+}
+
+async function handleAgents(request) {
+  const { results } = await env.DB.prepare("SELECT * FROM agents ORDER BY role").all();
+  return new Response(JSON.stringify({ agents: results }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+async function handleTasks(request) {
+  const url = new URL(request.url);
+  const method = request.method;
+  
+  if (method === 'GET') {
+    const agentId = url.searchParams.get('agent');
+    const status = url.searchParams.get('status');
+    let sql = "SELECT * FROM tasks WHERE 1=1";
+    const params = [];
+    if (agentId) { sql += " AND assigned_agent_id = ?"; params.push(agentId); }
+    if (status) { sql += " AND status = ?"; params.push(status); }
+    sql += " ORDER BY CASE priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END, created_at DESC LIMIT 50";
+    const { results } = await env.DB.prepare(sql).bind(...params).all();
+    return new Response(JSON.stringify({ tasks: results }), { headers: { 'Content-Type': 'application/json' } });
+  }
+  
+  if (method === 'POST') {
+    const body = await request.json();
+    const id = uuid();
+    
+    // 如果没有指定 Agent，自动分配
+    let assignedAgentId = body.assigned_agent_id;
+    if (!assignedAgentId) {
+      assignedAgentId = autoAssignAgent(body.title, body.description || '');
+      if (!assignedAgentId) {
+        assignedAgentId = 'ceo'; // 默认分配给 CEO
+      }
+    }
+    
+    await env.DB.prepare(`
+      INSERT INTO tasks (id, title, description, assigned_agent_id, priority, status)
+      VALUES (?, ?, ?, ?, ?, 'pending')
+    `).bind(id, body.title, body.description || '', assignedAgentId, body.priority || 'normal').run();
+    
+    // 记录日志
+    const assignedBy = body.assigned_agent_id ? '人工' : '自动';
+    await env.DB.prepare(`
+      INSERT INTO agent_logs (id, agent_id, task_id, event_type, message)
+      VALUES (?, 'ceo', ?, 'created', ?)
+    `).bind(uuid(), id, `创建任务: ${body.title} [${assignedBy}分配 -> ${assignedAgentId}]`).run();
+    
+    return new Response(JSON.stringify({ id, status: 'pending', assigned_agent_id: assignedAgentId }), { headers: { 'Content-Type': 'application/json' } });
+  }
+  
+  return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+}
+
+async function handleMessages(request) {
+  const url = new URL(request.url);
+  const method = request.method;
+  
+  if (method === 'GET') {
+    const agentId = url.searchParams.get('agent');
+    const { results } = await env.DB.prepare(`
+      SELECT * FROM messages WHERE to_agent_id = ? AND read_at IS NULL
+      ORDER BY created_at DESC LIMIT 20
+    `).bind(agentId).all();
+    return new Response(JSON.stringify({ messages: results }), { headers: { 'Content-Type': 'application/json' } });
+  }
+  
+  if (method === 'POST') {
+    const body = await request.json();
+    const id = uuid();
+    await env.DB.prepare(`
+      INSERT INTO messages (id, from_agent_id, to_agent_id, task_id, content)
+      VALUES (?, ?, ?, ?, ?)
+    `).bind(id, body.from, body.to, body.task_id || null, body.content).run();
+    return new Response(JSON.stringify({ id }), { headers: { 'Content-Type': 'application/json' } });
+  }
+  
+  return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+}
+
+async function handleLogs(request) {
+  const { results } = await env.DB.prepare(`
+    SELECT * FROM agent_logs ORDER BY created_at DESC LIMIT 100
+  `).all();
+  return new Response(JSON.stringify({ logs: results }), { headers: { 'Content-Type': 'application/json' } });
+}
+
+// 自动分配测试
+async function handleAutoAssign(request) {
+  const body = await request.json();
+  const assignedAgent = autoAssignAgent(body.title, body.description || '');
+  return new Response(JSON.stringify({ 
+    title: body.title,
+    description: body.description,
+    assigned_agent_id: assignedAgent || 'ceo (fallback)',
+    confidence: 'keyword matching'
+  }), { headers: { 'Content-Type': 'application/json' } });
+}
+
+// 获取关键词映射表
+async function handleKeywords(request) {
+  return new Response(JSON.stringify({ 
+    keywords: AGENT_KEYWORDS,
+    agents: ['cto', 'cfo', 'cmo', 'cpo', 'sec']
+  }), { headers: { 'Content-Type': 'application/json' } });
+}
+
+
     const url = new URL(request.url);
     const path = url.pathname;
     const method = request.method;
@@ -284,6 +477,22 @@ export default {
       } else if (path === '/api/auth/verify-email' && method === 'POST') {
         response = await handleVerifyEmail(request, env);
       } else if (path === '/api/auth/chat' && method === 'POST') {
+      } else if (path === '/api/agents' && method === 'GET') {
+        return handleAgents(request);
+      } else if (path === '/api/tasks' && method === 'GET') {
+        return handleTasks(request);
+      } else if (path === '/api/tasks' && method === 'POST') {
+        return handleTasks(request);
+      } else if (path === '/api/messages' && method === 'GET') {
+        return handleMessages(request);
+      } else if (path === '/api/messages' && method === 'POST') {
+        return handleMessages(request);
+      } else if (path === '/api/logs' && method === 'GET') {
+        return handleLogs(request);
+      } else if (path === '/api/auto-assign' && method === 'POST') {
+        return handleAutoAssign(request);
+      } else if (path === '/api/keywords' && method === 'GET') {
+        return handleKeywords(request);
         response = await handleChat(request, env);
       } else {
         response = errorResponse('Not found', 404);
@@ -350,5 +559,68 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
     return jsonResponse({ reply, mode });
   } catch (error) {
     return errorResponse('Chat error: ' + error.message, 500);
+  }
+};
+
+// Cron Scheduler - Task Queue Processor
+export async function scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<Response> {
+  console.log('[Scheduler] Cron triggered at', new Date().toISOString());
+  
+  try {
+    // Fetch pending tasks ordered by priority
+    const pendingTasks = await env.DB.prepare(`
+      SELECT * FROM tasks 
+      WHERE status = 'pending' 
+      ORDER BY 
+        CASE priority 
+          WHEN 'urgent' THEN 1 
+          WHEN 'high' THEN 2 
+          WHEN 'normal' THEN 3 
+          ELSE 4 
+        END,
+        created_at ASC
+      LIMIT 10
+    `).all();
+    
+    const tasks = pendingTasks.results || [];
+    console.log(`[Scheduler] Found ${tasks.length} pending tasks`);
+    
+    for (const task of tasks) {
+      // Update task status to in_progress
+      await env.DB.prepare(`
+        UPDATE tasks 
+        SET status = 'in_progress', updated_at = datetime('now') 
+        WHERE id = ?
+      `).bind(task.id).run();
+      
+      // Log the task processing
+      await env.DB.prepare(`
+        INSERT INTO agent_logs (id, agent_id, task_id, event_type, message)
+        VALUES (?, 'scheduler', ?, 'working', ?)
+      `).bind(
+        crypto.randomUUID(),
+        task.id,
+        `Task picked up by scheduler at ${new Date().toISOString()}`
+      ).run();
+      
+      console.log(`[Scheduler] Processing task: ${task.id} - ${task.title}`);
+    }
+    
+    return new Response(JSON.stringify({
+      success: true,
+      timestamp: new Date().toISOString(),
+      processed: tasks.length
+    }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    console.error('[Scheduler] Error:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error.message
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };
