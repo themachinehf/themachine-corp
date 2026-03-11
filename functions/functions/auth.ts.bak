@@ -58,7 +58,7 @@ function setCookie(name: string, value: string, maxAge: number = 86400): string 
 
 // 响应构建
 function jsonResponse(data: any, status: number = 200, cookies?: string[]): Response {
-  const headers = new Headers({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+  const headers = new Headers({ 'Content-Type': 'application/json' });
   if (cookies) {
     cookies.forEach(c => headers.append('Set-Cookie', c));
   }
@@ -284,6 +284,18 @@ export default {
       } else if (path === '/api/auth/verify-email' && method === 'POST') {
         response = await handleVerifyEmail(request, env);
       } else if (path === '/api/auth/chat' && method === 'POST') {
+      } else if (path === '/api/agents' && method === 'GET') {
+        return handleAgents(request);
+      } else if (path === '/api/tasks' && method === 'GET') {
+        return handleTasks(request);
+      } else if (path === '/api/tasks' && method === 'POST') {
+        return handleTasks(request);
+      } else if (path === '/api/messages' && method === 'GET') {
+        return handleMessages(request);
+      } else if (path === '/api/messages' && method === 'POST') {
+        return handleMessages(request);
+      } else if (path === '/api/logs' && method === 'GET') {
+        return handleLogs(request);
         response = await handleChat(request, env);
       } else {
         response = errorResponse('Not found', 404);
@@ -330,7 +342,7 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
     const aiRes = await fetch('https://api.minimax.chat/v1/text/chatcompletion_v2', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${env.MINIMAX_API_KEY || 'sk-api-YhH4k0J3Vmstql8F67XAmb8Z8MIgPSgADYbGCHQMWXn6J3F52MBBXuu4xGXFgrEwScRPA2g8IVgv7Xf0WvUAD8k3zgJSfucn5K0-FNaFC3TZBvVe6Rc93uw'}`
       },
       body: JSON.stringify({
