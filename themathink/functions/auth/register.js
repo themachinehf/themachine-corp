@@ -1,10 +1,5 @@
 import { createClient } from '@libsql/client';
 
-const client = createClient({
-  url: 'libsql://themachinecorp-themachinehf.aws-ap-northeast-1.turso.io',
-  authToken: TURSO_AUTH_TOKEN
-});
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -25,7 +20,12 @@ function generateId() {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
-export async function onRequestPost({ request }) {
+export async function onRequestPost({ request, env }) {
+  const client = createClient({
+    url: 'libsql://themachinecorp-themachinehf.aws-ap-northeast-1.turso.io',
+    authToken: env.TURSO_AUTH_TOKEN
+  });
+
   const { email, password } = await request.json();
   
   if (!email || !password) {
@@ -36,7 +36,6 @@ export async function onRequestPost({ request }) {
   }
 
   try {
-    // Create tables if not exist
     await client.execute(`CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
@@ -90,7 +89,7 @@ export async function onRequestPost({ request }) {
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Internal error' }), {
+    return new Response(JSON.stringify({ error: 'Internal error: ' + error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
