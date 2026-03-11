@@ -116,7 +116,7 @@
     async function createSession() {
       const title = document.getElementById('newTitle').value.trim() || 'New Thought';
       try {
-        const res = await fetch(API + '/themathink/api/auth/sessions', {
+        const res = await fetch(API + '/themathink/api/auth/session', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({title})
@@ -132,11 +132,27 @@
     
     async function loadSessions() {
       try {
-        const res = await fetch(API + '/themathink/api/auth/sessions');
+        const sessionId = localStorage.getItem('sessionId');
+        if (!sessionId) {
+          sessions = [];
+          return;
+        }
+        const res = await fetch(API + '/themathink/api/auth/session', {
+          headers: { 'x-session-id': sessionId }
+        });
+        if (!res.ok) {
+          sessions = [];
+          return;
+        }
         const data = await res.json();
-        sessions = data.sessions || [];
+        // For now, just show empty - sessions are stored locally
+        sessions = [];
         renderSessions();
-      } catch(e) { console.log(e); }
+      } catch(e) { 
+        console.log(e); 
+        sessions = [];
+        renderSessions();
+      }
     }
     
     function renderSessions() {
@@ -150,7 +166,7 @@
       currentSession = id;
       renderSessions();
       try {
-        const res = await fetch(API + '/themathink/api/auth/sessions/' + id);
+        const res = await fetch(API + '/themathink/api/auth/session/' + id);
         const data = await res.json();
         const chat = document.getElementById('chat');
         chat.innerHTML = '';
@@ -164,7 +180,7 @@
         return;
       }
       try {
-        const res = await fetch(API + '/themathink/api/auth/sessions/' + currentSession);
+        const res = await fetch(API + '/themathink/api/auth/session/' + currentSession);
         const data = await res.json();
         const session = sessions.find(s => s.id === currentSession);
         const title = session ? session.title : 'Session';
