@@ -272,11 +272,6 @@ export default {
     try {
       let response: Response;
 
-      // 根路由
-      if (path === '/' && method === 'GET') {
-        return new Response('THEMATHINK API running', { headers: { 'Content-Type': 'text/plain' } });
-      }
-
       // 路由匹配
       if (path === '/api/auth/register' && method === 'POST') {
         response = await handleRegister(request, env);
