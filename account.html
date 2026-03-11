@@ -21,6 +21,19 @@
     .btn-outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
     .logout { float: right; font-size: 12px; color: #6b7280; cursor: pointer; }
   </style>
+<script>
+    // Check if logged in
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      window.location.href = '/login.html';
+    }
+    
+    function logout() {
+      localStorage.removeItem('sessionId');
+      localStorage.removeItem('user');
+      window.location.href = '/login.html';
+    }
+  </script>
 </head>
 <body>
   <div class="container">

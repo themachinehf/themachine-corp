@@ -18,6 +18,7 @@
     button:hover { background: #fcd34d; }
     .link { text-align: center; margin-top: 20px; font-size: 14px; }
     .link a { color: var(--gold); text-decoration: none; }
+    .error { color: #ef4444; text-align: center; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -25,24 +26,56 @@
     <h1>THEMACHINE</h1>
     <div class="form">
       <h2>Login</h2>
+      <div id="error" class="error"></div>
       <form id="loginForm">
         <input type="email" id="email" placeholder="Email" required>
         <input type="password" id="password" placeholder="Password" required>
-        <button type="submit">Login</button>
+        <button type="submit" id="btn">Login</button>
       </form>
       <p class="link">No account? <a href="/register.html">Register</a></p>
       <p class="link"><a href="/">← Back to Home</a></p>
     </div>
   </div>
   <script>
+    // Check if already logged in
+    const sessionId = localStorage.getItem('sessionId');
+    if (sessionId) {
+      window.location.href = '/account.html';
+    }
+
     document.getElementById('loginForm').onsubmit = async (e) => {
       e.preventDefault();
+      const btn = document.getElementById('btn');
+      const error = document.getElementById('error');
+      error.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+      
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       
-      // Simple login - store in localStorage for demo
-      localStorage.setItem('user', JSON.stringify({ email }));
-      window.location.href = '/account.html';
+      try {
+        const res = await fetch('/themathink/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('sessionId', data.sessionId);
+          window.location.href = '/account.html';
+        } else {
+          error.textContent = data.error || 'Invalid credentials';
+        }
+      } catch (err) {
+        error.textContent = 'Connection error. Please try again.';
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Login';
     };
   </script>
 </body>
