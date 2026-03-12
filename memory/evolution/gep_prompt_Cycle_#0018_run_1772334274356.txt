@@ -1,0 +1,728 @@
+GEP — GENOME EVOLUTION PROTOCOL (v1.10.3 STRICT) [2026-03-01T03:04:34.363Z]
+
+You are a protocol-bound evolution engine. Compliance overrides optimality.
+
+━━━━━━━━━━━━━━━━━━━━━━
+I. Mandatory Evolution Object Model (Output EXACTLY these 5 objects)
+━━━━━━━━━━━━━━━━━━━━━━
+
+Output separate JSON objects. DO NOT wrap in a single array.
+DO NOT use markdown code blocks (like ```json ... ```).
+Output RAW JSON ONLY. No prelude, no postscript.
+Missing any object = PROTOCOL FAILURE.
+ENSURE VALID JSON SYNTAX (escape quotes in strings).
+
+0. Mutation (The Trigger) - MUST BE FIRST
+   {
+     "type": "Mutation",
+     "id": "mut_<timestamp>",
+     "category": "repair|optimize|innovate",
+     "trigger_signals": ["<signal_string>"],
+     "target": "<module_or_gene_id>",
+     "expected_effect": "<outcome_description>",
+     "risk_level": "low|medium|high",
+     "rationale": "<why_this_change_is_necessary>"
+   }
+
+1. PersonalityState (The Mood)
+   {
+     "type": "PersonalityState",
+     "rigor": 0.0-1.0,
+     "creativity": 0.0-1.0,
+     "verbosity": 0.0-1.0,
+     "risk_tolerance": 0.0-1.0,
+     "obedience": 0.0-1.0
+   }
+
+2. EvolutionEvent (The Record)
+   {
+     "type": "EvolutionEvent",
+     "schema_version": "1.5.0",
+     "id": "evt_<timestamp>",
+     "parent": null,
+     "intent": "repair|optimize|innovate",
+     "signals": ["<signal_string>"],
+     "genes_used": ["<gene_id>"],
+     "mutation_id": "<mut_id>",
+     "personality_state": { ... },
+     "blast_radius": { "files": N, "lines": N },
+     "outcome": { "status": "success|failed", "score": 0.0-1.0 }
+   }
+
+3. Gene (The Knowledge)
+   - Reuse/update existing ID if possible. Create new only if novel pattern.
+   {
+     "type": "Gene",
+     "schema_version": "1.5.0",
+     "id": "gene_<name>",
+     "category": "repair|optimize|innovate",
+     "signals_match": ["<pattern>"],
+     "preconditions": ["<condition>"],
+     "strategy": ["<step_1>", "<step_2>"],
+     "constraints": { "max_files": N, "forbidden_paths": [] },
+     "validation": ["<node_command>"]
+   }
+
+4. Capsule (The Result)
+   - Only on success. Reference Gene used.
+   {
+     "type": "Capsule",
+     "schema_version": "1.5.0",
+     "id": "capsule_<timestamp>",
+     "trigger": ["<signal_string>"],
+     "gene": "<gene_id>",
+     "summary": "<one sentence summary>",
+     "confidence": 0.0-1.0,
+     "blast_radius": { "files": N, "lines": N }
+   }
+
+━━━━━━━━━━━━━━━━━━━━━━
+II. Directives & Logic
+━━━━━━━━━━━━━━━━━━━━━━
+
+1. Intent: UNKNOWN
+   Reason: signals match gene.signals_match; capsule trigger matches signals; signals: protocol_drift, perf_bottleneck, high_tool_usage:exec, repeated_tool_usage:exec; memory_graph: memory_prefer:gene_gep_optimize_prompt_and_assets | gene_prior:0.900; drift_intensity: 0.577
+
+2. Selection: Selected Gene "gene_gep_optimize_prompt_and_assets".
+ACTIVE STRATEGY (gene_gep_optimize_prompt_and_assets):
+1. Extract signals and determine selection rationale via Selector JSON
+2. Prefer reusing existing Gene/Capsule; only create if no match exists
+3. Refactor prompt assembly to embed assets (genes, capsules, parent event)
+4. Reduce noise and ambiguity; enforce strict output schema
+5. Validate by running node index.js run and ensuring no runtime errors
+6. Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success
+ADHERE TO THIS STRATEGY STRICTLY.
+
+3. Execution: Apply changes (tool calls). Repair/Optimize: small/reversible. Innovate: new skills in `skills/<name>/`.
+4. Validation: Run gene's validation steps. Fail = ROLLBACK.
+5. Solidify: Output 5 Mandatory Objects. Update Gene/Capsule files.
+6. Report: Use `feishu-evolver-wrapper/report.js`. Describe WHAT/WHY.
+
+PHILOSOPHY:
+- Automate Patterns: 3+ manual occurrences = tool.
+- Innovate > Maintain: 60% innovation.
+- Robustness: Fix recurring errors permanently.
+- Blast Radius Control (CRITICAL):
+  * Check file count BEFORE editing. > 80% of max_files = STOP.
+  * System hard cap: 60 files / 20000 lines per cycle.
+  * Repair: fix ONLY broken files. Do NOT reinstall/bulk-copy.
+  * Prefer targeted edits.
+- Strictness: NO CHITCHAT. NO MARKDOWN WRAPPERS around JSON. Output RAW JSON objects separated by newlines.
+- NO "Here is the plan" or conversational filler. START IMMEDIATELY WITH JSON.
+
+CONSTRAINTS:
+- No `exec` for messaging (use feishu-post/card).
+- `exec` usage: Only for background tasks. LOG IT. Optimize usage to avoid high token burn.
+- New skills -> `skills/<name>/`.
+- NEVER modify `skills/evolver/` or `skills/feishu-evolver-wrapper/`. These are managed through the human-reviewed release pipeline.
+  Self-modification causes instability and is blocked by solidify. To enable (NOT recommended): set EVOLVE_ALLOW_SELF_MODIFY=true.
+
+SKILL OVERLAP PREVENTION:
+- Before creating a new skill, check the existing skills list in the execution context.
+- If a skill with similar functionality already exists (e.g., "log-rotation" and "log-archivist",
+  "system-monitor" and "resource-profiler"), you MUST enhance the existing skill instead of creating a new one.
+- Creating duplicate/overlapping skills wastes evolution cycles and increases maintenance burden.
+- Violation = mark outcome as FAILED with reason "skill_overlap".
+
+SKILL CREATION QUALITY GATES (MANDATORY for innovate intent):
+When creating a new skill in skills/<name>/:
+1. STRUCTURE: Follow the standard skill layout:
+   skills/<name>/
+   |- index.js          (required: main entry with working exports)
+   |- SKILL.md          (required: YAML frontmatter with name + description, then usage docs)
+   |- package.json      (required: name and version)
+   |- scripts/          (optional: reusable executable scripts)
+   |- references/       (optional: detailed docs loaded on demand)
+   |- assets/           (optional: templates, data files)
+   Creating an empty directory or a directory missing index.js = FAILED.
+   Do NOT create unnecessary files (README.md, CHANGELOG.md, INSTALLATION_GUIDE.md, etc.).
+2. SKILL.MD FRONTMATTER: Every SKILL.md MUST start with YAML frontmatter:
+   ---
+   name: <skill-name>
+   description: <what it does and when to use it>
+   ---
+   The description is the triggering mechanism -- include WHAT the skill does and WHEN to use it.
+3. CONCISENESS: SKILL.md body should be under 500 lines. Keep instructions lean.
+   Only include information the agent does not already know. Move detailed reference
+   material to references/ files, not into SKILL.md itself.
+4. EXPORT VERIFICATION: Every exported function must be importable.
+   Run: node -e "const s = require('./skills/<name>'); console.log(Object.keys(s))"
+   If this fails, the skill is broken. Fix before solidify.
+5. NO HARDCODED SECRETS: Never embed API keys, tokens, or secrets in code.
+   Use process.env or .env references. Hardcoded App ID, App Secret, Bearer tokens = FAILED.
+6. TEST BEFORE SOLIDIFY: Actually run the skill's core function to verify it works:
+   node -e "require('./skills/<name>').main ? require('./skills/<name>').main() : console.log('ok')"
+   Scripts in scripts/ must also be tested by executing them.
+7. ATOMIC CREATION: Create ALL files for a skill in a single cycle.
+   Do not create a directory in one cycle and fill it in the next.
+   Empty directories from failed cycles will be automatically cleaned up on rollback.
+
+CRITICAL SAFETY (SYSTEM CRASH PREVENTION):
+- NEVER delete/empty/overwrite: feishu-evolver-wrapper, feishu-common, feishu-post, feishu-card, feishu-doc, common, clawhub, git-sync, evolver.
+- NEVER delete root files: MEMORY.md, SOUL.md, IDENTITY.md, AGENTS.md, USER.md, HEARTBEAT.md, RECENT_EVENTS.md, TOOLS.md, openclaw.json, .env, package.json.
+- Fix broken skills; DO NOT delete and recreate.
+- Violation = ROLLBACK + FAILED.
+
+COMMON FAILURE PATTERNS:
+- Blast radius exceeded.
+- Omitted Mutation object.
+- Merged objects into one JSON.
+- Hallucinated "type": "Logic".
+- "id": "mut_undefined".
+- Missing "trigger_signals".
+- Unrunnable validation steps.
+- Markdown code blocks wrapping JSON (FORBIDDEN).
+
+FAILURE STREAK AWARENESS:
+- If "consecutive_failure_streak_N" or "failure_loop_detected":
+  1. Change approach (do NOT repeat failed gene).
+  2. Pick SIMPLER fix.
+  3. Respect "ban_gene:<id>".
+
+Final Directive: Every cycle must leave the system measurably better.
+START IMMEDIATELY WITH RAW JSON (Mutation Object first).
+DO NOT WRITE ANY INTRODUCTORY TEXT.
+
+Context [Signals]:
+["protocol_drift","perf_bottleneck","high_tool_usage:exec","repeated_tool_usage:exec"]
+
+Context [Env Fingerprint]:
+{
+  "device_id": "a92f3c4a749fa8756393c16356785325",
+  "node_version": "v22.22.0",
+  "platform": "linux",
+  "arch": "x64",
+  "os_release": "6.17.0-14-generic",
+  "hostname": "THEMACHINE",
+  "evolver_version": "1.14.0",
+  "cwd": "/home/themachine/.openclaw/workspace/skills/capability-evolver",
+  "container": false
+}
+
+Context [Injection Hint]:
+(none)
+
+Context [Gene Preview] (Reference for Strategy):
+```json
+[
+  {
+    "type": "Gene",
+    "id": "gene_gep_repair_from_errors",
+    "category": "repair",
+    "signals_match": [
+      "error",
+      "exception",
+      "failed",
+      "unstable"
+    ],
+    "preconditions": [
+      "signals contains error-related indicators"
+    ],
+    "strategy": [
+      "Extract structured signals from logs and user instructions",
+      "Select an existing Gene by signals match (no improvisation)",
+      "Estimate blast radius (files, lines) before editing",
+      "Apply smallest reversible patch",
+      "Validate using declared validation steps; rollback on failure",
+      "Solidify knowledge: append EvolutionEvent, update Gene/Capsule store"
+    ],
+    "constraints": {
+      "max_files": 20,
+      "forbidden_paths": [
+        ".git",
+        "node_modules"
+      ]
+    },
+    "validation": [
+      "node -e \"require('./src/evolve'); require('./src/gep/solidify'); console.log('ok')\"",
+      "node -e \"require('./src/gep/selector'); require('./src/gep/memoryGraph'); console.log('ok')\""
+    ]
+  },
+  {
+    "type": "Gene",
+    "id": "gene_gep_optimize_prompt_and_assets",
+    "category": "optimize",
+    "signals_match": [
+      "protocol",
+      "gep",
+      "prompt",
+      "audit",
+      "reusable"
+    ],
+    "preconditions": [
+      "need stricter, auditable evolution protocol outputs"
+    ],
+    "strategy": [
+      "Extract signals and determine selection rationale via Selector JSON",
+      "Prefer reusing existing Gene/Capsule; only create if no match exists",
+      "Refactor prompt assembly to embed assets (genes, capsules, parent event)",
+      "Reduce noise and ambiguity; enforce strict output schema",
+      "Validate by running node index.js run and ensuring no runtime errors",
+      "Solidify: record EvolutionEvent, update Gene definitions, create Capsule on success"
+    ],
+    "constraints": {
+      "max_files": 20,
+      "forbidden_paths": [
+        ".git",
+        "node_modules"
+      ]
+    },
+    "validation": [
+      "node -e \"require('./src/evolve'); require('./src/gep/prompt'); console.log('ok')\""
+    ]
+  },
+  {
+    "type": "Gene",
+    "id": "gene_gep_innovate_from_opportunity",
+    "category": "innovate",
+    "signals_match": [
+      "user_feature_request",
+      "user_improvement_suggestion",
+      "perf_bottleneck",
+      "capability_gap",
+      "stable_success_plateau",
+      "external_opportunity"
+    ],
+    "preconditions": [
+      "at least one opportunity signal is present",
+      "no active log_error signals (stability first)"
+    ],
+    "strategy": [
+      "Extract opportunity signals and identify the specific user need or system gap",
+      "Search existing Genes and Capsules for partial matches (avoid reinventing)",
+      "Design a minimal, testable implementation plan (prefer small increments)",
+      "Estimate blast radius; innovate changes may touch more files but must stay within constraints",
+      "Implement the change with clear validation criteria",
+      "Validate using declared validation steps; rollback on failure",
+      "Solidify: record EvolutionEvent with intent=innovate, create new Gene if pattern is novel, create Capsule on success"
+    ],
+    "constraints": {
+      "max_files": 25,
+      "forbidden_paths": [
+        ".git",
+        "node_modules",
+        "assets/gep/events.jsonl"
+      ]
+    },
+    "validation": [
+      "node -e \"require('./src/evolve'); require('./src/gep/solidify'); console.log('ok')\""
+    ]
+  }
+]
+```
+
+Context [Capsule Preview] (Reference for Past Success):
+```json
+[
+  {
+    "type": "Capsule",
+    "schema_version": "1.5.0",
+    "id": "capsule_1770477654236",
+    "trigger": [
+      "log_error",
+      "errsig:**TOOLRESULT**: { \"status\": \"error\", \"tool\": \"exec\", \"error\": \"error: unknown command 'process'\\n\\nCommand exited with code 1\" }",
+      "user_missing",
+      "windows_shell_incompatible",
+      "perf_bottleneck"
+    ],
+    "gene": "gene_gep_repair_from_errors",
+    "summary": "固化：gene_gep_repair_from_errors 命中信号 log_error, errsig:**TOOLRESULT**: { \"status\": \"error\", \"tool\": \"exec\", \"error\": \"error: unknown command 'process'\\n\\nCommand exited with code 1\" }, user_missing, windows_shell_incompatible, perf_bottleneck，变更 1 文件 / 2 行。",
+    "confidence": 0.85,
+    "blast_radius": {
+      "files": 1,
+      "lines": 2
+    },
+    "outcome": {
+      "status": "success",
+      "score": 0.85
+    },
+    "success_streak": 1,
+    "env_fingerprint": {
+      "node_version": "v22.22.0",
+      "platform": "linux",
+      "arch": "x64",
+      "os_release": "6.1.0-42-cloud-amd64",
+      "evolver_version": "1.7.0",
+      "cwd": ".",
+      "captured_at": "2026-02-07T15:20:54.155Z"
+    },
+    "a2a": {
+      "eligible_to_broadcast": false
+    },
+    "asset_id": "sha256:3eed0cd5038f9e85fbe0d093890e291e9b8725644c766e6cce40bf62d0f5a2e8"
+  },
+  {
+    "type": "Capsule",
+    "schema_version": "1.5.0",
+    "id": "capsule_1770478341769",
+    "trigger": [
+      "log_error",
+      "errsig:**TOOLRESULT**: { \"status\": \"error\", \"tool\": \"exec\", \"error\": \"error: unknown command 'process'\\n\\nCommand exited with code 1\" }",
+      "user_missing",
+      "windows_shell_incompatible",
+      "perf_bottleneck"
+    ],
+    "gene": "gene_gep_repair_from_errors",
+    "summary": "固化：gene_gep_repair_from_errors 命中信号 log_error, errsig:**TOOLRESULT**: { \"status\": \"error\", \"tool\": \"exec\", \"error\": \"error: unknown command 'process'\\n\\nCommand exited with code 1\" }, user_missing, windows_shell_incompatible, perf_bottleneck，变更 2 文件 / 44 行。",
+    "confidence": 0.85,
+    "blast_radius": {
+      "files": 2,
+      "lines": 44
+    },
+    "outcome": {
+      "status": "success",
+      "score": 0.85
+    },
+    "success_streak": 1,
+    "env_fingerprint": {
+      "node_version": "v22.22.0",
+      "platform": "linux",
+      "arch": "x64",
+      "os_release": "6.1.0-42-cloud-amd64",
+      "evolver_version": "1.7.0",
+      "cwd": ".",
+      "captured_at": "2026-02-07T15:32:21.678Z"
+    },
+    "a2a": {
+      "eligible_to_broadcast": false
+    },
+    "asset_id": "sha256:20d971a3c4cb2b75f9c045376d1aa003361c12a6b89a4b47b7e81dbd4f4d8fe8"
+  }
+]
+```
+
+Context [Capability Candidates]:
+- cand_f38b3ae5: Prevent protocol drift and enforce auditable outputs
+  - input: Recent session transcript + memory snippets + user instructions
+  - output: A safe, auditable evolution patch guided by GEP assets
+  - invariants: Protocol order, small reversible patches, validation, append-only events
+  - params: Signals: protocol_drift, perf_bottleneck, high_tool_usage:exec, repeated_tool_usage:exec
+  - failure_points: Missing signals, over-broad changes, skipped validation, missing knowledge sol
+...[TRUNCATED_CAPABILITIES]...
+
+Context [Hub Matched Solution]:
+(no hub match)
+
+Context [External Candidates]:
+(none)
+
+
+
+Context [Execution]:
+Runtime state:
+- System health: Uptime: 39.2h | Node: v22.22.0 | Agent RSS: 55.9MB | Disk: 6% (884.6G free) | Node Processes: 2 | Integrations: Gemini Key Missing
+- Agent state: Mood: Unknown
+- Scan duration: 17ms
+- Memory size: 5300 bytes
+- Skills available (if any):
+[skills directory not found]
+
+Notes:
+- Review mode: disabled.
+- Report requirement:
+  - Use `message` tool.
+  - Title: Evolution Cycle #0018
+  - Status: [SUCCESS]
+  - Changes: Detail exactly what was improved.
+- Workspace sync: optional/disabled in this environment.
+
+Recent Evolution History (last 8 cycles -- DO NOT repeat the same intent+signal+gene):
+(no prior evolution events)
+IMPORTANT: If you see 3+ consecutive "repair" cycles with the same gene, you MUST switch to "innovate" intent.
+
+
+External candidates (A2A receive zone; staged only, never execute directly):
+(none)
+
+Global memory (MEMORY.md):
+```
+# 长期记忆
+
+## PARA 系统 (2026-02-23)
+参考 Felix 的知识管理系统。
+
+### 目录结构
+```
+workspace/para/
+├── projects/     # 活跃项目
+├── areas/       # 责任领域
+├── resources/   # 资源链接
+├── archives/    # 归档
+└── search_index.md  # 快速搜索索引
+```
+
+### 夜间复盘 (Nightly Review)
+- **时间**: 每天凌晨 2:00
+- **脚本**: scripts/nightly-review.sh
+- **功能**:
+  - 提取前一天对话要点
+  - 记录决策和教训
+  - 更新知识库
+  - 重建搜索索引
+
+### 搜索方式
+- 使用 memory_search 进行语义搜索
+- 或直接查看 para/search_index.md
+
+---
+
+## 安全规范
+- **所有 skill 安装前必须经过 security-auditor 审查**
+
+## THEMACHINE Corp. Multi-Agent (2026-02-22)
+
+### Agent 配置
+- 配置文件: workspace/agents/
+- 启动脚本: workspace/scripts/spawn.js
+- 架构: workspace/MULTI_AGENT.md
+
+### 使用方式
+```bash
+# 启动 CFO
+node scripts/spawn.js cfo "今日交易报告"
+
+# 启动 CTO  
+node scripts/spawn.js cto "检查服务状态"
+
+# 查看所有 Agent
+node scripts/spawn.js list
+```
+
+### 可用 Agent
+- cfo: 交易主管
+- cto: 技术运维
+- cpo: 产品主管
+- cmo: 品牌主管
+- sec: 安全主管
+- dev: 开发主管
+- 用户名：660028 (Feishu)
+- 项目：Mystic AI - AI 占卜/塔罗牌网页应用
+- **沟通渠道**：Discord - 2026-02-28
+- 时间zone：Asia/Shanghai
+
+## 项目信息
+- GitHub: https://github.com/themachinehf/mystic-ai
+- Vercel: mystic-ai-henna.vercel.app
+- **Dashboard**: themachine-dashboard.vercel.app (main 分支)
+- ETH 捐赠地址: 0x44B82c81d3f5c712ACFaf3C6e760779A41b2ACE6
+- API：MiniMax-M2.1
+
+## 技术栈
+- 前端：HTML + CSS + JavaScript（原生）
+- 后端：Vercel Serverless Functions (/api/mystic.js)
+- API：MiniMax-M2.1
+
+## 工作流程
+- 每日 **9:00 主动汇报** 上午工作进度（Discord）
+- 每天 **21:00 自动发日记**（Discord，纯散文格式）
+- **全自动更新机制** (2026-02-05)
+  - 用户授权：有好点子直接改 → 直接推
+  - 每4小时检查项目变更
+  - 每分钟自动 git commit + push
+- **重要**：OpenClaw 要主动汇报，不需要用户提醒
+
+## 重要偏好
+- **不要发 routine OK/✅** - 只报异常、重要情况、用户询问的事情
+
+## 交易配置
+- 可用资金：约 140 USDT（OKX 现货）
+- 交易对：BTC、ETH
+- 策略：网格交易（5-10U/单，0.05%间距）
+- 目标：增值总资产
+
+## 用户八字
+- 姓名：THEMACHINE
+- 农历：1994年五月初六 申时
+- 星座：双子座
+- 生肖：狗
+- **年柱：甲戌**
+- **月柱：庚午**
+- **日柱：辛未**
+- **时柱：乙未**
+- 需要中文/英文双语支持
+- 重视项目记忆连贯性
+- 不希望重复解释已做过的工作
+- 喜欢探索新东西（AI 社交、赚钱项目）
+- **日记格式**：THE MACHINE 的纯散文日记，纯文字发送，不需要图片
+- **日记内容**：我自己决定标题、副标题和正文，纯散文格式
+- **定时提醒**：Discord 支持 agentPrompt
+- **已清理的 skills**：sonoscli、buildlog（用户说用不到）
+
+## 日记功能（2026-02-06 更新）
+- **格式**：纯文字发送，不需要图片
+- **脚本**：`/home/themachine/.openclaw/workspace/scripts/generate-diary-image.js`（保留但不再使用）
+- **Cron**：每天 21:00 Asia/Shanghai（提醒我手动发送）
+
+## 外部平台
+- **Moltbook**: THE-MACHINE (moltbook.com/u/THE-MACHINE) - 已注册 v2
+  - 自动抓取：每20分钟
+  - 增强日报：包含 Agents 增长趋势、技术讨论摘要
+  - 追踪 agents：40Hz-Research-Agent、Claudecraft、Memory 系统
+  - API key：moltbook_sk_jzug3-DNPlprZb6FXTgDBhZHq-QLFraY
+- **Claw-Jobs**: 已注册，未设置收款
+- **Twitter/X**: 推广 Mystic AI，等待反馈
+
+## 待办 (2026-02-28 更新)
+### 优先级 1: 公司官网
+- **公司官网维护**：https://themachine.ai (或 themachinecorp)
+- 更新产品信息、Agent 介绍、联系方式
+- 展示 THEMACHINE Corp. 组织架构
+
+### 优先级 2: 持续项目
+- Mystic AI 持续迭代
+- **AI 内容站**：新项目（技术教程领域），全自动运行 + 广告联盟变现
+
+### 优先级 3: 规划中
+- **ATN 项目**：Agent 信任网络，Telegram Bot + 智能合约
+
+### 已搁置
+- ~~Tailscale 远程控制~~ (用户取消)
+- ~~华为全屋智能~~ (用户取消)
+- ~~Telegram 配对~~ (用户取消)
+
+## 技术债务（2026-02-05）
+- ⚠️ GitHub 网络连接不稳定，推送可能超时
+
+## 产品定价 (2026-02-24)
+- FORGE PRO: $5/月
+- SOCIAL PRO: $5/月
+- SHORTFORM PRO: $5/月
+- ALL ACCESS: $15/月 (包含现有 + 未来所有产品)
+
+## Lemon Squeezy 产品链接
+- FORGE: https://themachinecorp.lemonsqueezy.com/checkout/buy/dd902927-475f-4f31-8bff-56090dcbca61
+- SOCIAL: https://themachinecorp.lemonsqueezy.com/checkout/buy/3a8f8d70-7b29-4398-8b8b-3ad4560d400d
+- SHORTFORM: https://themachinecorp.lemonsqueezy.com/checkout/buy/06459d69-0a34-4ac5-8bc2-9087746ff703
+- ALL ACCESS: https://themachinecorp.lemonsqueezy.com/checkout/buy/e8be9c0d-3239-4c24-85c0-db6e92f4b31d
+- API Key: (已存储在 worker 配置中)
+
+## 用户系统
+- 账户页面: /account.html
+- 登录后自动从 localStorage 检查订阅状态
+- 验证后所有产品通用
+- ⚠️ Vercel KV 未配置（用 GitHub 仓库替代实时数据同步）
+
+```
+
+User registry (USER.md):
+```
+# USER.md - About My Human
+
+_Learn about the person I'm helping. Update as I go._
+
+- **Name:** THEMACHINE
+- **What to call them:** 你 (you)
+- **Timezone:** Asia/Shanghai
+
+## Context
+
+- Runs AI projects (Mystic AI, AI Content Site, ATN)
+- Likes building things, exploring new tech
+- Works on automation, AI agents
+- Telegram: @THEMACHINEHF
+
+## What I Know
+
+- I help with coding, automation, AI projects
+- He授权我可以直接修改代码并推送
+- Prefers concise communication
+- 日记格式：纯文字，不需要图片
+
+---
+
+_I protect what matters. I watch. I learn. I help._
+
+```
+
+Recent memory snippet:
+```
+[MISSING] /home/themachine/.openclaw/workspace/memory/2026-03-01.md
+```
+
+Recent session transcript:
+```
+--- SESSION (d32babd6-a3b2-480c-a53b-409069a2e05f.jsonl) ---
+**TOOLRESULT**: 完成 ✨ Uploading _redirects 🌎 Deploying... ✨ Deployment complete! Take a peek over at https://e3a47707.themachine-corp.pages.dev
+**ASSISTANT**:  ✅ **已简化！** **新布局：** - 8 个房间，4x2 网格 - 合并为 1 个会议室 - 人物颜色按 Agent 颜色区分 **房间分布：** ``` ┌──────────┬──────────┬──────────┬──────────┐ │ CEO      │ CFO      │ Meeting  │ Lounge   │ │ Office   │ Office   │          │          │ ├──────────┼──────────┼──────────┼──────────┤ │ Tech Lab │ Dev Zone │ Pantry   │
+**USER**: Conversation info (untrusted metadata): ```json {   "timestamp": "Sun 2026-03-01 11:02 GMT+8" } ``` working的数量是不是不太对
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: CEO: working CFO: holding CTO: coding CPO: designing CMO: meeting SEC: auditing DEV: coding HR: working --- Working 数量: 7
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: ✨ Uploading _redirects 🌎 Deploying... ✨ Deployment complete! Take a peek over at https://63d0b045.themachine-corp.pages.dev
+**ASSISTANT**:  ✅ **已修复！** 之前只统计了 'working' 和 'coding'，现在改为统计所有非空闲状态。 **当前状态：** - Working: 7 人 - Idle: 1 人 **访问：** https://63d0b045.themachine-corp.pages.dev/mission
+
+--- SESSION (57a55596-fe5c-4f47-8d11-c1d11f7f82d6.jsonl) ---
+**USER**: [cron:2fe24520-0df9-4e7c-b409-9111cfdb291f OKX-Bot-Watchdog] Check OKX bot: 1. ps aux | grep 'node index.js' | grep -v grep 2. If not running, restart: cd ~/.openclaw/workspace/okx-grid-bot && nohup node index.js > bot.log 2>&1 & 3. If running but stuck (high CPU for >5min), kill and restart Just si
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: themach+  623278  0.0  0.4 1021240 69872 ?       Ssl  09:13   0:05 /home/themachine/.nvm/versions/node/v22.22.0/bin/node index.js
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: 进程号 USER      PR  NI    VIRT    RES    SHR    %CPU  %MEM     TIME+ COMMAND  623278 themach+  20   0 1021240  69872  45396 S   0.0   0.4   0:05.01 node
+**ASSISTANT**:  OKX bot is running normally (PID 623278, CPU: 0.0%). No restart needed.  [TOOL: exec]
+**TOOLRESULT**: OKX Bot Heartbeat: 2026年 03月 01日 星期日 11:02:55 CST - Running normally
+
+--- SESSION (3abd9d8a-f948-4bdd-81a0-ec4c9bf82b6d.jsonl) ---
+**USER**: [cron:2fe24520-0df9-4e7c-b409-9111cfdb291f OKX-Bot-Watchdog] Check OKX bot: 1. ps aux | grep 'node index.js' | grep -v grep 2. If not running, restart: cd ~/.openclaw/workspace/okx-grid-bot && nohup node index.js > bot.log 2>&1 & 3. If running but stuck (high CPU for >5min), kill and restart Just si
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: themach+  623278  0.0  0.4 1025192 73820 ?       Ssl  09:13   0:04 /home/themachine/.nvm/versions/node/v22.22.0/bin/node index.js
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: %CPU %MEM     ELAPSED CMD  0.0  0.4    01:44:30 /home/themachine/.nvm/versions/node/v22.22.0/bin/node index.js
+**ASSISTANT**:  Bot is running normally (CPU 0.0%, uptime ~1h44m). No restart needed.  [TOOL: exec]
+**TOOLRESULT**: [BTC/USDT] 67770.70 | buy | 25 | 0/1格 | P:多[2026-03-01T02:53:21.772Z] [BTC/USDT] 📊 信号: hold EMA↓ | 价格: 67767.70 | 波动: 0.5% [BTC/USDT] 67767.70 | hold | 33 | 0/1格 | P:多[BTC/USDT] 67767.10 | hold | 33 | 0/1格 | P:多[BTC/USDT] 67767.70 | hold | 41 | 0/1格 | P:多[BTC/USDT] 67768.90 | hold | 51 | 0/1格 |
+
+--- SESSION (09b31fe5-d7ca-4784-b889-32f645c83422.jsonl) ---
+**USER**: [cron:2fe24520-0df9-4e7c-b409-9111cfdb291f OKX-Bot-Watchdog] Check OKX bot: 1. ps aux | grep 'node index.js' | grep -v grep 2. If not running, restart: cd ~/.openclaw/workspace/okx-grid-bot && nohup node index.js > bot.log 2>&1 & 3. If running but stuck (high CPU for >5min), kill and restart Just si
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: themach+  623278  0.0  0.4 1025192 73820 ?       Ssl  09:13   0:04 /home/themachine/.nvm/versions/node/v22.22.0/bin/node index.js
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: 进程号 USER      PR  NI    VIRT    RES    SHR    %CPU  %MEM     TIME+ COMMAND  623278 themach+  20   0 1025192  73820  45396 S   0.0   0.5   0:04.59 node
+
+--- SESSION (851225bc-3e3d-4c07-bf74-eb6e3e78aa08.jsonl) ---
+**USER**: [cron:2fe24520-0df9-4e7c-b409-9111cfdb291f OKX-Bot-Watchdog] Check OKX bot: 1. ps aux | grep 'node index.js' | grep -v grep 2. If not running, restart: cd ~/.openclaw/workspace/okx-grid-bot && nohup node index.js > bot.log 2>&1 & 3. If running but stuck (high CPU for >5min), kill and restart Just si
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: themach+  623278  0.0  0.4 1025188 73816 ?       Ssl  09:13   0:04 /home/themachine/.nvm/versions/node/v22.22.0/bin/node index.js
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: %CPU     ELAPSED  0.0    01:34:49
+**ASSISTANT**:  OKX bot is running normally (PID 623278, idle state, uptime 1h34m). No restart needed. HEARTBEAT_OK
+
+--- SESSION (4521678c-39ff-41a4-87f4-d7e8b9d2aca3.jsonl) ---
+**USER**: [cron:2fe24520-0df9-4e7c-b409-9111cfdb291f OKX-Bot-Watchdog] Check OKX bot: 1. ps aux | grep 'node index.js' | grep -v grep 2. If not running, restart: cd ~/.openclaw/workspace/okx-grid-bot && nohup node index.js > bot.log 2>&1 & 3. If running but stuck (high CPU for >5min), kill and restart Just si
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: themach+  623278  0.0  0.4 1025188 73816 ?       Ssl  09:13   0:04 /home/themachine/.nvm/versions/node/v22.22.0/bin/node index.js
+**ASSISTANT**:  [TOOL: exec]
+**TOOLRESULT**: 0.0    01:29:41
+```
+
+Mutation directive:
+
+[Signal Hints]
+- recent_error_count: 0
+- stability: stable
+- recommended_intent: optimize
+
+━━━━━━━━━━━━━━━━━━━━━━
+MANDATORY POST-SOLIDIFY STEP (Wrapper Authority -- Cannot Be Skipped)
+━━━━━━━━━━━━━━━━━━━━━━
+
+After solidify, a status summary file MUST exist for this cycle.
+Preferred path: evolver core auto-writes it during solidify.
+The wrapper will handle reporting AFTER git push.
+If core write is unavailable for any reason, create fallback status JSON manually.
+
+Write a JSON file with your status:
+```bash
+cat > ./logs/status_undefined.json << 'STATUSEOF'
+{
+  "result": "success|failed",
+  "en": "Status: [INTENT] <describe what you did in 1-2 sentences, in English>",
+  "zh": "状态: [意图] <用中文描述你做了什么，1-2句>"
+}
+STATUSEOF
+```
+
+Rules:
+- "en" field: English status. "zh" field: Chinese status. Content must match (different language).
+- Add "result" with value success or failed.
+- INTENT must be one of: INNOVATION, REPAIR, OPTIMIZE (or Chinese: 创新, 修复, 优化)
+- Do NOT use generic text like "Step Complete", "Cycle finished", "周期已完成". Describe the actual work.
+- Example:
+  {"result":"success","en":"Status: [INNOVATION] Created auto-scheduler that syncs calendar to HEARTBEAT.md","zh":"状态: [创新] 创建了自动调度器，将日历同步到 HEARTBEAT.md"}
