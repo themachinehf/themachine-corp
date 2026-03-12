@@ -1,0 +1,26 @@
+name: Content Generation
+
+on:
+  schedule:
+    # Run daily at 9am
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate Content
+        run: |
+          cd /home/themachine/.openclaw/workspace
+          bash scripts/content-recommend.sh
+
+      - name: Create Draft PR
+        uses: actions/create-pull-request@v6
+        with:
+          commit-message: "chore: daily content draft"
+          branch: content/draft
+          title: "Content Draft $(date +%Y-%m-%d)"
