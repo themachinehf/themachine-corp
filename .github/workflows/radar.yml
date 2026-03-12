@@ -13,51 +13,65 @@ jobs:
       - name: Scan HN
         id: hn
         run: |
+          echo "=== 📰 HN Top 10 ==="
           HN_IDS=$(curl -s "https://hacker-news.firebaseio.com/v0/topstories.json" | jq '.[:10]')
-          echo "hn_ids=$HN_IDS" >> $GITHUB_OUTPUT
           for id in $(echo $HN_IDS | jq -r '.[]'); do
-            title=$(curl -s "https://hacker-news.firebaseio.com/v0/item/$id.json" | jq -r '.title')
-            score=$(curl -s "https://hacker-news.firebaseio.com/v0/item/$id.json" | jq -r '.score')
-            url=$(curl -s "https://hacker-news.firebaseio.com/v0/item/$id.json" | jq -r '.url')
-            echo "📰 HN: $title ($score pts)"
+            title=$(curl -s "https://hacker-news.firebaseio.com/v0/item/$id.json" | jq -r '.title // empty')
+            score=$(curl -s "https://hacker-news.firebaseio.com/v0/item/$id.json" | jq -r '.score // 0')
+            echo "📰 $title ($score pts)"
           done
       
       - name: Scan GitHub
         run: |
+          echo "=== ⭐ GitHub Trending ==="
           curl -s "https://api.github.com/search/repositories?q=created:>2024-01-01&sort=stars&per_page=5" | \
-          jq '.items[:5] | .[] | "⭐ \(.full_name): \(.description // "No description")"' 
+          jq -r '.items[:5] | .[] | "⭐ \(.full_name): \(.description // "No description")[0:80]"' 
       
       - name: Scan HuggingFace
         run: |
-          echo "📄 HuggingFace Papers:"
+          echo "=== 📄 HF Papers ==="
           curl -s "https://huggingface.co/api/papers/trending?limit=5" | \
-          jq -r '.[] | "\(.title)"' | head -5
+          jq -r '.[] | "📄 \(.title)[0:60]"' | head -5
       
-      - name: Create Task in DB
+      - name: Analyze & Create Tasks
         run: |
-          # 通过 API 创建任务
+          # 创建多个任务 - 按类型分配
+          
+          # CMO: 市场/需求类
           curl -s -X POST "https://themachine-auth.jxs66.workers.dev/api/tasks" \
             -H "Content-Type: application/json" \
             -d '{
-              "title": "Radar 扫描完成 - 需分析今日趋势",
-              "description": "检查 HN/GitHub/HF 今日热门，识别新痛点",
-              "priority": "normal",
+              "title": "[Radar] 今日热门需求分析",
+              "description": "分析 HN/GitHub/HF 今日热门，识别潜在市场需求",
+              "priority": "high",
               "assigned_agent_id": "cmo"
             }'
-          echo "✅ 任务已创建"
-      
-      - name: Discord Notification
-        if: env.DISCORD_WEBHOOK != ''
-        run: |
-          curl -s -X POST "$DISCORD_WEBHOOK" \
+          
+          # CFO: 变现机会
+          curl -s -X POST "https://themachine-auth.jxs66.workers.dev/api/tasks" \
             -H "Content-Type: application/json" \
             -d '{
-              "content": "🔍 Radar 扫描完成！\n\n📰 HN / ⭐ GitHub / 📄 HF 已扫描\n✅ 任务已分配给 CMO"
+              "title": "[Radar] 今日变现机会",
+              "description": "扫描技术趋势，识别付费需求机会",
+              "priority": "normal",
+              "assigned_agent_id": "cfo"
             }'
+          
+          # CTO: 技术选型
+          curl -s -X POST "https://themachine-auth.jxs66.workers.dev/api/tasks" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "title": "[Radar] 今日技术趋势",
+              "description": "关注新技术/框架，评估技术选型",
+              "priority": "normal",
+              "assigned_agent_id": "cto"
+            }'
+          
+          echo "✅ 3个任务已创建 (CMO, CFO, CTO)"
       
-      - name: Commit scan log
+      - name: Commit log
         run: |
-          echo "$(date): Radar scan completed" >> radar-scan.log
+          echo "$(date): Radar scan completed - 3 tasks created" >> radar-scan.log
           git config --local user.email "themachine@ai"
           git config --local user.name "Radar Bot"
           git add radar-scan.log
