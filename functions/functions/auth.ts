@@ -134,7 +134,10 @@ function setCookie(name: string, value: string, maxAge: number = 86400): string 
 
 // 响应构建
 function jsonResponse(data: any, status: number = 200, cookies?: string[]): Response {
-  const headers = new Headers({ 'Content-Type': 'application/json' });
+  const headers = new Headers({ 
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  });
   if (cookies) {
     cookies.forEach(c => headers.append('Set-Cookie', c));
   }
@@ -143,6 +146,16 @@ function jsonResponse(data: any, status: number = 200, cookies?: string[]): Resp
 
 function errorResponse(message: string, status: number = 400): Response {
   return jsonResponse({ error: message }, status);
+}
+
+// 辅助函数：添加 CORS 头
+function withCors(response: Response): Response {
+  const headers = new Headers(response.headers);
+  headers.set('Access-Control-Allow-Origin', '*');
+  return new Response(response.body, {
+    status: response.status,
+    headers
+  });
 }
 
 // 认证中间件
@@ -341,9 +354,9 @@ function uuid() {
 
 async function handleAgents(request) {
   const { results } = await env.DB.prepare("SELECT * FROM agents ORDER BY role").all();
-  return new Response(JSON.stringify({ agents: results }), {
+  return withCors(new Response(JSON.stringify({ agents: results }), {
     headers: { 'Content-Type': 'application/json' }
-  });
+  }));
 }
 
 async function handleTasks(request) {
@@ -359,7 +372,7 @@ async function handleTasks(request) {
     if (status) { sql += " AND status = ?"; params.push(status); }
     sql += " ORDER BY CASE priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END, created_at DESC LIMIT 50";
     const { results } = await env.DB.prepare(sql).bind(...params).all();
-    return new Response(JSON.stringify({ tasks: results }), { headers: { 'Content-Type': 'application/json' } });
+    return withCors(new Response(JSON.stringify({ tasks: results }), { headers: { 'Content-Type': 'application/json' } }));
   }
   
   if (method === 'POST') {
@@ -387,10 +400,10 @@ async function handleTasks(request) {
       VALUES (?, 'ceo', ?, 'created', ?)
     `).bind(uuid(), id, `创建任务: ${body.title} [${assignedBy}分配 -> ${assignedAgentId}]`).run();
     
-    return new Response(JSON.stringify({ id, status: 'pending', assigned_agent_id: assignedAgentId }), { headers: { 'Content-Type': 'application/json' } });
+    return withCors(new Response(JSON.stringify({ id, status: 'pending', assigned_agent_id: assignedAgentId }), { headers: { 'Content-Type': 'application/json' } }));
   }
   
-  return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+  return withCors(new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 }));
 }
 
 async function handleMessages(request) {
@@ -403,7 +416,7 @@ async function handleMessages(request) {
       SELECT * FROM messages WHERE to_agent_id = ? AND read_at IS NULL
       ORDER BY created_at DESC LIMIT 20
     `).bind(agentId).all();
-    return new Response(JSON.stringify({ messages: results }), { headers: { 'Content-Type': 'application/json' } });
+    return withCors(new Response(JSON.stringify({ messages: results }), { headers: { 'Content-Type': 'application/json' } }));
   }
   
   if (method === 'POST') {
@@ -413,37 +426,37 @@ async function handleMessages(request) {
       INSERT INTO messages (id, from_agent_id, to_agent_id, task_id, content)
       VALUES (?, ?, ?, ?, ?)
     `).bind(id, body.from, body.to, body.task_id || null, body.content).run();
-    return new Response(JSON.stringify({ id }), { headers: { 'Content-Type': 'application/json' } });
+    return withCors(new Response(JSON.stringify({ id }), { headers: { 'Content-Type': 'application/json' } }));
   }
   
-  return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+  return withCors(new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 }));
 }
 
 async function handleLogs(request) {
   const { results } = await env.DB.prepare(`
     SELECT * FROM agent_logs ORDER BY created_at DESC LIMIT 100
   `).all();
-  return new Response(JSON.stringify({ logs: results }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ logs: results }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 自动分配测试
 async function handleAutoAssign(request) {
   const body = await request.json();
   const assignedAgent = autoAssignAgent(body.title, body.description || '');
-  return new Response(JSON.stringify({ 
+  return withCors(new Response(JSON.stringify({ 
     title: body.title,
     description: body.description,
     assigned_agent_id: assignedAgent || 'ceo (fallback)',
     confidence: 'keyword matching'
-  }), { headers: { 'Content-Type': 'application/json' } });
+  }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 获取关键词映射表
 async function handleKeywords(request) {
-  return new Response(JSON.stringify({ 
+  return withCors(new Response(JSON.stringify({ 
     keywords: AGENT_KEYWORDS,
     agents: ['cto', 'cfo', 'cmo', 'cpo', 'sec']
-  }), { headers: { 'Content-Type': 'application/json' } });
+  }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // ==================== Dashboard Handlers ====================
@@ -506,7 +519,7 @@ async function handleDashboardAgents(request, env) {
     status: lastActiveMap[Agent.id] ? 'active' : 'idle'
   }));
   
-  return new Response(JSON.stringify({ agents: result }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ agents: result }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 获取 Dashboard 任务统计
@@ -553,7 +566,7 @@ async function handleDashboardStats(request, env) {
     stats.by_priority[row.priority]++;
   }
   
-  return new Response(JSON.stringify({ stats }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ stats }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 获取 Dashboard 任务列表
@@ -582,7 +595,7 @@ async function handleDashboardTasks(request, env) {
   sql += " ORDER BY t.priority DESC, t.created_at DESC LIMIT 100";
   
   const { results } = await env.DB.prepare(sql).bind(...params).all();
-  return new Response(JSON.stringify({ tasks: results }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ tasks: results }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 创建 Dashboard 任务
@@ -608,7 +621,7 @@ async function handleDashboardCreateTask(request, env) {
     VALUES (?, ?, ?, 'created', ?)
   `).bind(uuid(), 'system', id, `创建任务: ${body.title} [分配给 ${body.assigned_agent_id || 'ceo'}]`).run();
   
-  return new Response(JSON.stringify({ id, title: body.title, status: 'pending', assigned_agent_id: body.assigned_agent_id || 'ceo' }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ id, title: body.title, status: 'pending', assigned_agent_id: body.assigned_agent_id || 'ceo' }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 更新 Dashboard 任务
@@ -634,7 +647,7 @@ async function handleDashboardUpdateTask(request, env, taskId) {
     VALUES (?, ?, ?, 'status_changed', ?)
   `).bind(uuid(), 'system', taskId, `任务状态更新: ${body.status}`).run();
   
-  return new Response(JSON.stringify({ id: taskId, status: body.status }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ id: taskId, status: body.status }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 // 获取 Dashboard 日志
@@ -655,7 +668,7 @@ async function handleDashboardLogs(request, env) {
   params.push(limit);
   
   const { results } = await env.DB.prepare(sql).bind(...params).all();
-  return new Response(JSON.stringify({ logs: results }), { headers: { 'Content-Type': 'application/json' } });
+  return withCors(new Response(JSON.stringify({ logs: results }), { headers: { 'Content-Type': 'application/json' } }));
 }
 
 
@@ -1344,6 +1357,26 @@ async function handleDashboardLogs(request, env) {
 const officeHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Office</title></head><body><h1>Loading...</h1></body></html>`;
 
       // 静态文件
+      if (path === '/') {
+        return withCors(new Response(JSON.stringify({ 
+          message: 'THEMACHINE Auth API',
+          version: '1.0.0',
+          endpoints: [
+            '/api/auth/register',
+            '/api/auth/login', 
+            '/api/auth/logout',
+            '/api/auth/me',
+            '/api/agents',
+            '/api/tasks',
+            '/api/messages',
+            '/api/logs',
+            '/api/dashboard/agents',
+            '/api/dashboard/stats',
+            '/api/dashboard/tasks',
+            '/dashboard.html'
+          ]
+        }), { headers: { 'Content-Type': 'application/json' } }));
+      }
       if (path === '/dashboard.html') {
         return new Response(dashboardHtml, { headers: { 'Content-Type': 'text/html' } });
       }
