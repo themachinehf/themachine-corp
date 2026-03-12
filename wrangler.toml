@@ -1,9 +1,6 @@
 name = "themachine-auth"
-main = "functions/auth.ts"
+main = "functions/functions/auth.ts"
 compatibility_date = "2024-01-01"
-
-[triggers]
-crons = ["*/5 * * * *"]  # Every 5 minutes
 
 [vars]
 ENV = "production"
@@ -16,3 +13,9 @@ database_id = "b1a4fcce-fd89-40cd-bfd1-975c591cf709"
 [[kv_namespaces]]
 binding = "AUTH_KV"
 id = "86606b92145c414ebeacd0543b545d6b"
+
+[[headers]]
+for = "/*"
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type"
