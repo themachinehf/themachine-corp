@@ -1,0 +1,15 @@
+{
+  "agents": {
+    "cto": {
+      "id": "cto",
+      "createdAt": 1773245734447,
+      "status": "active",
+      "lastActive": 1773245734447,
+      "lastChecked": 1773245734447,
+      "consecutiveFailures": 0,
+      "totalTasks": 0,
+      "successfulTasks": 0
+    }
+  },
+  "lastCheck": 1773245727340
+}

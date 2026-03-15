@@ -1,0 +1,44 @@
+{
+  "cto": {
+    "score": 110,
+    "tasks": 1,
+    "completed": 0,
+    "failed": 0
+  },
+  "cmo": {
+    "score": 110,
+    "tasks": 1,
+    "completed": 0,
+    "failed": 0
+  },
+  "cfo": {
+    "score": 110,
+    "tasks": 1,
+    "completed": 0,
+    "failed": 0
+  },
+  "cpo": {
+    "score": 110,
+    "tasks": 1,
+    "completed": 0,
+    "failed": 0
+  },
+  "sec": {
+    "score": 100,
+    "tasks": 0,
+    "completed": 0,
+    "failed": 0
+  },
+  "dev": {
+    "score": 100,
+    "tasks": 0,
+    "completed": 0,
+    "failed": 0
+  },
+  "hr": {
+    "score": 100,
+    "tasks": 0,
+    "completed": 0,
+    "failed": 0
+  }
+}

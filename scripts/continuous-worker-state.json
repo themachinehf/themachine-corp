@@ -1,0 +1,90 @@
+{
+  "agents": {
+    "cfo": {
+      "name": "CFO",
+      "role": "交易主管",
+      "critical": true,
+      "tasks": [
+        "交易报告",
+        "资金管理",
+        "收益分析"
+      ],
+      "status": "offline",
+      "lastActive": 0,
+      "lastCheck": 1773273681681,
+      "lastStatus": "unknown"
+    },
+    "cto": {
+      "name": "CTO",
+      "role": "技术运维",
+      "critical": true,
+      "tasks": [
+        "系统监控",
+        "健康检查",
+        "日志分析"
+      ],
+      "status": "offline",
+      "lastActive": 1773245734447,
+      "lastCheck": 1773273681681,
+      "lastStatus": "active"
+    },
+    "cpo": {
+      "name": "CPO",
+      "role": "产品主管",
+      "critical": false,
+      "tasks": [
+        "产品规划",
+        "API维护",
+        "功能开发"
+      ],
+      "status": "offline",
+      "lastActive": 0,
+      "lastCheck": 1773273681681,
+      "lastStatus": "unknown"
+    },
+    "cmo": {
+      "name": "CMO",
+      "role": "品牌主管",
+      "critical": false,
+      "tasks": [
+        "内容生成",
+        "社交媒体",
+        "市场推广"
+      ],
+      "status": "offline",
+      "lastActive": 0,
+      "lastCheck": 1773273681681,
+      "lastStatus": "unknown"
+    },
+    "sec": {
+      "name": "SEC",
+      "role": "安全主管",
+      "critical": true,
+      "tasks": [
+        "安全审计",
+        "漏洞扫描",
+        "风险评估"
+      ],
+      "status": "offline",
+      "lastActive": 0,
+      "lastCheck": 1773273681681,
+      "lastStatus": "unknown"
+    },
+    "dev": {
+      "name": "DEV",
+      "role": "开发主管",
+      "critical": false,
+      "tasks": [
+        "代码开发",
+        "项目构建",
+        "Bug修复"
+      ],
+      "status": "offline",
+      "lastActive": 0,
+      "lastCheck": 1773273681681,
+      "lastStatus": "unknown"
+    }
+  },
+  "queue": [],
+  "lastCheck": 1773273681681
+}
