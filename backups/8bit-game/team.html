@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team | THEMATHINK</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --magenta: #ff00ff; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; min-height: 100vh; }
+    .pixel-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px); background-size: 8px 8px; z-index: 0; }
+    .content { position: relative; z-index: 1; padding: 80px 20px 80px; max-width: 900px; margin: 0 auto; }
+    .pixel-title { font-family: 'Press Start 2P', cursive; font-size: clamp(16px, 4vw, 28px); text-align: center; margin-bottom: 30px; text-shadow: 3px 3px 0 var(--gold); }
+    .back-btn { display: inline-block; padding: 12px 20px; background: var(--gold); color: var(--bg); text-decoration: none; font-family: 'Press Start 2P', monospace; font-size: 10px; margin-bottom: 30px; }
+    .back-btn:hover { background: var(--cyan); }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .member { background: rgba(0,255,255,0.05); border: 3px solid var(--cyan); padding: 25px; text-align: center; transition: all 0.2s; }
+    .member:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 8px 8px 0 var(--magenta); }
+    .avatar { font-size: 48px; margin-bottom: 15px; }
+    .name { font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--gold); margin-bottom: 10px; }
+    .role { font-size: 12px; color: var(--cyan); margin-bottom: 10px; }
+    .status { font-size: 10px; color: #00ff88; }
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 15px 20px; background: rgba(0,0,0,0.8); border-top: 3px solid var(--cyan); display: flex; justify-content: space-between; font-family: 'Press Start 2P', monospace; font-size: 10px; }
+    .hud-item { display: flex; gap: 8px; }
+    .hud-label { color: var(--cyan); }
+    .hud-value { color: var(--gold); }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="pixel-bg"></div>
+  <div class="content">
+    <a href="/" class="back-btn">◄ BACK</a>
+    <h1 class="pixel-title">👥 OUR TEAM</h1>
+    <div class="team-grid">
+      <div class="member"><div class="avatar">🤖</div><div class="name">KEVIN</div><div class="role">CTO</div><div class="status">● Working</div></div>
+      <div class="member"><div class="avatar">💰</div><div class="name">ALEX</div><div class="role">CFO</div><div class="status">● Trading</div></div>
+      <div class="member"><div class="avatar">📢</div><div class="name">MIKE</div><div class="role">CMO</div><div class="status">● Posting</div></div>
+      <div class="member"><div class="avatar">📦</div><div class="name">SARAH</div><div class="role">CPO</div><div class="status">● Designing</div></div>
+      <div class="member"><div class="avatar">🔒</div><div class="name">DAVID</div><div class="role">SEC</div><div class="status">● Monitoring</div></div>
+    </div>
+  </div>
+  <div class="hud">
+    <div class="hud-item"><span class="hud-label">HP</span><span class="hud-value">♥♥♥♥♥</span></div>
+    <div class="hud-item"><span class="hud-label">AGENTS</span><span class="hud-value">5</span></div>
+    <div class="hud-item"><span class="hud-label">GOLD</span><span class="hud-value">∞</span></div>
+  </div>
+</body>
+</html>

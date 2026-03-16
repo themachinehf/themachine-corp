@@ -1,0 +1,521 @@
+这是一个为您定制的单页 HTML 演示。
+
+它采用了 **黑白金 (Black, White, Gold)** 的高端色调，结合了 **现代极简主义 (Modern Minimalism)** 和 **程序化美学 (Tech Aesthetics)**。
+
+这个页面本身就是对“性能优化”的最佳诠释：代码轻量，无外部依赖图片（使用 CSS 绘制图形），并包含了Intersection Observer 实现的滚动动画。
+
+您可以直接保存为 `.html` 文件并在浏览器中打开。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THEMACHINE | Image Performance</title>
+    <style>
+        /* --- 1. 全局变量与重置 --- */
+        :root {
+            --bg-color: #050505;
+            --card-bg: #0f0f0f;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --gold-main: #D4AF37;
+            --gold-light: #F2D06B;
+            --gold-dark: #AA8C2C;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- 2. 排版与装饰 --- */
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .gold-text {
+            color: var(--gold-main);
+            background: linear-gradient(45deg, var(--gold-dark), var(--gold-main), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- 3. 导航栏 --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: var(--text-main);
+        }
+        .logo span { color: var(--gold-main); }
+
+        .btn {
+            padding: 10px 24px;
+            border: 1px solid var(--gold-main);
+            background: transparent;
+            color: var(--gold-main);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: var(--gold-main);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* --- 4. Hero 区域 --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景网格动画 */
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(2);
+            opacity: 0.5;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 50px; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s ease forwards 0.5s;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* 炫酷的加载指示器 */
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: #333;
+            margin: 0 auto 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--gold-main);
+            box-shadow: 0 0 10px var(--gold-main);
+            animation: load 2s ease-in-out infinite;
+        }
+
+        /* --- 5. 核心特性区 --- */
+        .features {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            margin-bottom: 80px;
+            border-left: 4px solid var(--gold-main);
+            padding-left: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            padding: 40px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold-main);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: #333;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--gold-main);
+            margin-bottom: 20px;
+            font-family: var(--font-mono);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- 6. 可视化演示 (模拟优化) --- */
+        .demo-section {
+            padding: 100px 0;
+            background: #0a0a0a;
+            position: relative;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .compare-box {
+            flex: 1;
+            min-width: 300px;
+            background: #000;
+            border: 1px solid #333;
+            padding: 20px;
+        }
+
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* CSS 绘制的占位图 */
+        .img-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 模拟加载动画 */
+        .shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+
+        .blur-load {
+            filter: blur(10px);
+            transition: filter 1s ease;
+        }
+        
+        .loaded .blur-load {
+            filter: blur(0);
+        }
+
+        /* --- 7. 终端风格的页脚 --- */
+        footer {
+            padding: 50px 0;
+            border-top: 1px solid #222;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .terminal-log {
+            margin-top: 20px;
+            color: var(--gold-dark);
+        }
+
+        /* --- 8. 动画类 --- */
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes load {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .comparison-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航 -->
+    <nav>
+        <div class="container nav-inner">
+            <div class="logo">THE<span>MACHINE</span></div>
+            <button class="btn">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <div class="container hero-content">
+            <div class="loader-bar"><div class="loader-progress"></div></div>
+            <h1>IMAGE LOADING<br><span class="gold-text">OPTIMIZED</span></h1>
+            <p>让每一毫秒都成为用户体验的核心。我们通过智能算法、格式转换和预加载策略，将视觉加载时间缩短至毫秒级。</p>
+            <button class="btn" style="background: var(--gold-main); color: #000;">Start Optimizing</button>
+        </div>
+    </section>
+
+    <!-- 特性展示 -->
+    <section class="features container">
+        <div class="section-header reveal">
+            <h2>核心引擎 <span class="gold-text">CORE ENGINE</span></h2>
+        </div>
+        
+        <div class="grid">
+            <!-- Card 1 -->
+            <div class="card reveal">
+                <div class="card-icon">01</div>
+                <h3>WebP / AVIF 转换</h3>
+                <p>自动将臃肿的 PNG/JPG 转换为现代高效的无损或有损格式。平均减少 30% 文件体积，同时保持视网膜屏级别的清晰度。</p>
+            </div>
+            <!-- Card 2 -->
+            <div class="card reveal">
+                <div class="card-icon">02</div>
+                <h3>Lazy Loading</h3>
+                <p>仅在图像进入视口时加载。利用 Intersection Observer API，确保首屏加载速度如闪电般迅捷。</p>
+            </div>
+            <!-- Card 3 -->
+            <div class="card reveal">
+                <div class="card-icon">03</div>
+                <h3>BlurHash 占位</h3>
+                <p>告别加载时的空白或布局跳动。在真实图片加载前，显示由算法生成的精致模糊色块。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 可视化演示 -->
+    <section class="demo-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>性能实测 <span class="gold-text">BENCHMARK</span></h2>
+            </div>
+
+            <div class="comparison-container reveal">
+                <!-- 传统加载 -->
+                <div class="compare-box">
+                    <div class="compare-header">
+                        <span>TRADITIONAL</span>
+                        <span style="color: #ff4444;">2.4s</span>
+                    </div>
+                    <div class="img-placeholder">
+                        <div class="shimmer"></div>
+                        <!-- 这里用CSS模拟一个灰色块 -->
+                        <div style="width: 100%; height: 100%; background: #222; display: flex; align-items: center; justify-content: center; color: #444;">RAW IMAGE</div>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.8rem;">阻塞主线程，导致页面卡顿</p>
+                </div>
+
+                <!-- 优化后 -->
+                <div class="compare-box" id="demo-box">
+                    <div class="compare-header">
+                        <span>THEMACHINE</span>
+                        <span class="gold-text">0.1s</span>
+                    </div>
+                    <div class="img-placeholder">
+                        <!-- 模拟加载完成的瞬间 -->
+                        <div class="blur-load" style="width: 100%; height: 100%; background: linear-gradient(45deg, #333, #444);"></div>
+                    </div>
+                    <p style="margin-top: 15px; color: var(--gold-main); font-size: 0.8rem;">即时渲染，用户无感知</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="logo" style="margin-bottom: 20px;">THE<span>MACHINE</span></div>
+            <div class="terminal-log">
+                > SYSTEM STATUS: OPTIMIZED<br>
+                > MEMORY USAGE: LOW<br>
+                > RENDER TIME: 16ms
+            </div>
+            <br>
+            &copy; 2023 THEMACHINE Inc. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // 简单的交互脚本：演示“优化后”的图片加载效果
+        // 模拟图片加载完成后去除模糊
+        window.addEventListener('load', () => {
+            const demoBox = document.getElementById('demo-box');
+            
+            // 模拟网络延迟后加载清晰图（这里为了演示，我们用JS延迟添加一个类）
+            setTimeout(() => {
+                demoBox.classList.add('loaded');
+                // 改变背景色模拟加载完成的高清图
+                const imgDiv = demoBox.querySelector('.blur-load');
+                imgDiv.style.background = 'linear-gradient(135deg, #D4AF37 0%, #000 100%)'; // 金色到黑色的酷炫渐变
+            }, 800); // 模拟极快的加载速度
+        });
+
+        // 滚动 reveal 动画
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+```
+
+### 设计亮点说明：
+
+1.  **配色方案 (Black/White/Gold):**
+    *   背景使用了极深的黑色 (`#050505`) 和深灰色 (`#0f0f0f`) 营造层次感。
+    *   强调色使用了**金属金** (`#D4AF37`)，并在按钮和渐变文字中通过 CSS `linear-gradient` 模拟金属光泽。
+    *   文字主体为纯白，辅助信息为灰色，构成了高对比度的视觉风格。
+
+2.  **动画效果 (Animations):**
+    *   **Hero 区域:** 背景网格具有 3D 透视动画 (`perspective` + `rotateX`)，营造出赛博朋克/科技感的空间深度。
+    *   **Loading Bar:** 顶部有一个金色的进度条，暗示“正在处理/优化中”。
+    *   **交互:** 按钮悬停时有金光泽光 (`box-shadow`)，卡片悬停时有上浮和边框流光效果。
+    *   **滚动触发:** 使用 `IntersectionObserver` API，当您向下滚动时，特性卡片会平滑地淡入上移。
+
+3.  **性能展示 (Demo Section):**
+    *   右侧的演示区域模拟了**BlurHash**（或 WebP 渐进式加载）的效果。
+    *   初始状态是模糊 (`filter: blur(10px)`)，模拟低质量预览。JS 脚本在页面加载 800ms 后（模拟极快速度）移除模糊，并显示一个金色的炫酷渐变，象征“优化后的高质量”。
+
+4.  **代码质量:**
+    *   无任何外部图片请求（为了保证你可以直接复制运行），所有图形均由 CSS 绘制。
+    *   响应式设计，支持移动端查看。
+    *   代码结构清晰，注释完善。

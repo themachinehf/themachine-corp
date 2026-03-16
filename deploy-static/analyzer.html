@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Validator | THEMATHINK</title>
+  <style>
+    :root { --bg: #0a0a0f; --text: #e5e7eb; --gold: #fbbf24; --border: #1e293b; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h1 { color: var(--gold); font-size: 28px; margin-bottom: 8px; }
+    .subtitle { color: #666; margin-bottom: 32px; }
+    .input-group { margin-bottom: 20px; }
+    label { display: block; color: var(--gold); margin-bottom: 8px; font-size: 14px; }
+    textarea, input { width: 100%; background: #111; border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 8px; font-family: inherit; font-size: 15px; }
+    textarea { height: 80px; resize: none; }
+    textarea:focus, input:focus { outline: none; border-color: var(--gold); }
+    button { background: var(--gold); color: var(--bg); border: none; padding: 16px 32px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: 0.5; }
+    .result { margin-top: 40px; }
+    .section { background: #111; border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .section h2 { color: var(--gold); font-size: 18px; margin-bottom: 16px; }
+    .section p { line-height: 1.7; color: #ccc; font-size: 14px; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .error { color: #ff6b6b; padding: 20px; text-align: center; background: #111; border-radius: 12px; }
+    .raw-text { white-space: pre-wrap; line-height: 1.7; color: #ccc; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Product Validator</h1>
+    <p class="subtitle">Deep analysis for your product idea</p>
+    <div class="input-group">
+      <label>Your Product / Idea</label>
+      <textarea id="product" placeholder="Describe your product idea... / 描述你的产品想法..."></textarea>
+    </div>
+    <div class="input-group">
+      <label>Target Users</label>
+      <input id="users" type="text" placeholder="Who are your target users? / 你的目标用户是谁？">
+    </div>
+    <button id="analyze" onclick="analyze()">Analyze</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const API_KEY = 'sk-api-QoA7NKoj3UbOzIDspZqqjL4gUxED6SYDsSRHna2tuTQ1gKavSW7ohVGtSWYx1TgQ4AHmVZ0-ty6PiJ45tvG-GLzca6kjTdd4DvaSby2tFmwwgJC8RAllgI0';
+    
+    function isChinese(text) {
+      return /[\u4e00-\u9fa5]/.test(text);
+    }
+    
+    async function analyze() {
+      const product = document.getElementById('product').value.trim();
+      const users = document.getElementById('users').value.trim();
+      const btn = document.getElementById('analyze');
+      const result = document.getElementById('result');
+      
+      if (!product || !users) { alert('Please fill in all fields'); return; }
+      
+      // 检测语言
+      const lang = isChinese(product + users) ? '中文' : 'English';
+      
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+      result.innerHTML = '<div class="loading">Doing deep analysis...</div>';
+      
+      const prompt = lang === '中文' 
+        ? `你是一个资深产品专家和创业顾问。请用中文深度分析这个产品想法。
+
+产品: ${product}
+目标用户: ${users}
+
+请直接回复，按以下结构：
+## 验证结果 (X/100分)
+[结论]
+
+## 现有方案
+- [方案]
+
+## 竞品分析
+- [竞品]
+
+## 深度洞察
+- [洞察]
+
+## 风险提示
+- [风险]
+
+## 建议
+- [建议]`
+        : `You are a senior product expert and startup advisor. Analyze this product idea in detail.
+
+Product: ${product}
+Target Users: ${users}
+
+Reply in the same language (English). Structure:
+## Validation (X/100)
+[conclusion]
+
+## Existing Solutions
+- [solutions]
+
+## Competitor Analysis
+- [competitors]
+
+## Deep Insights
+- [insights]
+
+## Risks
+- [risks]
+
+## Recommendations
+- [recommendations]`;
+
+      try {
+        const response = await fetch('https://api.minimax.chat/v1/text/chatcompletion_v2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+          body: JSON.stringify({
+            model: 'abab6.5s-chat',
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.choices && data.choices[0]) {
+          const text = data.choices[0].message.content;
+          result.innerHTML = '<div class="section"><div class="raw-text">' + text + '</div></div>';
+        } else {
+          result.innerHTML = '<div class="error">API Error</div>';
+        }
+      } catch (err) {
+        result.innerHTML = '<div class="error">Error: ' + err.message + '</div>';
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Analyze';
+    }
+  </script>
+</body>
+</html>

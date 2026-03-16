@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predict | THEMATHINK</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --magenta: #ff00ff; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; min-height: 100vh; }
+    .pixel-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px); background-size: 8px 8px; z-index: 0; }
+    .content { position: relative; z-index: 1; padding: 80px 20px 80px; max-width: 600px; margin: 0 auto; }
+    .pixel-title { font-family: 'Press Start 2P', cursive; font-size: clamp(16px, 4vw, 28px); text-align: center; margin-bottom: 30px; text-shadow: 3px 3px 0 var(--gold); }
+    .back-btn { display: inline-block; padding: 12px 20px; background: var(--gold); color: var(--bg); text-decoration: none; font-family: 'Press Start 2P', monospace; font-size: 10px; margin-bottom: 30px; }
+    .back-btn:hover { background: var(--cyan); }
+    .card { background: rgba(0,255,255,0.05); border: 3px solid var(--cyan); padding: 30px; }
+    .card p { margin-bottom: 20px; text-align: center; }
+    .input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 2px solid var(--cyan); color: #fff; font-family: monospace; font-size: 14px; margin-bottom: 15px; }
+    .input:focus { outline: none; border-color: var(--gold); }
+    .btn { padding: 15px 30px; background: var(--magenta); border: none; color: #fff; font-family: 'Press Start 2P', monospace; font-size: 10px; cursor: pointer; width: 100%; }
+    .btn:hover { background: var(--gold); color: var(--bg); }
+    .result { margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.5); border: 2px solid var(--gold); display: none; text-align: center; }
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 15px 20px; background: rgba(0,0,0,0.8); border-top: 3px solid var(--cyan); display: flex; justify-content: space-between; font-family: 'Press Start 2P', monospace; font-size: 10px; }
+    .hud-item { display: flex; gap: 8px; }
+    .hud-label { color: var(--cyan); }
+    .hud-value { color: var(--gold); }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="pixel-bg"></div>
+  <div class="content">
+    <a href="/" class="back-btn">◄ BACK</a>
+    <h1 class="pixel-title">📊 PREDICT</h1>
+    <div class="card">
+      <p>Enter a question and let AI predict...</p>
+      <input type="text" class="input" placeholder="What will happen?">
+      <button class="btn" onclick="document.querySelector('.result').style.display='block'">► PREDICT</button>
+      <div class="result"><p style="font-family: 'Press Start 2P', monospace; font-size: 10px;">THE FUTURE IS<br>UNCERTAIN...</p></div>
+    </div>
+  </div>
+  <div class="hud">
+    <div class="hud-item"><span class="hud-label">HP</span><span class="hud-value">♥♥♥♥♥</span></div>
+    <div class="hud-item"><span class="hud-label">AGENTS</span><span class="hud-value">5</span></div>
+    <div class="hud-item"><span class="hud-label">GOLD</span><span class="hud-value">∞</span></div>
+  </div>
+</body>
+</html>
