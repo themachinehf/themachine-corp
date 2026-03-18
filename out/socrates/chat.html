@@ -183,9 +183,12 @@
       document.getElementById('sendBtn').disabled = true;
       showTyping();
       
-      // 添加语言自适应指令到消息中
-      const langInstruction = { role: 'system', content: 'Respond in the same language as the user\'s input.' };
-      const messagesWithLang = [langInstruction, ...dialogue.messages];
+      // 把系统指令放在messages开头
+      const systemMsg = { 
+        role: 'system', 
+        content: 'You are a Socratic question coach. Ask one question at a time. Never give answers. Respond in the same language as the user\'s input.' 
+      };
+      const messagesWithSystem = [systemMsg, ...dialogue.messages];
       
       try {
         const response = await fetch(API_ENDPOINT, {
@@ -196,11 +199,7 @@
           },
           body: JSON.stringify({
             model: MODEL,
-            group_id: '120282543',
-            bot_setting: [
-              { bot_name: 'MM智能助理', content: 'You are a Socratic question coach. Ask one question at a time. Never give answers.' }
-            ],
-            messages: messagesWithLang,
+            messages: messagesWithSystem,
             temperature: 0.7,
             max_tokens: 1000
           })
