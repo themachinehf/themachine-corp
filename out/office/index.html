@@ -7,150 +7,168 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; --magenta: #ff00ff; }
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; --magenta: #ff00ff; --red: #ff4444; }
     html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
     @media (max-width: 768px) { .main { grid-template-columns: 1fr !important; } }
     
     .header { background: linear-gradient(180deg, #1a1a2e 0%, var(--bg) 100%); padding: 12px; border-bottom: 2px solid var(--cyan); text-align: center; }
-    .header h1 { font-size: 14px; color: var(--gold); }
-    .header p { font-size: 6px; color: #666; margin-top: 4px; }
+    .header h1 { font-size: 12px; color: var(--gold); }
+    .header p { font-size: 5px; color: #666; margin-top: 4px; }
     
     .container { max-width: 1400px; margin: 0 auto; padding: 12px; }
     
     .main { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     
     /* Blackboard */
-    .blackboard {
-      background: linear-gradient(180deg, #1a1a0a 0%, #0d0d05 100%);
-      border: 10px solid #5a4a32;
-      border-radius: 12px;
-      padding: 20px;
-      position: relative;
-      min-height: 320px;
-    }
-    .board-title { font-size: 11px; color: var(--gold); text-align: center; margin-bottom: 15px; }
+    .blackboard { background: linear-gradient(180deg, #1a1a0a 0%, #0d0d05 100%); border: 8px solid #5a4a32; border-radius: 10px; padding: 15px; min-height: 280px; }
+    .board-title { font-size: 10px; color: var(--gold); text-align: center; margin-bottom: 12px; }
+    .flow-step { display: flex; align-items: center; margin-bottom: 10px; padding: 8px; background: rgba(0,0,0,0.5); border-left: 3px solid var(--cyan); }
+    .flow-step.p0 { border-color: var(--red); }
+    .flow-num { width: 24px; height: 24px; background: var(--gold); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; margin-right: 10px; }
+    .flow-title { font-size: 7px; color: #fff; }
+    .flow-desc { font-size: 5px; color: #888; margin-top: 3px; }
+    .arrow { text-align: center; color: var(--gold); font-size: 10px; margin: 6px 0; }
     
-    .flow-step {
-      display: flex; align-items: center; margin-bottom: 12px;
-      padding: 10px; background: rgba(0,0,0,0.5);
-      border-left: 4px solid var(--cyan);
-    }
-    .flow-step.p0 { border-color: #ff6b6b; }
-    .flow-step.p1 { border-color: var(--gold); }
-    .flow-step.p2 { border-color: var(--magenta); }
-    .flow-num {
-      width: 28px; height: 28px; background: var(--gold); color: #000;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 10px; margin-right: 12px;
-    }
-    .flow-title { font-size: 8px; color: #fff; margin-bottom: 4px; }
-    .flow-desc { font-size: 6px; color: #999; }
-    .arrow { text-align: center; color: var(--gold); font-size: 12px; margin: 8px 0; }
-    
-    .status-box { background: #000; border: 2px solid #333; padding: 12px; margin-top: 15px; }
-    .status-title { font-size: 8px; color: var(--green); margin-bottom: 10px; }
-    .status-row { display: flex; justify-content: space-between; font-size: 7px; margin-bottom: 6px; }
-    .status-row .label { color: #888; }
-    .status-row .value { color: var(--cyan); }
-    .status-row .value.run { color: var(--green); animation: blink 1s infinite; }
-    @keyframes blink { 50% { opacity: 0.5; } }
+    /* Cards Grid */
+    .cards-section { margin-top: 12px; }
+    .cards-title { font-size: 9px; color: var(--gold); margin-bottom: 10px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .card { background: rgba(0,0,0,0.6); border: 2px solid #333; padding: 10px; }
+    .card.mining { border-color: var(--cyan); }
+    .card.analyzing { border-color: var(--gold); }
+    .card.ready { border-color: var(--green); }
+    .card.done { border-color: #444; opacity: 0.6; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .card-status { font-size: 6px; padding: 2px 6px; }
+    .card-status.mining { background: var(--cyan); color: #000; }
+    .card-status.analyzing { background: var(--gold); color: #000; }
+    .card-status.ready { background: var(--green); color: #000; }
+    .card-status.done { background: #444; color: #888; }
+    .card-title { font-size: 7px; color: #fff; }
+    .card-prio { font-size: 5px; color: #888; margin: 4px 0; }
+    .card-prio span { padding: 1px 4px; margin-right: 4px; }
+    .card-prio .p0 { background: var(--red); color: #fff; }
+    .card-prio .p1 { background: var(--gold); color: #000; }
+    .card-prio .p2 { background: #444; color: #fff; }
+    .card-detail { font-size: 5px; color: #666; line-height: 1.4; }
+    .card-detail .source { color: var(--cyan); }
+    .card-detail .impact { color: var(--green); }
     
     /* Queue */
-    .queue-board { background: #0a0a0a; border: 4px solid var(--cyan); padding: 15px; min-height: 250px; }
-    .queue-title { font-size: 9px; color: var(--cyan); margin-bottom: 12px; }
-    .queue-item { display: flex; align-items: center; padding: 8px; margin-bottom: 6px; background: rgba(0,255,255,0.08); border-left: 3px solid var(--cyan); font-size: 7px; }
+    .queue-board { background: #0a0a0a; border: 3px solid var(--cyan); padding: 12px; min-height: 200px; }
+    .queue-title { font-size: 8px; color: var(--cyan); margin-bottom: 10px; }
+    .queue-item { display: flex; align-items: center; padding: 6px; margin-bottom: 5px; background: rgba(0,255,255,0.06); border-left: 2px solid var(--cyan); font-size: 6px; }
     .queue-item.done { border-color: var(--green); opacity: 0.5; }
     .queue-item.doing { border-color: var(--gold); }
-    .queue-prio { padding: 3px 6px; font-size: 6px; margin-right: 10px; }
-    .queue-prio.p0 { background: #ff4444; color: #fff; }
+    .queue-prio { padding: 2px 5px; font-size: 5px; margin-right: 8px; }
+    .queue-prio.p0 { background: var(--red); color: #fff; }
     .queue-prio.p1 { background: var(--gold); color: #000; }
     .queue-prio.p2 { background: #444; color: #fff; }
     
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-    .stat-box { background: rgba(0,0,0,0.5); padding: 10px; text-align: center; }
-    .stat-num { font-size: 16px; color: var(--gold); }
-    .stat-label { font-size: 6px; color: #666; margin-top: 4px; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .stat-box { background: rgba(0,0,0,0.5); padding: 8px; text-align: center; }
+    .stat-num { font-size: 14px; color: var(--gold); }
+    .stat-label { font-size: 5px; color: #666; margin-top: 4px; }
     
-    /* Agents */
-    .agents-row { display: flex; justify-content: space-around; padding: 12px; background: rgba(0,0,0,0.4); margin-top: 12px; }
+    .agents-row { display: flex; justify-content: space-around; padding: 10px; background: rgba(0,0,0,0.4); margin-top: 10px; }
     .agent-mini { text-align: center; }
-    .agent-mini .icon { font-size: 18px; }
-    .agent-mini .name { font-size: 6px; color: #888; margin-top: 4px; }
+    .agent-mini .icon { font-size: 16px; }
+    .agent-mini .name { font-size: 5px; color: #888; margin-top: 2px; }
     
-    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px 12px; background: rgba(0,0,0,0.95); border-top: 2px solid var(--cyan); display: flex; justify-content: space-between; font-size: 6px; }
-    .back { position: fixed; top: 8px; left: 8px; padding: 6px 10px; background: var(--gold); color: var(--bg); font-size: 6px; text-decoration: none; }
-    .live-clock { position: absolute; top: 10px; right: 10px; font-size: 7px; color: var(--green); }
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 6px 10px; background: rgba(0,0,0,0.95); border-top: 2px solid var(--cyan); display: flex; justify-content: space-between; font-size: 5px; }
+    .back { position: fixed; top: 6px; left: 6px; padding: 4px 8px; background: var(--gold); color: var(--bg); font-size: 5px; text-decoration: none; }
   </style>
 </head>
 <body>
   <a href="/" class="back">← BACK</a>
   
   <div class="header">
-    <h1>🏢 THEMACHINE OFFICE - AUTOMATION SYSTEM</h1>
-    <p>Real-time workflow visualization</p>
+    <h1>🏢 THEMACHINE OFFICE - DEMAND PIPELINE</h1>
+    <p>Real-time demand mining & execution</p>
   </div>
   
   <div class="container">
     <div class="main">
-      <!-- Left: Workflow Blackboard -->
-      <div class="blackboard">
-        <div class="board-title">📋 AUTOMATION WORKFLOW</div>
-        
-        <div class="flow-step p0">
-          <div class="flow-num">1</div>
-          <div>
-            <div class="flow-title">🔍 DISCOVER</div>
-            <div class="flow-desc">Demand Mining: User Feedback / Data / Competitors</div>
+      <!-- Left: Workflow + Cards -->
+      <div>
+        <div class="blackboard">
+          <div class="board-title">📋 AUTOMATION WORKFLOW</div>
+          
+          <div class="flow-step p0">
+            <div class="flow-num">1</div>
+            <div><div class="flow-title">🔍 DISCOVER</div><div class="flow-desc">Demand Mining: Feedback/Data/Competitors</div></div>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div><div class="flow-title">📊 ANALYZE</div><div class="flow-desc">Priority: P0/P1/P2 + Impact/Cost</div></div>
+          </div>
+          <div class="arrow">↓</div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div><div class="flow-title">⚡ EXECUTE</div><div class="flow-desc">Assign Agent + Auto Execute</div></div>
           </div>
         </div>
         
-        <div class="arrow">↓</div>
-        
-        <div class="flow-step p1">
-          <div class="flow-num">2</div>
-          <div>
-            <div class="flow-title">📊 ANALYZE</div>
-            <div class="flow-desc">Priority Analysis: P0/P1/P2 + Impact/Cost</div>
-          </div>
-        </div>
-        
-        <div class="arrow">↓</div>
-        
-        <div class="flow-step p2">
-          <div class="flow-num">3</div>
-          <div>
-            <div class="flow-title">⚡ EXECUTE</div>
-            <div class="flow-desc">Assign Agent + Auto Execute</div>
-          </div>
-        </div>
-        
-        <div class="arrow">↓</div>
-        
-        <div class="flow-step">
-          <div class="flow-num">↺</div>
-          <div>
-            <div class="flow-title">🔄 LOOP</div>
-            <div class="flow-desc">每小时循环检查新需求</div>
-          </div>
-        </div>
-        
-        <div class="status-box">
-          <div class="status-title">● SYSTEM STATUS</div>
-          <div class="status-row">
-            <span class="label">Pipeline:</span>
-            <span class="value run">RUNNING</span>
-          </div>
-          <div class="status-row">
-            <span class="label">Cycle:</span>
-            <span class="value">Hourly (Every 30min)</span>
-          </div>
-          <div class="status-row">
-            <span class="label">Last Run:</span>
-            <span class="value" id="lastRun">--:--:--</span>
-          </div>
-          <div class="status-row">
-            <span class="label">Active Agents:</span>
-            <span class="value">6</span>
+        <!-- Demand Process Cards -->
+        <div class="cards-section">
+          <div class="cards-title">📊 DEMAND PROCESS - REAL TIME</div>
+          <div class="cards-grid">
+            <!-- Card 1: Mining -->
+            <div class="card mining">
+              <div class="card-header">
+                <span class="card-title">ProductHunt Launch</span>
+                <span class="card-status mining">MINING</span>
+              </div>
+              <div class="card-prio"><span class="p0">P0</span>High Priority</div>
+              <div class="card-detail">
+                Source: <span class="source">竞品分析</span><br>
+                Impact: <span class="impact">100+ users</span><br>
+                Cost: <span>Low</span>
+              </div>
+            </div>
+            
+            <!-- Card 2: Analyzing -->
+            <div class="card analyzing">
+              <div class="card-header">
+                <span class="card-title">Trade Strategy</span>
+                <span class="card-status analyzing">ANALYZING</span>
+              </div>
+              <div class="card-prio"><span class="p1">P1</span>Medium Priority</div>
+              <div class="card-detail">
+                Source: <span class="source">交易日志</span><br>
+                Impact: <span class="impact">Reduce loss</span><br>
+                Cost: <span>Medium</span>
+              </div>
+            </div>
+            
+            <!-- Card 3: Ready -->
+            <div class="card ready">
+              <div class="card-header">
+                <span class="card-title">X Content</span>
+                <span class="card-status ready">READY</span>
+              </div>
+              <div class="card-prio"><span class="p1">P1</span>Medium Priority</div>
+              <div class="card-detail">
+                Source: <span class="source">数据分析</span><br>
+                Impact: <span class="impact">Brand growth</span><br>
+                Cost: <span>Low</span>
+              </div>
+            </div>
+            
+            <!-- Card 4: Done -->
+            <div class="card done">
+              <div class="card-header">
+                <span class="card-title">Office Page</span>
+                <span class="card-status done">DONE</span>
+              </div>
+              <div class="card-prio"><span class="p0">P0</span>Completed</div>
+              <div class="card-detail">
+                Source: <span class="source">用户反馈</span><br>
+                Impact: <span class="impact">Visibility</span><br>
+                Cost: <span>Low</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -158,55 +176,44 @@
       <!-- Right: Task Queue -->
       <div>
         <div class="queue-board">
-          <div class="queue-title">📝 TASK QUEUE - REAL TIME</div>
+          <div class="queue-title">📝 TASK QUEUE</div>
           
           <div class="queue-item doing">
             <span class="queue-prio p0">P0</span>
-            <span>ProductHunt Launch | Mike</span>
+            ProductHunt Launch | Mike
           </div>
           <div class="queue-item">
             <span class="queue-prio p1">P1</span>
-            <span>Trade Monitoring | Alex</span>
+            Trade Monitoring | Alex
           </div>
           <div class="queue-item">
             <span class="queue-prio p1">P1</span>
-            <span>X Content Posting | Mike</span>
+            X Content Posting | Mike
           </div>
           <div class="queue-item">
             <span class="queue-prio p2">P2</span>
-            <span>User Feedback | Sarah</span>
+            User Feedback | Sarah
           </div>
           <div class="queue-item">
             <span class="queue-prio p2">P2</span>
-            <span>Security Scan | David</span>
+            Security Scan | David
           </div>
           
           <div class="queue-item done">
             <span class="queue-prio p0">✓</span>
-            <span>Office Page Dev | Kevin</span>
+            Office Page | Kevin
           </div>
           <div class="queue-item done">
             <span class="queue-prio p0">✓</span>
-            <span>Auto System Setup | THE MACHINE</span>
-          </div>
-          <div class="queue-item done">
-            <span class="queue-prio p0">✓</span>
-            <span>X Account Launch | Mike</span>
+            Auto System | THE MACHINE
           </div>
           
           <div class="stats-grid">
-            <div class="stat-box">
-              <div class="stat-num">5</div>
-              <div class="stat-label">TODO</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-num">3</div>
-              <div class="stat-label">DONE</div>
-            </div>
+            <div class="stat-box"><div class="stat-num">5</div><div class="stat-label">TODO</div></div>
+            <div class="stat-box"><div class="stat-num">2</div><div class="stat-label">DONE</div></div>
           </div>
         </div>
         
-        <!-- Agents -->
         <div class="agents-row">
           <div class="agent-mini"><div class="icon">🤖</div><div class="name">CEO</div></div>
           <div class="agent-mini"><div class="icon">🛠️</div><div class="name">Kevin</div></div>
@@ -227,9 +234,7 @@
   
   <script>
     function update() {
-      const now = new Date();
-      document.getElementById('clock').textContent = '● LIVE ' + now.toLocaleTimeString();
-      document.getElementById('lastRun').textContent = now.toLocaleTimeString();
+      document.getElementById('clock').textContent = '● LIVE ' + new Date().toLocaleTimeString();
     }
     update();
     setInterval(update, 2000);
