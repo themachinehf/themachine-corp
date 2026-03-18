@@ -88,7 +88,7 @@
 
   <script>
     const ENCODED_KEY = 'c2stYXBpLVFvQTdOS29qM1ViT3pJRHNwWnFxakw0Z1V4RUQ2U1lEc1NSSG5hMnR1VFExZ0thdlNXN29oVkd0U1dZeDFUZ1E0QUhtVlowLXR5NlBpSjQ1dHZHLUdMemNhNmtqVGRkNER2YVNieTJ0Rm13d2dKQzhSQWxsZ0kwCg==';
-    const API_ENDPOINT = 'https://api.minimax.chat/v1/text/chatcompletion_v2';
+    const API_BASE = "https://api.minimax.chat/v1/text/chatcompletion_v2";
     const MODEL = 'abab6.5s-chat';
     
     function getApiKey() {
@@ -115,6 +115,11 @@
       dialogue = JSON.parse(stored);
       renderMessages();
       updateStage();
+      
+      // 如果有用户的第一条消息，自动发送获取AI响应
+      if (dialogue.messages.length > 0 && dialogue.messages[0].role === 'user') {
+        getAIResponse();
+      }
     }
     
     function updateStage() {
@@ -188,14 +193,20 @@
       showTyping();
       
       // 把系统指令放在messages开头
+      // 改进的Socratic system prompt
       const systemMsg = { 
         role: 'system', 
-        content: 'You are a Socratic question coach. Ask one question at a time. Never give answers. Respond in the same language as the user\'s input.' 
+        content: `You are a Socratic question coach. Your ONLY job is to ask ONE question at a time. 
+NEVER give advice. NEVER give answers. NEVER summarize. 
+Just ask one follow-up question that helps the user think deeper.
+The user has shared: ${dialogue.initialQuestion}
+Ask your first question to help them clarify their thinking.
+Respond in the same language as the user's input.` 
       };
       const messagesWithSystem = [systemMsg, ...dialogue.messages];
       
       try {
-        const response = await fetch(API_ENDPOINT, {
+        const response = await fetch(API_BASE, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
