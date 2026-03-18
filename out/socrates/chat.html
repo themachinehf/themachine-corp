@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOCRATES - 对话中</title>
+  <title>SOCRATES - In Progress</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -66,15 +66,15 @@
 </head>
 <body>
   <div class="header">
-    <a href="index.html" class="back-link">← 重新开始</a>
+    <a href="index.html" class="back-link">← Start Over</a>
     <div class="logo">SOCRATES</div>
   </div>
   
   <div class="stage-indicator" id="stage">阶段: 澄清</div>
   
   <div class="actions">
-    <button class="action-btn" onclick="generateReport()">生成报告 📊</button>
-    <button class="action-btn" onclick="clearDialogue()">清空对话</button>
+    <button class="action-btn" onclick="generateReport()">Generate Report 📊</button>
+    <button class="action-btn" onclick="clearDialogue()">Clear Chat</button>
   </div>
   
   <div class="chat-container" id="chat">
@@ -82,8 +82,8 @@
   </div>
   
   <div class="input-area">
-    <textarea id="answer" class="user-input" rows="2" placeholder="写下你的回答..."></textarea>
-    <button class="send-btn" id="sendBtn" onclick="sendAnswer()">发送</button>
+    <textarea id="answer" class="user-input" rows="2" placeholder="Write your answer..."></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendAnswer()">Send</button>
   </div>
 
   <script>
@@ -92,11 +92,11 @@
     const MODEL = 'abab6.5s-chat';
     
     const STAGES = {
-      clarification: { name: '澄清', prompt: '探索你希望通过对话解决的核心问题' },
-      motivation: { name: '动机', prompt: '理解为什么这个问题对你重要' },
-      obstacles: { name: '阻碍', prompt: '发现阻挡你的因素和过去的成功经验' },
-      action: { name: '行动', prompt: '设想成功后的第一步' },
-      summary: { name: '总结', prompt: '回顾今天的发现和下一步行动' }
+      clarification: { name: 'Clarification', prompt: 'Explore the core problem you want to solve' },
+      motivation: { name: 'Motivation', prompt: 'Understand why this matters to you' },
+      obstacles: { name: 'Obstacles', prompt: 'Discover blockers and past successes' },
+      action: { name: 'Action', prompt: 'Envision the first step toward success' },
+      summary: { name: 'Summary', prompt: 'Review discoveries and next steps' }
     };
     
     let dialogue = null;
@@ -116,7 +116,7 @@
     function updateStage() {
       const stageEl = document.getElementById('stage');
       const stage = STAGES[dialogue.stage];
-      stageEl.textContent = `阶段: ${stage.name} - ${stage.prompt}`;
+      stageEl.textContent = `Stage: ${stage.name} - ${stage.prompt}`;
     }
     
     function renderMessages() {
@@ -128,11 +128,11 @@
         if (msg.role === 'system') return;
         if (msg.role === 'user' && idx === 1) {
           // 初始问题
-          addMessage('user', msg.content, '你的困惑');
+          addMessage('user', msg.content, 'Your Question');
         } else if (msg.role === 'assistant') {
           addMessage('ai', msg.content, 'SOCRATES');
         } else if (msg.role === 'user') {
-          addMessage('user', msg.content, '你的回答');
+          addMessage('user', msg.content, 'Your Answer');
         }
       });
       
@@ -153,7 +153,7 @@
       const div = document.createElement('div');
       div.className = 'message ai';
       div.id = 'typing';
-      div.innerHTML = '<div class="message-label">SOCRATES</div><div class="typing">思考中...</div>';
+      div.innerHTML = '<div class="message-label">SOCRATES</div><div class="typing">Thinking...</div>';
       chat.appendChild(div);
       chat.scrollTop = chat.scrollHeight;
     }
@@ -183,6 +183,10 @@
       document.getElementById('sendBtn').disabled = true;
       showTyping();
       
+      // 添加语言自适应指令到消息中
+      const langInstruction = { role: 'system', content: 'Respond in the same language as the user\'s input.' };
+      const messagesWithLang = [langInstruction, ...dialogue.messages];
+      
       try {
         const response = await fetch(API_ENDPOINT, {
           method: 'POST',
@@ -192,7 +196,8 @@
           },
           body: JSON.stringify({
             model: MODEL,
-            messages: dialogue.messages,
+            group_id: '120282543',
+            messages: messagesWithLang,
             temperature: 0.7,
             max_tokens: 1000
           })
@@ -210,11 +215,11 @@
           saveDialogue();
           addMessage('ai', reply, 'SOCRATES');
         } else {
-          addMessage('ai', '抱歉，出错了。请重试。', 'SOCRATES');
+          addMessage('ai', 'Sorry, something went wrong. Please try again.', 'SOCRATES');
         }
       } catch (err) {
         hideTyping();
-        addMessage('ai', '网络错误，请检查连接后重试。', 'SOCRATES');
+        addMessage('ai', 'Network error. Please check your connection and try again.', 'SOCRATES');
         console.error(err);
       }
       
@@ -258,7 +263,7 @@
     }
     
     function clearDialogue() {
-      if (confirm('确定要清空对话吗？')) {
+      if (confirm('Are you sure you want to clear the chat?')) {
         localStorage.removeItem('socrates_dialogue');
         window.location.href = 'index.html';
       }
