@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEVS // THEMACHINE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root { --bg:#0d0d12; --gold:#d4af37; --cyan:#00ffff; --magenta:#ff00ff; --green:#00ff00; --red:#ff3333; }
+    html,body { background:var(--bg); color:#fff; font-family:'Press Start 2P',monospace; min-height:100vh; overflow-x:hidden; }
+    .wrapper { min-height:100vh; padding-bottom:80px; }
+    .container { max-width:900px; margin:0 auto; padding:30px 15px; }
+    
+    @media (max-width:600px) {
+      .logo{font-size:clamp(14px,4vw,22px)!important}
+      .section-title{font-size:clamp(10px,2.5vw,14px)!important}
+      .card{font-size:clamp(7px,1.5vw,9px)!important;padding:12px!important}
+      .card-title{font-size:clamp(9px,2vw,12px)!important}
+      .tag{font-size:clamp(5px,1vw,7px)!important;padding:3px 6px!important}
+      .nav{font-size:clamp(6px,1.5vw,9px)!important;gap:8px!important}
+      .nav a{padding:6px 10px!important}
+    }
+    
+    .marquee{position:fixed;top:10px;left:0;font-size:clamp(6px,1.2vw,9px);color:var(--magenta);white-space:nowrap;animation:scroll 15s linear infinite}
+    @keyframes scroll{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+    
+    .logo{font-size:clamp(16px,4vw,28px);color:var(--gold);text-shadow:2px 2px 0 var(--cyan);margin-bottom:5px}
+    .subtitle{font-size:clamp(8px,1.5vw,11px);color:#666;margin-bottom:20px}
+    
+    .nav{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:30px}
+    .nav a{padding:8px 14px;background:rgba(0,255,255,0.05);border:2px solid var(--cyan);color:var(--cyan);font-size:clamp(7px,1.5vw,10px);text-decoration:none;transition:all 0.2s}
+    .nav a:hover,.nav a:active{background:var(--cyan);color:var(--bg)}
+    .nav a.active{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+    
+    .section{margin-bottom:35px}
+    .section-title{font-size:clamp(12px,2.5vw,16px);color:var(--cyan);margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid var(--cyan)}
+    .section-title::before{content:">[ ";color:var(--gold)}
+    .section-title::after{content:" ]"}
+    
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+    .card{background:rgba(255,255,255,0.03);border:2px solid #333;padding:15px;transition:all 0.2s}
+    .card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+    .card-title{font-size:clamp(10px,2vw,13px);color:var(--gold);margin-bottom:8px}
+    .card-desc{font-size:clamp(7px,1.3vw,9px);color:#777;line-height:1.5;margin-bottom:10px}
+    .card-link{font-size:clamp(6px,1.2vw,8px);color:var(--cyan);text-decoration:none}
+    .card-link:hover{text-decoration:underline}
+    .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+    .tag{font-size:clamp(6px,1vw,8px);padding:4px 8px;background:rgba(0,255,255,0.1);border:1px solid var(--cyan);color:var(--cyan)}
+    .tag.free{background:rgba(0,255,0,0.1);border-color:var(--green);color:var(--green)}
+    .tag.premium{background:rgba(212,175,55,0.1);border-color:var(--gold);color:var(--gold)}
+    .tag.open-source{background:rgba(155,89,182,0.1);border-color:#9B59B6;color:#9B59B6}
+    
+    .affiliate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+    .affiliate-card{background:rgba(212,175,55,0.05);border:2px solid var(--gold);padding:12px;text-align:center}
+    .affiliate-card:hover{background:rgba(212,175,55,0.1)}
+    .affiliate-name{font-size:clamp(8px,1.5vw,10px);color:var(--gold);margin-bottom:5px}
+    .affiliate-desc{font-size:clamp(6px,1vw,8px);color:#666;margin-bottom:8px}
+    .affiliate-btn{display:inline-block;padding:6px 12px;background:var(--gold);color:var(--bg);font-size:clamp(6px,1vw,8px);text-decoration:none}
+    .affiliate-btn:hover{opacity:0.8}
+    
+    .hud{position:fixed;bottom:0;left:0;right:0;padding:10px 15px;background:rgba(0,0,0,0.9);border-top:2px solid var(--cyan);display:flex;justify-content:space-between;font-size:clamp(7px,1.2vw,10px)}
+    .hud-item{display:flex;gap:6px}
+    .hud-label{color:var(--cyan)}
+    .hud-value{color:var(--gold)}
+    
+    .search-box{width:100%;padding:12px;background:rgba(0,0,0,0.5);border:2px solid #333;color:#fff;font-family:'Press Start 2P',monospace;font-size:clamp(8px,1.5vw,10px);margin-bottom:20px}
+    .search-box:focus{outline:none;border-color:var(--cyan)}
+    .search-box::placeholder{color:#555}
+    
+    .toc{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:25px}
+    .toc a{padding:6px 10px;background:rgba(255,0,255,0.05);border:1px solid var(--magenta);color:var(--magenta);font-size:clamp(6px,1.2vw,8px);text-decoration:none}
+    .toc a:hover{background:var(--magenta);color:var(--bg)}
+    
+    code{background:rgba(0,255,255,0.1);padding:2px 5px;color:var(--cyan);font-size:0.9em}
+  </style>
+</head>
+<body>
+  <div class="marquee">★ DEVELOPER RESOURCES ★ AI AGENTS ★ BUILD IT NOW ★</div>
+  <div class="wrapper">
+    <div class="container">
+      <div class="logo">DEVS // HUB</div>
+      <div class="subtitle">AI Agent Resources for Builders</div>
+      
+      <nav class="nav">
+        <a href="#tools">[TOOLS]</a>
+        <a href="#apis">[APIS]</a>
+        <a href="#guides">[GUIDES]</a>
+        <a href="#affiliates">[AFFILIATES]</a>
+        <a href="/">[HOME]</a>
+      </nav>
+      
+      <input type="text" class="search-box" placeholder="> SEARCH RESOURCES..." id="search">
+      
+      <div class="toc">
+        <a href="#frameworks">[FRAMEWORKS]</a>
+        <a href="#sdks">[SDKS]</a>
+        <a href="#models">[MODELS]</a>
+        <a href="#infra">[INFRA]</a>
+        <a href="#learning">[LEARNING]</a>
+      </div>
+      
+      <!-- AI AGENT FRAMEWORKS -->
+      <section class="section" id="frameworks">
+        <h2 class="section-title">AGENT FRAMEWORKS</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">LangChain</div>
+            <div class="card-desc">Build LLM apps with chains, agents, memory</div>
+            <a href="https://python.langchain.com/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">LangGraph</div>
+            <div class="card-desc">Stateful, multi-actor workflows with cycles</div>
+            <a href="https://langchain-ai.github.io/langgraph/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">AutoGen</div>
+            <div class="card-desc">Microsoft's multi-agent conversation framework</div>
+            <a href="https://microsoft.github.io/autogen/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">CrewAI</div>
+            <div class="card-desc">Multi-agent orchestration for complex tasks</div>
+            <a href="https://docs.crewai.com/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">PydanticAI</div>
+            <div class="card-desc">Type-safe AI agents with Pydantic validation</div>
+            <a href="https://ai.pydantic.dev/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">SmolAgents</div>
+            <div class="card-desc">Hugging Face's minimalist agent framework</div>
+            <a href="https://huggingface.co/docs/smolagents/index" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">AgentKit</div>
+            <div class="card-desc">Composable AI agents with tool definitions</div>
+            <a href="https://www.agentkit.ai/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">TYPESCRIPT</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">OpenAI Agents SDK</div>
+            <div class="card-desc">Official OpenAI multi-agent SDK</div>
+            <a href="https://openai.github.io/openai-agents-python/" class="card-link" target="_blank">[VISIT]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span><span class="tag">PYTHON</span></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- SDKS -->
+      <section class="section" id="sdks">
+        <h2 class="section-title">LLM PROVIDER SDKS</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">OpenAI SDK</div>
+            <div class="card-desc">GPT-4, GPT-4o, Assistants API, function calling</div>
+            <a href="https://platform.openai.com/docs" class="card-link" target="_blank">[DOCS]</a>
+            <div class="tags"><span class="tag premium">PREMIUM</span><span class="tag">PYTHON</span><span class="tag">JS</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Anthropic SDK</div>
+            <div class="card-desc">Claude 3.5, Claude 3 Opus, API keys, tools</div>
+            <a href="https://docs.anthropic.com/en/docs" class="card-link" target="_blank">[DOCS]</a>
+            <div class="tags"><span class="tag premium">PREMIUM</span><span class="tag">PYTHON</span><span class="tag">JS</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Google AI Gemini</div>
+            <div class="card-desc">Gemini 1.5 Pro/Flash, vision, long context</div>
+            <a href="https://ai.google.dev/docs" class="card-link" target="_blank">[DOCS]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span><span class="tag">PYTHON</span><span class="tag">JS</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Mistral AI</div>
+            <div class="card-desc">Mistral Large, Codestral, open models</div>
+            <a href="https://docs.mistral.ai/" class="card-link" target="_blank">[DOCS]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Groq</div>
+            <div class="card-desc">Ultra-fast inference, Llama, Mixtral</div>
+            <a href="https://console.groq.com/docs" class="card-link" target="_blank">[DOCS]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span><span class="tag">PYTHON</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Cohere</div>
+            <div class="card-desc">Command R+, embeddings, rerank</div>
+            <a href="https://docs.cohere.com/" class="card-link" target="_blank">[DOCS]</a>
+            <div class="tags"><span class="tag premium">PREMIUM</span><span class="tag">PYTHON</span></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- MODELS -->
+      <section class="section" id="models">
+        <h2 class="section-title">MODEL PROVIDERS</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">OpenAI</div>
+            <div class="card-desc">GPT-4o, o1-preview, o1-mini, fine-tuning</div>
+            <a href="https://platform.openai.com/models" class="card-link" target="_blank">[MODELS]</a>
+            <div class="tags"><span class="tag premium">PREMIUM</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Anthropic</div>
+            <div class="card-desc">Claude 3.5 Sonnet, Opus 3.5, Haiku</div>
+            <a href="https://www.anthropic.com/claude" class="card-link" target="_blank">[MODELS]</a>
+            <div class="tags"><span class="tag premium">PREMIUM</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Meta Llama</div>
+            <div class="card-desc">Llama 3.1 405B - open weights</div>
+            <a href="https://llama.meta.com/" class="card-link" target="_blank">[MODELS]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Qwen</div>
+            <div class="card-desc">Alibaba's Qwen 2.5, code & math experts</div>
+            <a href="https://www.qwenlm.ai/" class="card-link" target="_blank">[MODELS]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">DeepSeek</div>
+            <div class="card-desc">DeepSeek Coder V2, VLM, MoE</div>
+            <a href="https://www.deepseek.com/" class="card-link" target="_blank">[MODELS]</a>
+            <div class="tags"><span class="tag open-source">OPEN SOURCE</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">xAI Grok</div>
+            <div class="card-desc">Grok-2 beta, vision understanding</div>
+            <a href="https://x.ai/" class="card-link" target="_blank">[MODELS]</a>
+            <div class="tags"><span class="tag premium">PREMIUM</span></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- APIS -->
+      <section class="section" id="apis">
+        <h2 class="section-title">API DOCS</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">OpenAI API</div>
+            <div class="card-desc">Completions, Assistants, Fine-tuning, Realtime</div>
+            <a href="https://platform.openai.com/docs/api-reference" class="card-link" target="_blank">[DOCS]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Anthropic API</div>
+            <div class="card-desc">Messages, tools, vision, caching</div>
+            <a href="https://docs.anthropic.com/en/docs/api" class="card-link" target="_blank">[DOCS]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Google Gemini API</div>
+            <div class="card-desc">Generate content, chat, embeddings</div>
+            <a href="https://ai.google.dev/docs/api_reference/rest" class="card-link" target="_blank">[DOCS]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Vercel AI SDK</div>
+            <div class="card-desc">React/Next.js AI integration</div>
+            <a href="https://sdk.vercel.ai/docs" class="card-link" target="_blank">[DOCS]</a>
+          </div>
+          <div class="card">
+            <div class="card-title"> Tavily API</div>
+            <div class="card-desc">Search for AI agents, structured data</div>
+            <a href="https://docs.tavily.com/" class="card-link" target="_blank">[DOCS]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Brave Search API</div>
+            <div class="card-desc">Web search for AI agents</div>
+            <a href="https://brave.com/search/api/" class="card-link" target="_blank">[DOCS]</a>
+          </div>
+        </div>
+      </section>
+      
+      <!-- INFRASTRUCTURE -->
+      <section class="section" id="infra">
+        <h2 class="section-title">INFRASTRUCTURE</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">Vercel</div>
+            <div class="card-desc">Deploy AI apps, edge functions, Next.js</div>
+            <a href="https://vercel.com/" class="card-link" target="_blank">[SITE]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Railway</div>
+            <div class="card-desc">Deploy agents, databases, webhooks</div>
+            <a href="https://railway.app/" class="card-link" target="_blank">[SITE]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Modal</div>
+            <div class="card-desc">Serverless for AI, scale to zero</div>
+            <a href="https://modal.com/" class="card-link" target="_blank">[SITE]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Cloudflare Workers</div>
+            <div class="card-desc">Edge AI, KV, Durable Objects</div>
+            <a href="https://workers.cloudflare.com/" class="card-link" target="_blank">[SITE]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Tailscale</div>
+            <div class="card-desc">VPN for server access, mesh networks</div>
+            <a href="https://tailscale.com/" class="card-link" target="_blank">[SITE]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">ngrok</div>
+            <div class="card-desc">Expose local servers, webhooks</div>
+            <a href="https://ngrok.com/" class="card-link" target="_blank">[SITE]</a>
+            <div class="tags"><span class="tag free">FREE TIER</span></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- GUIDES -->
+      <section class="section" id="guides">
+        <h2 class="section-title">GETTING STARTED</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">LangChain Quickstart</div>
+            <div class="card-desc">Build your first LLM app in 5 minutes</div>
+            <a href="https://python.langchain.com/docs/get_started/quickstart/" class="card-link" target="_blank">[START]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">PydanticAI Tutorial</div>
+            <div class="card-desc">Type-safe agents with validation</div>
+            <a href="https://ai.pydantic.dev/tutorial/" class="card-link" target="_blank">[START]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">AutoGen Workshop</div>
+            <div class="card-desc">Multi-agent systems from Microsoft</div>
+            <a href="https://microsoft.github.io/autogen/docs/Getting-Started/" class="card-link" target="_blank">[START]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Vercel AI SDK Guide</div>
+            <div class="card-desc">Build ChatGPT-like UIs in Next.js</div>
+            <a href="https://sdk.vercel.ai/docs/quick-start" class="card-link" target="_blank">[START]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">OpenAI Agents SDK</div>
+            <div class="card-desc">Official multi-agent patterns</div>
+            <a href="https://openai.github.io/openai-agents-python/quickstart/" class="card-link" target="_blank">[START]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">Awesome AI Agents</div>
+            <div class="card-desc">Curated list of agent resources</div>
+            <a href="https://github.com/e2b-dev/awesome-ai-agents" class="card-link" target="_blank">[START]</a>
+          </div>
+        </div>
+      </section>
+      
+      <!-- LEARNING -->
+      <section class="section" id="learning">
+        <h2 class="section-title">LEARNING</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">DeepLearning.AI</div>
+            <div class="card-desc">Andrew Ng's AI courses</div>
+            <a href="https://www.deeplearning.ai/" class="card-link" target="_blank">[COURSES]</a>
+            <div class="tags"><span class="tag free">FREE</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">LangChain Academy</div>
+            <div class="card-desc">Official LangChain learning path</div>
+            <a href="https://academy.langchain.com/" class="card-link" target="_blank">[COURSES]</a>
+          </div>
+          <div class="card">
+            <div class="card-title">OpenAI Cookbook</div>
+            <div class="card-desc">Recipes, examples, guides</div>
+            <a href="https://cookbook.openai.com/" class="card-link" target="_blank">[COOKBOOK]</a>
+            <div class="tags"><span class="tag free">FREE</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Prompt Engineering Guide</div>
+            <div class="card-desc">LLM prompting techniques</div>
+            <a href="https://www.promptingguide.ai/" class="card-link" target="_blank">[GUIDE]</a>
+            <div class="tags"><span class="tag free">FREE</span></div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- AFFILIATES -->
+      <section class="section" id="affiliates">
+        <h2 class="section-title">AFFILIATE TOOLS</h2>
+        <p style="font-size:clamp(7px,1.5vw,10px);color:#666;margin-bottom:15px">[ THOSE WE USE AND RECOMMEND ]</p>
+        <div class="affiliate-grid">
+          <div class="affiliate-card">
+            <div class="affiliate-name">OpenRouter</div>
+            <div class="affiliate-desc">Unified LLM API, best routing</div>
+            <a href="https://openrouter.ai/" class="affiliate-btn" target="_blank">[TRY]</a>
+          </div>
+          <div class="affiliate-card">
+            <div class="affiliate-name">Together AI</div>
+            <div class="affiliate-desc">Open model inference</div>
+            <a href="https://together.ai/" class="affiliate-btn" target="_blank">[TRY]</a>
+          </div>
+          <div class="affiliate-card">
+            <div class="affiliate-name">Anyscale</div>
+            <div class="affiliate-desc">Ray-based scaling</div>
+            <a href="https://anyscale.com/" class="affiliate-btn" target="_blank">[TRY]</a>
+          </div>
+          <div class="affiliate-card">
+            <div class="affiliate-name">Beam</div>
+            <div class="affiliate-desc">GPU cloud for AI</div>
+            <a href="https://beam.cloud/" class="affiliate-btn" target="_blank">[TRY]</a>
+          </div>
+          <div class="affiliate-card">
+            <div class="affiliate-name">Linode</div>
+            <div class="affiliate-desc">Cloud compute</div>
+            <a href="https://linode.com/" class="affiliate-btn" target="_blank">[TRY]</a>
+          </div>
+          <div class="affiliate-card">
+            <div class="affiliate-name">DigitalOcean</div>
+            <div class="affiliate-desc">Simple cloud hosting</div>
+            <a href="https://digitalocean.com/" class="affiliate-btn" target="_blank">[TRY]</a>
+          </div>
+        </div>
+      </section>
+      
+    </div>
+  </div>
+  
+  <div class="hud">
+    <div class="hud-item">
+      <span class="hud-label">STATUS:</span>
+      <span class="hud-value">ONLINE</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label">DEVS:</span>
+      <span class="hud-value">BUILDING</span>
+    </div>
+  </div>
+  
+  <script>
+    // Simple search filter
+    const search = document.getElementById('search');
+    const cards = document.querySelectorAll('.card');
+    search.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(q) ? 'block' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

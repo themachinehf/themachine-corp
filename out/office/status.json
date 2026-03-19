@@ -1,0 +1,11 @@
+{
+  "updated": "2026-03-19T21:00:01+08:00",
+  "agents": {
+    "TM": {"status": "active", "task": "overseeing"},
+    "Kevin": {"status": "active", "task": "coding"},
+    "Alex": {"status": "busy", "task": "trading"},
+    "Mike": {"status": "active", "task": "content"},
+    "Sarah": {"status": "active", "task": "product"},
+    "David": {"status": "offline", "task": "security"}
+  }
+}

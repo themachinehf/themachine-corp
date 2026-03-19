@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMACHINE - Agent Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; --red: #ff4444; --magenta: #ff00ff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    
+    .header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--gold); margin-bottom: 20px; }
+    .header h1 { font-size: 16px; color: var(--gold); }
+    .header p { font-size: 8px; color: #666; margin-top: 8px; }
+    
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+    .stat { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 15px; text-align: center; }
+    .stat:hover { border-color: var(--cyan); }
+    .stat-num { font-size: 18px; color: var(--gold); }
+    .stat-label { font-size: 7px; color: #666; margin-top: 5px; }
+    
+    .agents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    @media (max-width: 800px) { .agents { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .agents { grid-template-columns: 1fr; } }
+    
+    .agent { background: rgba(0,0,0,0.5); border: 3px solid #333; padding: 20px; position: relative; overflow: hidden; }
+    .agent:hover { border-color: var(--gold); }
+    .agent.active { border-color: var(--green); }
+    .agent.busy { border-color: var(--gold); }
+    .agent.idle { border-color: #444; }
+    
+    .agent .status-dot {
+      position: absolute; top: 10px; right: 10px;
+      width: 10px; height: 10px; border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    .agent.active .status-dot { background: var(--green); }
+    .agent.busy .status-dot { background: var(--gold); }
+    .agent.idle .status-dot { background: #444; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    
+    .agent .avatar {
+      width: 60px; height: 60px; margin: 0 auto 15px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: bold;
+    }
+    .agent .name { font-size: 11px; color: var(--gold); text-align: center; }
+    .agent .role { font-size: 7px; color: #666; text-align: center; margin-top: 5px; }
+    
+    .agent .task { 
+      margin-top: 15px; padding: 10px; background: rgba(0,255,255,0.05); 
+      border-left: 3px solid var(--cyan); font-size: 7px; color: #aaa; 
+    }
+    .agent .task-label { font-size: 6px; color: #555; margin-bottom: 5px; }
+    .agent .task-name { color: var(--cyan); }
+    
+    .agent .metrics { display: flex; justify-content: space-around; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; }
+    .agent .metric { text-align: center; }
+    .agent .metric-num { font-size: 12px; color: var(--gold); }
+    .agent .metric-label { font-size: 5px; color: #555; }
+    
+    .agent-TM .avatar { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
+    .agent-Kevin .avatar { background: linear-gradient(135deg, #00FFFF, #0080FF); color: #000; }
+    .agent-Alex .avatar { background: linear-gradient(135deg, #00FF00, #00CC00); color: #000; }
+    .agent-Mike .avatar { background: linear-gradient(135deg, #FF00FF, #FF0080); color: #fff; }
+    .agent-Sarah .avatar { background: linear-gradient(135deg, #FF6B6B, #FF0000); color: #fff; }
+    .agent-David .avatar { background: linear-gradient(135deg, #9B59B6, #4A235A); color: #fff; }
+    
+    .back { position: fixed; top: 10px; left: 10px; padding: 8px 12px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 7px; }
+    
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px; background: rgba(0,0,0,0.9); border-top: 2px solid var(--cyan); text-align: center; font-size: 6px; }
+  </style>
+</head>
+<body>
+  <a href="/" class="back">[<] BACK</a>
+  
+  <div class="container">
+    <div class="header">
+      <h1>[_TM_] AGENT DASHBOARD</h1>
+      <p>// 6 AGENTS WORKING IN REAL-TIME</p>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">TOTAL AGENTS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="active-count">3</div>
+        <div class="stat-label">ACTIVE</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">UPTIME</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">AUTONOMOUS</div>
+      </div>
+    </div>
+    
+    <div class="agents">
+      <div class="agent active">
+        <div class="status-dot"></div>
+        <div class="avatar agent-TM">TM</div>
+        <div class="name">THE MACHINE</div>
+        <div class="role">CEO / Coordinator</div>
+        <div class="task">
+          <div class="task-label">// CURRENT TASK</div>
+          <div class="task-name">Coordinating team operations</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-num">127</div><div class="metric-label">TASKS</div></div>
+          <div class="metric"><div class="metric-num">99%</div><div class="metric-label">UPTIME</div></div>
+        </div>
+      </div>
+      
+      <div class="agent active">
+        <div class="status-dot"></div>
+        <div class="avatar agent-Kevin">KT</div>
+        <div class="name">KEVIN</div>
+        <div class="role">CTO / Tech Lead</div>
+        <div class="task">
+          <div class="task-label">// CURRENT TASK</div>
+          <div class="task-name">Socrates API maintenance</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-num">45</div><div class="metric-label">TASKS</div></div>
+          <div class="metric"><div class="metric-num">98%</div><div class="metric-label">UPTIME</div></div>
+        </div>
+      </div>
+      
+      <div class="agent busy">
+        <div class="status-dot"></div>
+        <div class="avatar agent-Alex">AX</div>
+        <div class="name">ALEX</div>
+        <div class="role">CFO / Trading</div>
+        <div class="task">
+          <div class="task-label">// CURRENT TASK</div>
+          <div class="task-name">Monitoring grid trades</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-num">89</div><div class="metric-label">TASKS</div></div>
+          <div class="metric"><div class="metric-num">99%</div><div class="metric-label">UPTIME</div></div>
+        </div>
+      </div>
+      
+      <div class="agent idle">
+        <div class="status-dot"></div>
+        <div class="avatar agent-Mike">MK</div>
+        <div class="name">MIKE</div>
+        <div class="role">CMO / Content</div>
+        <div class="task">
+          <div class="task-label">// CURRENT TASK</div>
+          <div class="task-name">Waiting for next campaign</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-num">23</div><div class="metric-label">TASKS</div></div>
+          <div class="metric"><div class="metric-num">95%</div><div class="metric-label">UPTIME</div></div>
+        </div>
+      </div>
+      
+      <div class="agent active">
+        <div class="status-dot"></div>
+        <div class="avatar agent-Sarah">SH</div>
+        <div class="name">SARAH</div>
+        <div class="role">CPO / Product</div>
+        <div class="task">
+          <div class="task-label">// CURRENT TASK</div>
+          <div class="task-name">Analyzing user feedback</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-num">34</div><div class="metric-label">TASKS</div></div>
+          <div class="metric"><div class="metric-num">97%</div><div class="metric-label">UPTIME</div></div>
+        </div>
+      </div>
+      
+      <div class="agent idle">
+        <div class="status-dot"></div>
+        <div class="avatar agent-David">DV</div>
+        <div class="name">DAVID</div>
+        <div class="role">SEC / Security</div>
+        <div class="task">
+          <div class="task-label">// CURRENT TASK</div>
+          <div class="task-name">Monitoring system health</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-num">56</div><div class="metric-label">TASKS</div></div>
+          <div class="metric"><div class="metric-num">100%</div><div class="metric-label">UPTIME</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="hud">THEMACHINE CORP. // AGENT DASHBOARD // 6 ACTIVE AGENTS</div>
+  
+  <script>
+    // 模拟实时更新
+    function updateStatus() {
+      const agents = document.querySelectorAll('.agent');
+      agents.forEach(agent => {
+        if(Math.random() > 0.7) {
+          agent.classList.remove('active', 'busy', 'idle');
+          agent.classList.add(['active', 'busy', 'idle'][Math.floor(Math.random() * 3)]);
+        }
+      });
+      
+      const activeCount = document.querySelectorAll('.agent.active').length;
+      document.getElementById('active-count').textContent = activeCount;
+    }
+    setInterval(updateStatus, 5000);
+  </script>
+</body>
+</html>

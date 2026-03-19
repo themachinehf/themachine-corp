@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>知识星球 - Socrates AI Community</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --bg: #0d0d12; 
+      --bg-light: #151520;
+      --gold: #d4af37; 
+      --gold-bright: #f0c950;
+      --cyan: #00ffff; 
+      --green: #00ff00;
+      --magenta: #ff00ff;
+      --red: #ff4444;
+      --text: #ffffff;
+      --text-dim: #888888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { 
+      background: var(--bg); color: var(--text); 
+      font-family: 'Press Start 2P', monospace; 
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    /* Scanlines */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.1) 0px,
+        rgba(0,0,0,0.1) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    
+    /* Header */
+    .header { 
+      text-align: center; 
+      padding: 20px; 
+      border-bottom: 3px solid var(--gold); 
+      margin-bottom: 30px;
+      background: linear-gradient(180deg, rgba(212,175,55,0.1) 0%, transparent 100%);
+    }
+    .header h1 { 
+      font-size: 16px; 
+      color: var(--gold); 
+      text-shadow: 0 0 10px var(--gold);
+      margin-bottom: 8px;
+    }
+    .header .subtitle { font-size: 8px; color: var(--cyan); }
+    
+    /* Hero */
+    .hero { 
+      text-align: center; 
+      padding: 30px 20px;
+      border: 2px solid var(--gold);
+      background: rgba(212,175,55,0.05);
+      margin-bottom: 30px;
+    }
+    .hero h2 { 
+      font-size: 12px; 
+      color: var(--text); 
+      margin-bottom: 15px;
+      line-height: 1.8;
+    }
+    .hero .tagline { 
+      font-size: 8px; 
+      color: var(--text-dim); 
+      margin-bottom: 20px;
+    }
+    .hero .cta {
+      display: inline-block;
+      padding: 15px 30px;
+      background: var(--gold);
+      color: var(--bg);
+      font-size: 10px;
+      text-decoration: none;
+      border: 3px solid var(--gold-bright);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hero .cta:hover {
+      background: var(--gold-bright);
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--gold);
+    }
+    
+    /* Pixel Character */
+    .pixel-socrates {
+      width: 80px;
+      height: 100px;
+      margin: 20px auto;
+      position: relative;
+    }
+    .pixel-socrates .head {
+      width: 40px;
+      height: 40px;
+      background: var(--gold);
+      margin: 0 auto;
+      position: relative;
+    }
+    .pixel-socrates .head::before,
+    .pixel-socrates .head::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--bg);
+      top: 12px;
+    }
+    .pixel-socrates .head::before { left: 8px; }
+    .pixel-socrates .head::after { right: 8px; }
+    .pixel-socrates .beard {
+      width: 44px;
+      height: 24px;
+      background: var(--text-dim);
+      margin: -5px auto 0;
+    }
+    .pixel-socrates .body {
+      width: 50px;
+      height: 30px;
+      background: #333;
+      margin: 0 auto;
+      border: 2px solid var(--gold);
+    }
+    
+    /* Features */
+    .features { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .feature {
+      background: var(--bg-light);
+      border: 2px solid #333;
+      padding: 20px 15px;
+      text-align: center;
+    }
+    .feature-icon { font-size: 24px; margin-bottom: 10px; }
+    .feature h3 { font-size: 8px; color: var(--cyan); margin-bottom: 8px; }
+    .feature p { font-size: 6px; color: var(--text-dim); }
+    
+    /* Pricing */
+    .pricing { margin-bottom: 30px; }
+    .pricing h2 { 
+      font-size: 12px; 
+      text-align: center; 
+      color: var(--gold); 
+      margin-bottom: 20px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+    .price-card {
+      background: var(--bg-light);
+      border: 2px solid #333;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .price-card.featured {
+      border-color: var(--gold);
+      position: relative;
+    }
+    .price-card.featured::before {
+      content: '★ BEST';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--bg);
+      font-size: 6px;
+      padding: 3px 8px;
+    }
+    .price-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+    }
+    .price-card h3 { font-size: 8px; color: var(--text); margin-bottom: 10px; }
+    .price-card .price { 
+      font-size: 16px; 
+      color: var(--gold); 
+      margin-bottom: 15px;
+    }
+    .price-card .price span { font-size: 8px; color: var(--text-dim); }
+    .price-card ul { 
+      list-style: none; 
+      font-size: 6px; 
+      color: var(--text-dim);
+      margin-bottom: 15px;
+    }
+    .price-card li { 
+      padding: 4px 0; 
+      border-bottom: 1px solid #222;
+    }
+    .price-card li:last-child { border-bottom: none; }
+    .price-card .btn {
+      display: block;
+      padding: 10px;
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 7px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .price-card .btn:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+    .price-card.featured .btn {
+      background: var(--gold);
+      color: var(--bg);
+    }
+    
+    /* How it works */
+    .how-it-works { 
+      margin-bottom: 30px; 
+      padding: 20px;
+      border: 2px solid #333;
+      background: var(--bg-light);
+    }
+    .how-it-works h2 { 
+      font-size: 10px; 
+      color: var(--cyan); 
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+    .step { text-align: center; }
+    .step-num { 
+      width: 30px; 
+      height: 30px; 
+      background: var(--magenta);
+      color: var(--bg);
+      font-size: 12px;
+      line-height: 30px;
+      margin: 0 auto 10px;
+    }
+    .step p { font-size: 6px; color: var(--text-dim); }
+    
+    /* Testimonials */
+    .testimonials { margin-bottom: 30px; }
+    .testimonials h2 { 
+      font-size: 10px; 
+      color: var(--green); 
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .test {
+      background: var(--bg-light);
+      border-left: 3px solid var(--green);
+      padding: 15px;
+    }
+    .test p { font-size: 6px; color: var(--text-dim); margin-bottom: 10px; font-style: italic; }
+    .test .author { font-size: 6px; color: var(--green); }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 2px solid #333;
+      margin-top: 30px;
+    }
+    .footer p { font-size: 6px; color: var(--text-dim); }
+    .footer a { color: var(--cyan); text-decoration: none; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background: var(--bg-light);
+      border: 2px solid #333;
+      color: var(--gold);
+      font-size: 7px;
+      text-decoration: none;
+    }
+    .back-link:hover { border-color: var(--gold); }
+    
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 20px 0;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 14px; color: var(--gold); }
+    .stat-label { font-size: 6px; color: var(--text-dim); }
+    
+    /* Mobile */
+    @media (max-width: 600px) {
+      .features, .pricing-grid, .steps, .test-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats { flex-direction: column; gap: 15px; }
+      .header h1 { font-size: 12px; }
+      .hero h2 { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">[&lt;] BACK TO HOMEPAGE</a>
+    
+    <div class="header">
+      <h1>知识星球</h1>
+      <div class="subtitle">SOCRATES AI - QUESTION AS ANSWER</div>
+    </div>
+    
+    <div class="hero">
+      <div class="pixel-socrates">
+        <div class="head"></div>
+        <div class="beard"></div>
+        <div class="body"></div>
+      </div>
+      <h2>STOP LOOKING FOR ANSWERS.<br>START ASKING BETTER QUESTIONS.</h2>
+      <p class="tagline">The AI community where we don't give you answers — we teach you to question everything.</p>
+      
+      <div class="stats">
+        <div class="stat"><div class="stat-num">2,847</div><div class="stat-label">MEMBERS</div></div>
+        <div class="stat"><div class="stat-num">15K+</div><div class="stat-label">QUESTIONS</div></div>
+        <div class="stat"><div class="stat-num">365</div><div class="stat-label">DAYS ACTIVE</div></div>
+      </div>
+      
+      <a href="#pricing" class="cta">[ JOIN COMMUNITY ]</a>
+    </div>
+    
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">❓</div>
+        <h3>DAILY CHALLENGE</h3>
+        <p>Every day, a new question to stretch your thinking. AI-powered prompts that challenge assumptions.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>THINKING REPORT</h3>
+        <p>Weekly analysis of your questions. Track your growth from simple queries to deep philosophical inquiry.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">👥</div>
+        <h3>COMMUNITY</h3>
+        <p>Join fellow seekers. Share insights, debate ideas, and grow together through the Socratic method.</p>
+      </div>
+    </div>
+    
+    <div class="how-it-works">
+      <h2>[?] HOW IT WORKS</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <p>Join the community</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p>Get daily questions</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p>Reflect & question</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <p>Grow wiser</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pricing" id="pricing">
+      <h2>[¥] MEMBERSHIP TIERS</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>EXPLORER</h3>
+          <div class="price">¥299<span>/year</span></div>
+          <ul>
+            <li>Daily question prompts</li>
+            <li>Basic thinking reports</li>
+            <li>Community access</li>
+            <li>Monthly live session</li>
+          </ul>
+          <a href="#" class="btn">[ JOIN ]</a>
+        </div>
+        <div class="price-card featured">
+          <h3>SEEKER</h3>
+          <div class="price">¥599<span>/year</span></div>
+          <ul>
+            <li>Everything in Explorer</li>
+            <li>Weekly AI analysis</li>
+            <li>Small group discussions</li>
+            <li>Priority support</li>
+            <li>Exclusive workshops</li>
+          </ul>
+          <a href="#" class="btn">[ JOIN ]</a>
+        </div>
+        <div class="price-card">
+          <h3>PHILOSOPHER</h3>
+          <div class="price">¥1299<span>/year</span></div>
+          <ul>
+            <li>Everything in Seeker</li>
+            <li>1-on-1 AI mentorship</li>
+            <li>Deep analysis reports</li>
+            <li>Private community</li>
+            <li>Early access features</li>
+          </ul>
+          <a href="#" class="btn">[ JOIN ]</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="testimonials">
+      <h2>[★] WHAT MEMBERS SAY</h2>
+      <div class="test-grid">
+        <div class="test">
+          <p>"I used to google everything. Now I question everything. This community changed how I think."</p>
+          <div class="author">— Member #1042</div>
+        </div>
+        <div class="test">
+          <p>"The daily questions are brutal in the best way. My boss says I'm a better problem solver now."</p>
+          <div class="author">— Member #0891</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="hero" style="border-color: var(--cyan); background: rgba(0,255,255,0.05);">
+      <h2>READY TO QUESTION EVERYTHING?</h2>
+      <p class="tagline">Join 2,847+ thinkers on a journey to better questions.</p>
+      <a href="#pricing" class="cta" style="background: var(--cyan); border-color: var(--cyan); color: var(--bg);">[ JOIN 知识星球 ]</a>
+    </div>
+    
+    <div class="footer">
+      <p>// THEMACHINE Corp. presents 知识星球</p>
+      <p style="margin-top: 10px;">Built with questions. Powered by curiosity.</p>
+    </div>
+  </div>
+</body>
+</html>

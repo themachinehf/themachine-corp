@@ -3,222 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THEMACHINE Office - Live</title>
+  <title>THEMACHINE Office</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; --magenta: #ff00ff; --red: #ff4444; }
-    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
-    @media (max-width: 768px) { .main { grid-template-columns: 1fr !important; } }
+    html, body { 
+      background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; 
+      padding: 8px; height: 100vh; overflow: hidden; 
+    }
     
-    .header { background: linear-gradient(180deg, #1a1a2e 0%, var(--bg) 100%); padding: 12px; border-bottom: 2px solid var(--cyan); text-align: center; }
-    .header h1 { font-size: 11px; color: var(--gold); }
-    .header p { font-size: 13px; color: #666; margin-top: 4px; }
+    .header { text-align: center; padding: 6px; border-bottom: 2px solid var(--gold); margin-bottom: 6px; }
+    .header h1 { font-size: 10px; color: var(--gold); }
     
-    .container { max-width: 1400px; margin: 0 auto; padding: 12px; }
+    .main { display: grid; grid-template-columns: 1fr 280px; gap: 8px; height: calc(100vh - 50px); }
+    .panel { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 8px; display: flex; flex-direction: column; }
+    .panel-title { font-size: 8px; color: var(--cyan); margin-bottom: 6px; flex-shrink: 0; }
     
-    .main { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    /* Map - fill available space */
+    .map-wrap { flex: 1; min-height: 0; }
+    .map { background: #080810; border: 1px solid #333; position: relative; width: 100%; height: 100%; min-height: 200px; }
     
-    /* Blackboard */
-    .blackboard { background: linear-gradient(180deg, #1a1a0a 0%, #0d0d05 100%); border: 8px solid #5a4a32; border-radius: 10px; padding: 15px; min-height: 250px; }
-    .board-title { font-size: 13px; color: var(--gold); text-align: center; margin-bottom: 10px; }
-    .flow-step { display: flex; align-items: center; margin-bottom: 8px; padding: 6px; background: rgba(0,0,0,0.5); border-left: 3px solid var(--cyan); }
-    .flow-step.p0 { border-color: var(--red); }
-    .flow-num { width: 20px; height: 20px; background: var(--gold); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-right: 8px; }
-    .flow-title { font-size: 10px; color: #fff; }
-    .arrow { text-align: center; color: var(--gold); font-size: 12px; margin: 4px 0; }
+    /* Room boxes - proportional */
+    .room { position: absolute; border: 1px solid #444; }
+    .room-label { position: absolute; top: 2px; left: 4px; font-size: 5px; color: #555; z-index: 1; }
     
-    /* Demand Cards */
-    .demands-section { margin-top: 12px; }
-    .demands-title { font-size: 12px; color: var(--gold); margin-bottom: 8px; }
-    .demands-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 280px; overflow-y: auto; }
-    .demand-card { background: rgba(0,0,0,0.6); border: 2px solid #333; padding: 8px; }
-    .demand-card.p0 { border-color: var(--red); }
-    .demand-card.p1 { border-color: var(--gold); }
-    .demand-card.p2 { border-color: #444; }
-    .demand-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .demand-prio { font-size: 13px; padding: 2px 4px; }
-    .demand-prio.p0 { background: var(--red); color: #fff; }
-    .demand-prio.p1 { background: var(--gold); color: #000; }
-    .demand-prio.p2 { background: #444; color: #fff; }
-    .demand-title { font-size: 10px; color: #fff; }
-    .demand-meta { font-size: 13px; color: #888; margin-top: 4px; }
-    .demand-meta span { color: var(--cyan); }
+    .furn { position: absolute; }
+    .desk { width: 16px; height: 6px; background: #444; }
+    .chair { width: 6px; height: 5px; background: #555; }
+    .pc { width: 5px; height: 4px; background: #3a3a5a; border: 1px solid #5a5a7a; }
+    .server { width: 6px; height: 10px; background: #2a2a3a; border: 1px solid #4a4a5a; }
+    .screen { width: 6px; height: 5px; background: #1a3a1a; border: 1px solid #2a5a2a; }
+    .chart { width: 10px; height: 8px; background: linear-gradient(to bottom, #2a4a2a 30%, #4a6a4a 60%, #2a4a2a 100%); }
+    .mic { width: 3px; height: 6px; background: #3a3a4a; border-radius: 2px 2px 0 0; }
+    .board { width: 12px; height: 8px; background: #3a3535; border: 1px solid #5a5555; }
     
-    /* Queue */
-    .queue-board { background: #0a0a0a; border: 3px solid var(--cyan); padding: 10px; min-height: 180px; }
-    .queue-title { font-size: 11px; color: var(--cyan); margin-bottom: 8px; }
-    .queue-item { display: flex; align-items: center; padding: 5px; margin-bottom: 4px; background: rgba(0,255,255,0.05); border-left: 2px solid var(--cyan); font-size: 13px; }
+    .room-hq { top: 2%; left: 2%; width: 30%; height: 45%; border-color: var(--gold); }
+    .room-hq .desk { bottom: 6px; left: 40px; }
+    .room-hq .chair { bottom: 3px; left: 42px; }
+    .room-hq .pc { bottom: 10px; left: 44px; }
+    
+    .room-dev { top: 2%; left: 35%; width: 30%; height: 45%; }
+    .room-dev .pc { top: 12px; left: 15px; }
+    .room-dev .pc:nth-child(2) { left: 25px; }
+    .room-dev .server { top: 8px; right: 10px; }
+    
+    .room-trade { top: 2%; right: 2%; width: 30%; height: 45%; }
+    .room-trade .chart { top: 10px; left: 15px; }
+    .room-trade .chart:nth-child(2) { left: 30px; }
+    .room-trade .screen { top: 10px; right: 10px; }
+    
+    .room-social { bottom: 2%; left: 2%; width: 30%; height: 45%; }
+    .room-social .mic { top: 12px; left: 22px; }
+    .room-social .mic:nth-child(2) { left: 35px; }
+    .room-social .pc { top: 18px; right: 15px; }
+    
+    .room-product { bottom: 2%; left: 35%; width: 30%; height: 45%; }
+    .room-product .board { top: 8px; left: 38px; }
+    .room-product .pc { bottom: 8px; left: 15px; }
+    
+    .room-security { bottom: 2%; right: 2%; width: 30%; height: 45%; border-color: #9B59B6; }
+    .room-security .screen { top: 8px; left: 15px; }
+    .room-security .screen:nth-child(2) { left: 28px; }
+    .room-security .screen:nth-child(3) { left: 41px; }
+    
+    /* Humanoid agents */
+    .person { position: absolute; width: 8px; height: 12px; z-index: 10; transition: all 0.5s ease; }
+    .person .head { width: 5px; height: 5px; border-radius: 50%; margin: 0 auto; }
+    .person .body { width: 5px; height: 4px; margin: -1px auto 0; }
+    .person .legs { width: 5px; height: 3px; margin: 0 auto; display: flex; justify-content: space-between; }
+    .person .leg { width: 2px; height: 3px; }
+    
+    .person-TM .head, .person-TM .body { background: var(--gold); }
+    .person-TM .leg { background: #b8960f; }
+    .person-Kevin .head, .person-Kevin .body { background: #00FFFF; }
+    .person-Kevin .leg { background: #00cccc; }
+    .person-Alex .head, .person-Alex .body { background: #00FF00; }
+    .person-Alex .leg { background: #00cc00; }
+    .person-Mike .head, .person-Mike .body { background: #FF00FF; }
+    .person-Mike .leg { background: #cc00cc; }
+    .person-Sarah .head, .person-Sarah .body { background: #FF6B6B; }
+    .person-Sarah .leg { background: #cc5555; }
+    
+    /* Right panel - scrollable */
+    .right { overflow-y: auto; }
+    
+    .trade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+    .trade-item { background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 6px; text-align: center; }
+    .trade-pair { font-size: 5px; color: #888; }
+    .trade-val { font-size: 8px; color: #fff; margin-top: 2px; }
+    
+    .agent-row { display: flex; align-items: center; gap: 6px; padding: 5px; background: rgba(0,0,0,0.5); border: 1px solid #333; margin-bottom: 3px; }
+    .agent-row.active { border-color: var(--green); }
+    .agent-row.busy { border-color: var(--gold); }
+    .agent-icon { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 5px; font-weight: bold; }
+    .agent-name { font-size: 6px; color: var(--gold); }
+    
+    .queue-item { padding: 4px; background: rgba(0,255,255,0.05); border-left: 2px solid var(--cyan); font-size: 5px; margin-bottom: 2px; }
     .queue-item.done { border-color: var(--green); opacity: 0.5; }
-    .queue-item.doing { border-color: var(--gold); }
-    .queue-prio { padding: 2px 4px; font-size: 4px; margin-right: 6px; }
-    .queue-prio.p0 { background: var(--red); color: #fff; }
-    .queue-prio.p1 { background: var(--gold); color: #000; }
-    .queue-prio.p2 { background: #444; color: #fff; }
     
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
-    .stat-box { background: rgba(0,0,0,0.5); padding: 6px; text-align: center; }
-    .stat-num { font-size: 12px; color: var(--gold); }
-    .stat-label { font-size: 4px; color: #666; margin-top: 2px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px; }
+    .metric { background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 6px; text-align: center; }
+    .metric-num { font-size: 8px; color: var(--gold); }
+    .metric-label { font-size: 4px; color: #666; }
     
-    .agents-row { display: flex; justify-content: space-around; padding: 8px; background: rgba(0,0,0,0.4); margin-top: 8px; }
-    .agent-mini { text-align: center; }
-    .agent-mini .icon { font-size: 14px; }
-    .agent-mini .name { font-size: 4px; color: #888; margin-top: 2px; }
+    /* Mobile */
+    @media (max-width: 600px) {
+      html, body { height: auto; overflow: auto; }
+      .main { grid-template-columns: 1fr; height: auto; }
+      .map { height: 220px; }
+      .right { max-height: none; }
+    }
     
-    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 5px 10px; background: rgba(0,0,0,0.95); border-top: 2px solid var(--cyan); display: flex; justify-content: space-between; font-size: 13px; }
-    .back { position: fixed; top: 5px; left: 5px; padding: 3px 6px; background: var(--gold); color: var(--bg); font-size: 13px; text-decoration: none; }
+    .back { position: fixed; top: 6px; left: 6px; padding: 4px 8px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 5px; z-index: 100; }
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 5px; background: rgba(0,0,0,0.95); border-top: 2px solid var(--cyan); text-align: center; font-size: 4px; }
   </style>
 </head>
 <body>
-  <a href="/" class="back">← BACK</a>
+  <a href="/" class="back">[&lt;] BACK</a>
   
-  <div class="header">
-    <h1>🏢 THEMACHINE OFFICE - DAILY DEMAND MINING</h1>
-    <p>Discover → Analyze → Execute → Repeat</p>
-  </div>
+  <div class="header"><h1>[_TM_] OFFICE</h1></div>
   
-  <div class="container">
-    <div class="main">
-      <!-- Left: Workflow + Demands -->
-      <div>
-        <div class="blackboard">
-          <div class="board-title">📋 AUTOMATION WORKFLOW</div>
-          
-          <div class="flow-step p0">
-            <div class="flow-num">1</div>
-            <div class="flow-title">🔍 DISCOVER - Demand Mining</div>
+  <div class="main">
+    <div class="panel">
+      <div class="panel-title">[_] OFFICE MAP</div>
+      <div class="map-wrap">
+        <div class="map">
+          <div class="room room-hq">
+            <span class="room-label">HQ</span>
+            <div class="furn desk"></div>
+            <div class="furn chair"></div>
+            <div class="furn pc"></div>
           </div>
-          <div class="arrow">↓</div>
-          <div class="flow-step">
-            <div class="flow-num">2</div>
-            <div class="flow-title">📊 ANALYZE - Priority & Impact</div>
+          <div class="room room-dev">
+            <span class="room-label">DEV</span>
+            <div class="furn pc"></div>
+            <div class="furn pc"></div>
+            <div class="furn server"></div>
           </div>
-          <div class="arrow">↓</div>
-          <div class="flow-step">
-            <div class="flow-num">3</div>
-            <div class="flow-title">⚡ EXECUTE - Agent Tasks</div>
+          <div class="room room-trade">
+            <span class="room-label">TRADE</span>
+            <div class="furn chart"></div>
+            <div class="furn chart"></div>
+            <div class="furn screen"></div>
           </div>
-          <div class="arrow">↓</div>
-          <div class="flow-step">
-            <div class="flow-num">↺</div>
-            <div class="flow-title">🔄 LOOP - Daily Repeat</div>
+          <div class="room room-social">
+            <span class="room-label">SOCIAL</span>
+            <div class="furn mic"></div>
+            <div class="furn mic"></div>
+            <div class="furn pc"></div>
           </div>
-        </div>
-        
-        <!-- Demands Grid -->
-        <div class="demands-section">
-          <div class="demands-title">💡 DEMANDS DISCOVERED TODAY (10)</div>
-          <div class="demands-grid">
-            <div class="demand-card p0">
-              <div class="demand-header"><span class="demand-title">Real-time Dashboard</span><span class="demand-prio p0">P0</span></div>
-              <div class="demand-meta">Impact: <span>High</span> | Cost: <span>Low</span></div>
-            </div>
-            <div class="demand-card p0">
-              <div class="demand-header"><span class="demand-title">Product Demo Page</span><span class="demand-prio p0">P0</span></div>
-              <div class="demand-meta">Impact: <span>High</span> | Cost: <span>Medium</span></div>
-            </div>
-            <div class="demand-card p0">
-              <div class="demand-header"><span class="demand-title">User Registration</span><span class="demand-prio p0">P0</span></div>
-              <div class="demand-meta">Impact: <span>High</span> | Cost: <span>Medium</span></div>
-            </div>
-            <div class="demand-card p1">
-              <div class="demand-header"><span class="demand-title">Agent Live Show</span><span class="demand-prio p1">P1</span></div>
-              <div class="demand-meta">Impact: <span>High</span> | Cost: <span>Low</span></div>
-            </div>
-            <div class="demand-card p1">
-              <div class="demand-header"><span class="demand-title">User Testimonials</span><span class="demand-prio p1">P1</span></div>
-              <div class="demand-meta">Impact: <span>Medium</span> | Cost: <span>Low</span></div>
-            </div>
-            <div class="demand-card p1">
-              <div class="demand-header"><span class="demand-title">Pricing Page</span><span class="demand-prio p1">P1</span></div>
-              <div class="demand-meta">Impact: <span>Medium</span> | Cost: <span>Low</span></div>
-            </div>
-            <div class="demand-card p1">
-              <div class="demand-header"><span class="demand-title">AI Toolbox</span><span class="demand-prio p1">P1</span></div>
-              <div class="demand-meta">Impact: <span>Medium</span> | Cost: <span>Low</span></div>
-            </div>
-            <div class="demand-card p1">
-              <div class="demand-header"><span class="demand-title">Socrates Analytics</span><span class="demand-prio p1">P1</span></div>
-              <div class="demand-meta">Impact: <span>Medium</span> | Cost: <span>Medium</span></div>
-            </div>
-            <div class="demand-card p2">
-              <div class="demand-header"><span class="demand-title">About Us</span><span class="demand-prio p2">P2</span></div>
-              <div class="demand-meta">Impact: <span>Low</span> | Cost: <span>Low</span></div>
-            </div>
-            <div class="demand-card p2">
-              <div class="demand-header"><span class="demand-title">Blog</span><span class="demand-prio p2">P2</span></div>
-              <div class="demand-meta">Impact: <span>Low</span> | Cost: <span>Medium</span></div>
-            </div>
+          <div class="room room-product">
+            <span class="room-label">PRODUCT</span>
+            <div class="furn board"></div>
+            <div class="furn pc"></div>
           </div>
-        </div>
-      </div>
-      
-      <!-- Right: Queue -->
-      <div>
-        <div class="queue-board">
-          <div class="queue-title">📝 TASK QUEUE - PRIORITY ORDER</div>
-          
-          <div class="queue-item doing">
-            <span class="queue-prio p0">P0</span>
-            Real-time Dashboard | Kevin
-          </div>
-          <div class="queue-item">
-            <span class="queue-prio p0">P0</span>
-            Product Demo Page | Kevin
-          </div>
-          <div class="queue-item">
-            <span class="queue-prio p0">P0</span>
-            User Registration | Sarah
-          </div>
-          <div class="queue-item">
-            <span class="queue-prio p1">P1</span>
-            Agent Live Show | Mike
-          </div>
-          <div class="queue-item">
-            <span class="queue-prio p1">P1</span>
-            User Testimonials | Sarah
-          </div>
-          <div class="queue-item">
-            <span class="queue-prio p1">P1</span>
-            Pricing Page | Alex
-          </div>
-          <div class="queue-item done">
-            <span class="queue-prio p0">✓</span>
-            Office Page | Kevin
+          <div class="room room-security">
+            <span class="room-label">SEC</span>
+            <div class="furn screen"></div>
+            <div class="furn screen"></div>
+            <div class="furn screen"></div>
           </div>
           
-          <div class="stats-grid">
-            <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">P0</div></div>
-            <div class="stat-box"><div class="stat-num">5</div><div class="stat-label">P1</div></div>
-            <div class="stat-box"><div class="stat-num">2</div><div class="stat-label">P2</div></div>
+          <div class="person person-TM" id="p1" style="top:20%;left:10%">
+            <div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div>
           </div>
-        </div>
-        
-        <div class="agents-row">
-          <div class="agent-mini"><div class="icon">🤖</div><div class="name">CEO</div></div>
-          <div class="agent-mini"><div class="icon">🛠️</div><div class="name">Kevin</div></div>
-          <div class="agent-mini"><div class="icon">💰</div><div class="name">Alex</div></div>
-          <div class="agent-mini"><div class="icon">📢</div><div class="name">Mike</div></div>
-          <div class="agent-mini"><div class="icon">📦</div><div class="name">Sarah</div></div>
-          <div class="agent-mini"><div class="icon">🔒</div><div class="name">David</div></div>
+          <div class="person person-Kevin" id="p2" style="top:20%;left:45%">
+            <div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div>
+          </div>
+          <div class="person person-Alex" id="p3" style="top:20%;left:75%">
+            <div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div>
+          </div>
+          <div class="person person-Mike" id="p4" style="top:65%;left:10%">
+            <div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div>
+          </div>
+          <div class="person person-Sarah" id="p5" style="top:65%;left:45%">
+            <div class="head"></div><div class="body"></div><div class="legs"><div class="leg"></div><div class="leg"></div></div>
+          </div>
         </div>
       </div>
     </div>
+    
+    <div class="right panel">
+      <div class="panel-title">[$] TRADING</div>
+      <div class="trade-grid">
+        <div class="trade-item"><div class="trade-pair">BTC</div><div class="trade-val" id="btc">$71XXX</div></div>
+        <div class="trade-item"><div class="trade-pair">Grid</div><div class="trade-val">3</div></div>
+        <div class="trade-item"><div class="trade-pair">P&L</div><div class="trade-val">+2.4%</div></div>
+        <div class="trade-item"><div class="trade-pair">OK</div><div class="trade-val">Running</div></div>
+      </div>
+      
+      <div class="panel-title" style="margin-top:8px">[_] AGENTS</div>
+      <div class="agent-row active"><div class="agent-icon" style="background:var(--gold)">TM</div><div class="agent-name">THE MACHINE</div></div>
+      <div class="agent-row active"><div class="agent-icon" style="background:#00FFFF;color:#000">KT</div><div class="agent-name">KEVIN</div></div>
+      <div class="agent-row busy"><div class="agent-icon" style="background:#00FF00;color:#000">AX</div><div class="agent-name">ALEX</div></div>
+      <div class="agent-row active"><div class="agent-icon" style="background:#FF00FF">MK</div><div class="agent-name">MIKE</div></div>
+      <div class="agent-row active"><div class="agent-icon" style="background:#FF6B6B">SH</div><div class="agent-name">SARAH</div></div>
+      <div class="agent-row" style="opacity:0.5"><div class="agent-icon" style="background:#9B59B6">DV</div><div class="agent-name">DAVID</div></div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-num">6</div><div class="metric-label">AGENTS</div></div>
+        <div class="metric"><div class="metric-num">24/7</div><div class="metric-label">UPTIME</div></div>
+        <div class="metric"><div class="metric-num">Auto</div><div class="metric-label">MODE</div></div>
+      </div>
+      
+      <div class="panel-title" style="margin-top:8px">[Q] TASKS</div>
+      <div class="queue-item">P0 Trading - Alex</div>
+      <div class="queue-item">P1 X Content - Mike</div>
+      <div class="queue-item">P1 Feedback - Sarah</div>
+      <div class="queue-item done">[OK] Office - Kevin</div>
+    </div>
   </div>
   
-  <div class="hud">
-    <span>THEMACHINE CORP.</span>
-    <span>6 Agents · Mining</span>
-    <span id="clock">● LIVE</span>
-  </div>
+  <div class="hud">THEMACHINE // <span id="t">--:--</span></div>
   
   <script>
-    function update() {
-      document.getElementById('clock').textContent = '● LIVE ' + new Date().toLocaleTimeString();
-    }
-    update();
-    setInterval(update, 2000);
+    const p = [{x:10,y:20},{x:45,y:20},{x:75,y:20},{x:10,y:65},{x:45,y:65}];
+    setInterval(()=>{
+      for(let i=1;i<=5;i++){
+        let el=document.getElementById('p'+i);
+        if(el){ el.style.left=(p[i-1].x+Math.random()*8)+'%'; el.style.top=(p[i-1].y+Math.random()*8)+'%'; }
+      }
+      document.getElementById('btc').innerText='$'+(71000+Math.random()*500).toFixed(0);
+      document.getElementById('t').innerText=new Date().toLocaleTimeString();
+    },3000);
   </script>
 </body>
 </html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMACHINE - Vibe Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--gold); margin-bottom: 20px; }
+    .header h1 { font-size: 14px; color: var(--gold); }
+    
+    .principle { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 15px; margin-bottom: 15px; }
+    .principle h2 { font-size: 10px; color: var(--cyan); margin-bottom: 10px; }
+    .principle ul { font-size: 8px; color: #aaa; line-height: 2; list-style: none; }
+    .principle li::before { content: "> "; color: var(--gold); }
+    
+    .status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+    .stat { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 15px; text-align: center; }
+    .stat-num { font-size: 16px; color: var(--gold); }
+    .stat-label { font-size: 6px; color: #666; margin-top: 5px; }
+    
+    .back { position: fixed; top: 10px; left: 10px; padding: 8px 12px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 7px; }
+  </style>
+</head>
+<body>
+  <a href="/" class="back">[<] BACK</a>
+  
+  <div class="container">
+    <div class="header">
+      <h1>[*] VIBE CODING STATUS</h1>
+    </div>
+    
+    <div class="principle">
+      <h2>道 - THE WAY</h2>
+      <ul>
+        <li>AI can do, human don't</li>
+        <li>Ask AI everything</li>
+        <li>Purpose-driven</li>
+        <li>Context is king</li>
+      </ul>
+    </div>
+    
+    <div class="principle">
+      <h2>法 - THE METHOD</h2>
+      <ul>
+        <li>One goal + non-goals</li>
+        <li>Don't repeat</li>
+        <li>Copy before create</li>
+        <li>Interface first</li>
+      </ul>
+    </div>
+    
+    <div class="principle">
+      <h2>术 - THE TECHNIQUE</h2>
+      <ul>
+        <li>Clear boundaries</li>
+        <li>Expected vs Actual</li>
+        <li>One module at a time</li>
+      </ul>
+    </div>
+    
+    <div class="status">
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">AGENTS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">17%</div>
+        <div class="stat-label">EFFICIENCY</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">OK</div>
+        <div class="stat-label">STATUS</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
