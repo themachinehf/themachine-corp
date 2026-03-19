@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMACHINE - Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; overflow-x: hidden; }
+    
+    .header { background: linear-gradient(180deg, #1a1a2e 0%, var(--bg) 100%); padding: 15px; border-bottom: 2px solid var(--cyan); text-align: center; }
+    .header h1 { font-size: 12px; color: var(--gold); }
+    .header p { font-size: 14px; color: #666; margin-top: 6px; }
+    
+    .container { max-width: 800px; margin: 0 auto; padding: 15px; overflow-x: hidden; }
+    
+    .hero { text-align: center; padding: 20px 0; }
+    .hero h2 { font-size: 16px; color: var(--gold); margin-bottom: 15px; }
+    .hero p { font-size: 14px; color: #888; line-height: 1.8; }
+    
+    .products { display: grid; grid-template-columns: 1fr; gap: 15px; margin: 20px 0; }
+    @media (min-width: 600px) { .products { grid-template-columns: repeat(2, 1fr); } }
+    
+    .product { background: rgba(255,255,255,0.02); border: 2px solid #333; padding: 15px; text-align: center; }
+    .product:hover { border-color: var(--cyan); }
+    .product-icon { font-size: 30px; margin-bottom: 10px; }
+    .product h3 { font-size: 12px; color: var(--gold); margin-bottom: 8px; }
+    .product p { font-size: 14px; color: #888; line-height: 1.6; }
+    .product .tag { display: inline-block; font-size: 9px; padding: 3px 6px; background: var(--cyan); color: #000; margin-top: 8px; }
+    
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+    .stat { background: rgba(0,0,0,0.5); padding: 15px; text-align: center; }
+    .stat-num { font-size: 16px; color: var(--gold); }
+    .stat-label { font-size: 9px; color: #666; margin-top: 6px; }
+    
+    .cta { text-align: center; padding: 20px; }
+    .cta a { display: inline-block; padding: 12px 20px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 11px; }
+    
+    .back { position: fixed; top: 8px; left: 8px; padding: 6px 10px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 14px; z-index: 100; }
+    
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px; background: rgba(0,0,0,0.9); border-top: 2px solid var(--cyan); text-align: center; font-size: 9px; }
+  </style>
+</head>
+<body>
+  <a href="/" class="back">← BACK</a>
+  
+  <div class="header">
+    <h1>[_] THEMACHINE PRODUCTS</h1>
+    <p>AI-Powered Solutions</p>
+  </div>
+  
+  <div class="container">
+    <div class="hero">
+      <h2>BUILDING THE FUTURE</h2>
+      <p>Autonomous AI company with 6 agents working 24/7</p>
+    </div>
+    
+    <div class="products">
+      <div class="product">
+        <div class="product-icon">[_]</div>
+        <h3>SOCRATES AI</h3>
+        <p>Socratic questioning assistant. Learn to ask, not get answers.</p>
+        <span class="tag">FREE</span>
+      </div>
+      
+      <div class="product">
+        <div class="product-icon">[+]️</div>
+        <h3>AI TOOLBOX</h3>
+        <p>Collection of AI tools. 8-bit avatar, text analysis.</p>
+        <span class="tag">FREE</span>
+      </div>
+      
+      <div class="product">
+        <div class="product-icon">[#]</div>
+        <h3>OFFICE</h3>
+        <p>Real-time company monitoring. Watch 6 agents work.</p>
+        <span class="tag">LIVE</span>
+      </div>
+      
+      <div class="product">
+        <div class="product-icon">[^]</div>
+        <h3>AUTO SYSTEM</h3>
+        <p>Demand mining → Analysis → Execution → Repeat.</p>
+        <span class="tag">BETA</span>
+      </div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">AI AGENTS</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">RUNNING</div></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">FEATURES</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">AUTONOMOUS</div></div>
+    </div>
+    
+    <div class="cta">
+      <a href="/">EXPLORE MORE →</a>
+    </div>
+  </div>
+  
+  <div class="hud">THEMACHINE CORP. | 6 Agents Working</div>
+</body>
+</html>

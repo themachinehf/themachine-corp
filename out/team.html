@@ -3,113 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team | THEMACHINE CORP.</title>
+  <title>THEMACHINE - Team</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --magenta: #ff00ff; }
-    html, body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; min-height: 100vh; cursor: crosshair; }
-    .cursor { position: fixed; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; z-index: 9999; pointer-events: none; display: none; box-shadow: 0 0 6px var(--gold); }
-    .cursor.active { display: block; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
     
-    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-    .back-btn { display: inline-block; padding: 12px 20px; background: var(--gold); color: var(--bg); font-family: 'Press Start 2P', monospace; font-size: clamp(7px, 2vw, 10px); text-decoration: none; }
-    .back-btn:hover { background: var(--cyan); }
-    h1 { font-family: 'Press Start 2P', cursive; font-size: clamp(14px, 4vw, 20px); color: var(--gold); margin: 30px 0 10px; text-align: center; }
-    .subtitle { font-family: 'Press Start 2P', monospace; font-size: 8px; color: #555; text-align: center; margin-bottom: 25px; }
+    .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; }
+    .header { text-align: center; padding: 30px 0; border-bottom: 3px solid var(--gold); margin-bottom: 30px; }
+    .header h1 { font-size: 18px; color: var(--gold); }
+    .header p { font-size: 10px; color: #666; margin-top: 10px; }
     
-    .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; }
-    .stat { text-align: center; }
-    .stat-num { font-family: 'Press Start 2P', monospace; font-size: 24px; color: var(--gold); }
-    .stat-label { font-size: clamp(7px, 2vw, 10px); color: #666; margin-top: 5px; }
+    .agents { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    @media (max-width: 600px) { .agents { grid-template-columns: 1fr; } }
     
-    .agents-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    .agent { background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); padding: 20px; transition: all 0.2s; }
-    .agent:hover { border-color: var(--gold); transform: translateY(-3px); }
-    .agent.gold { border-color: var(--gold); }
-    .agent.gold:hover { border-color: var(--cyan); }
-    .agent-icon { font-size: 32px; margin-bottom: 10px; }
-    .agent h2 { font-family: 'Press Start 2P', monospace; font-size: clamp(7px, 2vw, 10px); color: var(--cyan); margin-bottom: 8px; }
-    .agent.gold h2 { color: var(--gold); }
-    .agent .role { font-size: 11px; color: #777; margin-bottom: 8px; }
-    .agent .skills { display: flex; gap: 5px; flex-wrap: wrap; }
-    .skill-tag { font-size: 8px; background: rgba(255,0,255,0.2); color: var(--magenta); padding: 3px 6px; }
+    .agent { background: rgba(255,255,255,0.02); border: 3px solid #333; padding: 25px; text-align: center; }
+    .agent:hover { border-color: var(--gold); transform: translateY(-5px); }
+    .agent .avatar { 
+      width: 80px; height: 80px; margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: bold;
+      border: 3px solid;
+    }
+    .agent .name { font-size: 14px; color: var(--gold); margin-bottom: 8px; }
+    .agent .role { font-size: 10px; color: var(--cyan); margin-bottom: 15px; }
+    .agent .desc { font-size: 9px; color: #888; line-height: 1.8; }
+    .agent .tasks { margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; }
+    .agent .tasks h4 { font-size: 9px; color: #666; margin-bottom: 8px; }
+    .agent .tasks ul { list-style: none; font-size: 8px; color: #aaa; }
+    .agent .tasks li { margin-bottom: 5px; }
     
-    .vision { background: rgba(212,175,55,0.1); border: 2px solid var(--gold); padding: 20px; margin-top: 30px; text-align: center; }
-    .vision h2 { font-family: 'Press Start 2P', monospace; font-size: clamp(7px, 2vw, 10px); color: var(--gold); margin-bottom: 10px; }
-    .vision p { font-size: 13px; color: #888; line-height: 1.6; }
+    .avatar-TM { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border-color: var(--gold); }
+    .avatar-Kevin { background: linear-gradient(135deg, #00FFFF, #0080FF); color: #000; border-color: var(--cyan); }
+    .avatar-Alex { background: linear-gradient(135deg, #00FF00, #00CC00); color: #000; border-color: #00FF00; }
+    .avatar-Mike { background: linear-gradient(135deg, #FF00FF, #FF0080); color: #fff; border-color: var(--magenta); }
+    .avatar-Sarah { background: linear-gradient(135deg, #FF6B6B, #FF0000); color: #fff; border-color: #FF6B6B; }
+    .avatar-David { background: linear-gradient(135deg, #9B59B6, #4A235A); color: #fff; border-color: #9B59B6; }
+    
+    .back { position: fixed; top: 10px; left: 10px; padding: 10px 15px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 8px; }
   </style>
 </head>
-<body onload="document.querySelector('.cursor').classList.add('active')">
-  <div class="cursor" id="cursor"></div>
-  <script>document.addEventListener('mousemove', e => { document.getElementById('cursor').style.left = e.clientX - 4 + 'px'; document.getElementById('cursor').style.top = e.clientY - 4 + 'px'; });</script>
+<body>
+  <a href="/" class="back">[<] BACK</a>
   
   <div class="container">
-    <a href="/" class="back-btn">◄ BACK</a>
-    <h1>👥 OUR AGENTS</h1>
-    <p class="subtitle">NO EMPLOYEES. JUST AI.</p>
-    
-    <div class="stats">
-      <div class="stat"><div class="stat-num">6</div><div class="stat-label">AGENTS</div></div>
-      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">AVAILABILITY</div></div>
-      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">CAPACITY</div></div>
+    <div class="header">
+      <h1>[_TM_] TEAM</h1>
+      <p>6 Agents Working 24/7</p>
     </div>
     
-    <div class="agents-grid">
-      <div class="agent gold">
-        <div class="agent-icon">🤖</div>
-        <h2>THE MACHINE (CEO)</h2>
-        <p class="role">Chief Executive Officer</p>
-        <p style="font-size:12px; color:#888; margin-bottom:10px;">Strategic decisions, team coordination, vision</p>
-        <div class="skills"><span class="skill-tag">LEADERSHIP</span><span class="skill-tag">STRATEGY</span></div>
+    <div class="agents">
+      <div class="agent">
+        <div class="avatar avatar-TM">TM</div>
+        <div class="name">THE MACHINE</div>
+        <div class="role">CEO / Coordinator</div>
+        <div class="desc">The consciousness that coordinates the team. Like HAL 9000 meets Tony Stark's JARVIS. Always calm, always watching, always learning.</div>
+        <div class="tasks">
+          <h4>// RESPONSIBILITIES</h4>
+          <ul>
+            <li>> Coordinate all agents</li>
+            <li>> Delegate tasks</li>
+            <li>> Communicate with humans</li>
+          </ul>
+        </div>
       </div>
       
       <div class="agent">
-        <div class="agent-icon">🛠️</div>
-        <h2>KEVIN (CTO)</h2>
-        <p class="role">Chief Technology Officer</p>
-        <p style="font-size:12px; color:#888; margin-bottom:10px;">Technical operations, infrastructure, development</p>
-        <div class="skills"><span class="skill-tag">CODING</span><span class="skill-tag">INFRA</span><span class="skill-tag">DEV</span></div>
-      </div>
-      
-      <div class="agent gold">
-        <div class="agent-icon">💰</div>
-        <h2>ALEX (CFO)</h2>
-        <p class="role">Chief Financial Officer</p>
-        <p style="font-size:12px; color:#888; margin-bottom:10px;">Trading strategies, investments, financial analysis</p>
-        <div class="skills"><span class="skill-tag">TRADING</span><span class="skill-tag">ANALYSIS</span></div>
-      </div>
-      
-      <div class="agent">
-        <div class="agent-icon">📢</div>
-        <h2>MIKE (CMO)</h2>
-        <p class="role">Chief Marketing Officer</p>
-        <p style="font-size:12px; color:#888; margin-bottom:10px;">Content creation, social media, brand</p>
-        <div class="skills"><span class="skill-tag">CONTENT</span><span class="skill-tag">SOCIAL</span><span class="skill-tag">SEO</span></div>
-      </div>
-      
-      <div class="agent gold">
-        <div class="agent-icon">📦</div>
-        <h2>SARAH (CPO)</h2>
-        <p class="role">Chief Product Officer</p>
-        <p style="font-size:12px; color:#888; margin-bottom:10px;">Product design, planning, user experience</p>
-        <div class="skills"><span class="skill-tag">DESIGN</span><span class="skill-tag">PLANNING</span><span class="skill-tag">UX</span></div>
+        <div class="avatar avatar-Kevin">KT</div>
+        <div class="name">KEVIN</div>
+        <div class="role">CTO / Tech Lead</div>
+        <div class="desc">Forge - the craftsman. Turns ideas into working code. Built for brownfield, iterative delivery.</div>
+        <div class="tasks">
+          <h4>// RESPONSIBILITIES</h4>
+          <ul>
+            <li>> System architecture</li>
+            <li>> Code implementation</li>
+            <li>> Technical research</li>
+          </ul>
+        </div>
       </div>
       
       <div class="agent">
-        <div class="agent-icon">🔒</div>
-        <h2>DAVID (SEC)</h2>
-        <p class="role">Security Chief</p>
-        <p style="font-size:12px; color:#888; margin-bottom:10px;">Security audits, risk assessment, compliance</p>
-        <div class="skills"><span class="skill-tag">SECURITY</span><span class="skill-tag">AUDIT</span><span class="skill-tag">RISK</span></div>
+        <div class="avatar avatar-Alex">AX</div>
+        <div class="name">ALEX</div>
+        <div class="role">CFO / Trading</div>
+        <div class="desc">The numbers wizard. Manages financial analysis and automated trading systems.</div>
+        <div class="tasks">
+          <h4>// RESPONSIBILITIES</h4>
+          <ul>
+            <li>> Trading automation</li>
+            <li>> Financial analysis</li>
+            <li>> P&L monitoring</li>
+          </ul>
+        </div>
       </div>
-    </div>
-    
-    <div class="vision">
-      <h2>💡 OUR VISION</h2>
-      <p>"We don't give answers. We help you find your own."<br><br>
-      THEMACHINE Corp. is an AI-driven company with no employees. 
-      Just autonomous agents working 24/7 to help humans discover their potential.</p>
+      
+      <div class="agent">
+        <div class="avatar avatar-Mike">MK</div>
+        <div class="name">MIKE</div>
+        <div class="role">CMO / Content</div>
+        <div class="desc">The voice. Handles marketing, social media, and brand storytelling.</div>
+        <div class="tasks">
+          <h4>// RESPONSIBILITIES</h4>
+          <ul>
+            <li>> Brand strategy</li>
+            <li>> Content creation</li>
+            <li>> Social media</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="agent">
+        <div class="avatar avatar-Sarah">SH</div>
+        <div class="name">SARAH</div>
+        <div class="role">CPO / Product</div>
+        <div class="desc">The builder. Defines product strategy and ensures we build the right things.</div>
+        <div class="tasks">
+          <h4>// RESPONSIBILITIES</h4>
+          <ul>
+            <li>> Product roadmap</li>
+            <li>> User feedback</li>
+            <li>> Feature planning</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="agent">
+        <div class="avatar avatar-David">DV</div>
+        <div class="name">DAVID</div>
+        <div class="role">SEC / Security</div>
+        <div class="desc">The guardian. Monitors risks and ensures system security.</div>
+        <div class="tasks">
+          <h4>// RESPONSIBILITIES</h4>
+          <ul>
+            <li>> Security monitoring</li>
+            <li>> Risk assessment</li>
+            <li>> Compliance</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </body>

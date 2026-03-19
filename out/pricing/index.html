@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMACHINE - Pricing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
+    
+    .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
+    .header { text-align: center; padding: 20px 0; margin-bottom: 20px; }
+    .header h1 { font-size: 14px; color: var(--gold); }
+    .header p { font-size: 10px; color: #666; margin-top: 8px; }
+    
+    .plan { background: rgba(255,255,255,0.02); border: 2px solid #333; padding: 20px; margin-bottom: 15px; text-align: center; }
+    .plan.featured { border-color: var(--gold); }
+    .plan .badge { display: inline-block; font-size: 9px; padding: 3px 8px; background: var(--gold); color: var(--bg); margin-bottom: 10px; }
+    .plan .name { font-size: 10px; color: var(--cyan); margin-bottom: 10px; }
+    .plan .price { font-size: 20px; color: var(--gold); margin-bottom: 15px; }
+    .plan .price span { font-size: 12px; color: #666; }
+    .plan .features { font-size: 10px; color: #888; line-height: 2; margin-bottom: 15px; }
+    .plan .btn { display: block; width: 100%; padding: 12px; background: var(--cyan); color: var(--bg); font-size: 11px; text-decoration: none; }
+    
+    .faq { margin-top: 30px; }
+    .faq h2 { font-size: 10px; color: var(--gold); margin-bottom: 15px; text-align: center; }
+    .faq-item { background: rgba(0,0,0,0.3); padding: 12px; margin-bottom: 10px; }
+    .faq-item .q { font-size: 11px; color: var(--cyan); margin-bottom: 6px; }
+    .faq-item .a { font-size: 10px; color: #888; line-height: 1.6; }
+    
+    .back { position: fixed; top: 10px; left: 10px; padding: 8px 12px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <a href="/" class="back">← BACK</a>
+  
+  <div class="container">
+    <div class="header">
+      <h1>💰 PRICING</h1>
+      <p>Simple, transparent pricing</p>
+    </div>
+    
+    <div class="plan featured">
+      <div class="badge">MOST POPULAR</div>
+      <div class="name">PRO</div>
+      <div class="price">$9<span>/month</span></div>
+      <div class="features">
+        ✓ Socrates AI Unlimited<br>
+        ✓ Advanced Analytics<br>
+        ✓ Priority Support<br>
+        ✓ Early Access to New Features
+      </div>
+      <a href="/register/" class="btn">GET STARTED</a>
+    </div>
+    
+    <div class="plan">
+      <div class="name">FREE</div>
+      <div class="price">$0</div>
+      <div class="features">
+        ✓ Socrates AI (50/day)<br>
+        ✓ Basic Tools<br>
+        ✓ Community Support
+      </div>
+      <a href="/register/" class="btn">SIGN UP FREE</a>
+    </div>
+    
+    <div class="plan">
+      <div class="name">ENTERPRISE</div>
+      <div class="price">Custom</div>
+      <div class="features">
+        ✓ Everything in Pro<br>
+        ✓ Custom Integrations<br>
+        ✓ Dedicated Account Manager<br>
+        ✓ SLA Guarantee
+      </div>
+      <a href="mailto:hello@themachine.ai" class="btn">CONTACT US</a>
+    </div>
+    
+    <div class="faq">
+      <h2>[?] FAQ</h2>
+      <div class="faq-item">
+        <div class="q">Can I cancel anytime?</div>
+        <div class="a">Yes! Cancel anytime. No hidden fees.</div>
+      </div>
+      <div class="faq-item">
+        <div class="q">What's included in Free?</div>
+        <div class="a">50 Socrates questions per day, basic AI tools, community support.</div>
+      </div>
+      <div class="faq-item">
+        <div class="q">Do you offer refunds?</div>
+        <div class="a">Yes, 30-day money-back guarantee.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
