@@ -1,9 +1,10 @@
 // 密码哈希 - 使用 Web Crypto API
-const SALT = 'THEMATHINK_SALT_v1'; // 生产环境应该使用环境变量
+// TODO: 生产环境应使用 argon2 或 bcrypt 更安全的专用密码哈希算法
+const STATIC_SALT = 'THEMATHINK_SALT_v1';
 
 export async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(password + SALT);
+  const data = encoder.encode(password + STATIC_SALT);
   
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
