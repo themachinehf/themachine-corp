@@ -1471,7 +1471,7 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${env.MINIMAX_API_KEY || 'sk-api-YhH4k0J3Vmstql8F67XAmb8Z8MIgPSgADYbGCHQMWXn6J3F52MBBXuu4xGXFgrEwScRPA2g8IVgv7Xf0WvUAD8k3zgJSfucn5K0-FNaFC3TZBvVe6Rc93uw'}`
+        'Authorization': `Bearer ${env.MINIMAX_API_KEY}`
       },
       body: JSON.stringify({
         model: 'MiniMax-M2.1',
