@@ -1,422 +1,573 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THEMACHINE - Agent Dashboard</title>
+  <title>THEMACHINE Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --green: #00ff00; --red: #ff4444; --magenta: #ff00ff; --orange: #ff8800; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
-    
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    
-    .header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--gold); margin-bottom: 20px; }
-    .header h1 { font-size: 16px; color: var(--gold); }
-    .header p { font-size: 8px; color: #666; margin-top: 8px; }
-    .last-update { font-size: 6px; color: #444; margin-top: 5px; }
-    
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
-    .stat { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 15px; text-align: center; }
-    .stat:hover { border-color: var(--cyan); }
-    .stat-num { font-size: 18px; color: var(--gold); }
-    .stat-label { font-size: 7px; color: #666; margin-top: 5px; }
-    
-    .section-title { font-size: 10px; color: var(--cyan); margin: 25px 0 15px; padding-left: 10px; border-left: 3px solid var(--cyan); }
-    
-    .tasks-queue { background: rgba(0,0,0,0.3); border: 2px solid #333; padding: 15px; margin-bottom: 30px; }
-    .task-row { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 7px; }
-    .task-row:last-child { border-bottom: none; }
-    .task-row:hover { background: rgba(0,255,255,0.05); }
-    .task-priority { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 8px; }
-    .task-priority.high { color: var(--red); border: 2px solid var(--red); }
-    .task-priority.medium { color: var(--orange); border: 2px solid var(--orange); }
-    .task-priority.low { color: var(--green); border: 2px solid var(--green); }
-    .task-info { flex: 1; }
-    .task-name { color: #fff; margin-bottom: 3px; }
-    .task-meta { color: #555; font-size: 5px; }
-    .task-agent { width: 80px; text-align: right; font-size: 6px; }
-    .task-agent span { color: var(--gold); }
-    .task-status { width: 60px; text-align: right; font-size: 6px; }
-    .task-status.pending { color: var(--orange); }
-    .task-status.running { color: var(--cyan); }
-    .task-status.done { color: var(--green); }
-    
-    .system-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
-    .sys-stat { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 15px; }
-    .sys-stat-header { font-size: 7px; color: #666; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-    .sys-stat-header::before { content: "[*]"; color: var(--gold); }
-    .sys-stat-value { font-size: 14px; color: var(--gold); }
-    .sys-stat-bar { height: 6px; background: #222; margin-top: 10px; border: 1px solid #333; }
-    .sys-stat-fill { height: 100%; background: var(--cyan); transition: width 0.5s; }
-    .sys-stat-fill.cpu { background: var(--green); }
-    .sys-stat-fill.memory { background: var(--magenta); }
-    .sys-stat-fill.disk { background: var(--orange); }
-    
-    .agents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-    @media (max-width: 900px) { .agents { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 600px) { .agents { grid-template-columns: 1fr; } }
-    
-    .agent { background: rgba(0,0,0,0.5); border: 3px solid #333; padding: 20px; position: relative; overflow: hidden; }
-    .agent:hover { border-color: var(--gold); }
-    .agent.active { border-color: var(--green); }
-    .agent.busy { border-color: var(--gold); }
-    .agent.idle { border-color: #444; }
-    
-    .agent .status-dot {
-      position: absolute; top: 10px; right: 10px;
-      width: 10px; height: 10px; border-radius: 50%;
-      animation: pulse 1.5s infinite;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .agent.active .status-dot { background: var(--green); }
-    .agent.busy .status-dot { background: var(--gold); }
-    .agent.idle .status-dot { background: #444; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-    
-    .agent .avatar {
-      width: 60px; height: 60px; margin: 0 auto 15px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: bold;
+
+    :root {
+      --bg-dark: #0a0a12;
+      --bg-panel: #12121f;
+      --gold: #ffd700;
+      --gold-dim: #b8860b;
+      --cyan: #00ffff;
+      --cyan-dim: #008b8b;
+      --green: #00ff00;
+      --red: #ff4444;
+      --orange: #ffaa00;
+      --purple: #bd93f9;
+      --text: #e0e0e0;
+      --border: #333355;
     }
-    .agent .name { font-size: 11px; color: var(--gold); text-align: center; }
-    .agent .role { font-size: 7px; color: #666; text-align: center; margin-top: 5px; }
-    
-    .agent .task { 
-      margin-top: 15px; padding: 10px; background: rgba(0,255,255,0.05); 
-      border-left: 3px solid var(--cyan); font-size: 7px; color: #aaa; 
+
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      background-image: 
+        linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
     }
-    .agent .task-label { font-size: 6px; color: #555; margin-bottom: 5px; }
-    .agent .task-name { color: var(--cyan); }
-    
-    .agent .metrics { display: flex; justify-content: space-around; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; }
-    .agent .metric { text-align: center; }
-    .agent .metric-num { font-size: 12px; color: var(--gold); }
-    .agent .metric-label { font-size: 5px; color: #555; }
-    
-    .agent-TM .avatar { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; }
-    .agent-Kevin .avatar { background: linear-gradient(135deg, #00FFFF, #0080FF); color: #000; }
-    .agent-Alex .avatar { background: linear-gradient(135deg, #00FF00, #00CC00); color: #000; }
-    .agent-Mike .avatar { background: linear-gradient(135deg, #FF00FF, #FF0080); color: #fff; }
-    .agent-Sarah .avatar { background: linear-gradient(135deg, #FF6B6B, #FF0000); color: #fff; }
-    .agent-David .avatar { background: linear-gradient(135deg, #9B59B6, #4A235A); color: #fff; }
-    
-    .back { position: fixed; top: 10px; left: 10px; padding: 8px 12px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 7px; }
-    .back:hover { background: var(--cyan); }
-    
-    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px; background: rgba(0,0,0,0.9); border-top: 2px solid var(--cyan); text-align: center; font-size: 6px; color: #555; }
-    .hud span { color: var(--gold); }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 0;
+      border-bottom: 4px solid var(--gold);
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: var(--gold);
+      text-shadow: 4px 4px 0 var(--gold-dim), 0 0 20px rgba(255,215,0,0.5);
+      letter-spacing: 4px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 4px 4px 0 var(--gold-dim), 0 0 10px rgba(255,215,0,0.3); }
+      to { text-shadow: 4px 4px 0 var(--gold-dim), 0 0 30px rgba(255,215,0,0.8); }
+    }
+
+    .subtitle {
+      font-size: 10px;
+      color: var(--cyan);
+      margin-top: 15px;
+      letter-spacing: 2px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border: 3px solid var(--border);
+      padding: 20px;
+      position: relative;
+      image-rendering: pixelated;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border: 3px solid var(--gold);
+      pointer-events: none;
+      clip-path: polygon(
+        0 0, 10px 0, 10px 3px, 3px 3px, 3px 10px, 0 10px,
+        0 calc(100% - 10px), 3px calc(100% - 10px), 3px calc(100% - 3px), 10px calc(100% - 3px), 10px 100%, 0 100%,
+        0 calc(100% - 10px), 0 100%, 100% 100%, 100% calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) 100%, 100% 100%, 100% 0, calc(100% - 10px) 0, calc(100% - 10px) 3px, calc(100% - 3px) 3px, calc(100% - 3px) 10px, calc(100% - 10px) 10px, calc(100% - 10px) 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) calc(100% - 10px)
+      );
+    }
+
+    .panel-title {
+      font-size: 12px;
+      color: var(--cyan);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title::before {
+      content: '>';
+      color: var(--gold);
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .agent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .agent-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 10px;
+      background: rgba(0,0,0,0.3);
+      border-left: 4px solid var(--green);
+      transition: all 0.3s;
+    }
+
+    .agent-item.offline {
+      border-left-color: var(--red);
+      opacity: 0.6;
+    }
+
+    .agent-item.working {
+      border-left-color: var(--orange);
+    }
+
+    .agent-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: var(--bg-dark);
+      border: 2px solid var(--cyan);
+    }
+
+    .agent-info {
+      flex: 1;
+    }
+
+    .agent-name {
+      font-size: 10px;
+      color: var(--gold);
+      margin-bottom: 5px;
+    }
+
+    .agent-status {
+      font-size: 8px;
+      color: var(--green);
+    }
+
+    .agent-item.offline .agent-status {
+      color: var(--red);
+    }
+
+    .agent-item.working .agent-status {
+      color: var(--orange);
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--green);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .status-dot.offline {
+      background: var(--red);
+      animation: none;
+    }
+
+    .status-dot.working {
+      background: var(--orange);
+      animation: pulse 0.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+      50% { opacity: 0.5; box-shadow: 0 0 15px currentColor; }
+    }
+
+    .task-queue {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .task-stat {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .task-label {
+      font-size: 10px;
+      width: 100px;
+      color: var(--text);
+    }
+
+    .task-bar-container {
+      flex: 1;
+      height: 20px;
+      background: var(--bg-dark);
+      border: 2px solid var(--border);
+      position: relative;
+    }
+
+    .task-bar {
+      height: 100%;
+      transition: width 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+    }
+
+    .task-bar.pending {
+      background: linear-gradient(90deg, var(--orange), var(--gold));
+    }
+
+    .task-bar.in-progress {
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+    }
+
+    .task-bar.completed {
+      background: linear-gradient(90deg, var(--green), #00cc00);
+    }
+
+    .task-count {
+      font-size: 8px;
+      color: var(--bg-dark);
+      font-weight: bold;
+    }
+
+    .task-total {
+      font-size: 8px;
+      color: var(--cyan);
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .metric-box {
+      text-align: center;
+      padding: 15px 10px;
+      background: var(--bg-dark);
+      border: 2px solid var(--border);
+    }
+
+    .metric-value {
+      font-size: 18px;
+      color: var(--cyan);
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0,255,255,0.5);
+    }
+
+    .metric-label {
+      font-size: 8px;
+      color: var(--gold);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-dark);
+      margin-top: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      transition: width 0.3s;
+    }
+
+    .progress-fill.cpu {
+      background: var(--cyan);
+    }
+
+    .progress-fill.memory {
+      background: var(--gold);
+    }
+
+    .uptime-box {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 15px;
+      background: var(--bg-dark);
+      border: 2px solid var(--gold);
+    }
+
+    .uptime-value {
+      font-size: 14px;
+      color: var(--gold);
+      text-shadow: 0 0 10px rgba(255,215,0,0.5);
+    }
+
+    .timestamp {
+      text-align: center;
+      font-size: 8px;
+      color: var(--cyan);
+      margin-top: 20px;
+      padding: 10px;
+      border-top: 2px dashed var(--border);
+    }
+
+    .refresh-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .refresh-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      font-size: 8px;
+      color: var(--cyan-dim);
+      border-top: 2px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 16px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <a href="/" class="back">[<] BACK</a>
-  
   <div class="container">
-    <div class="header">
-      <h1>[_TM_] REAL-TIME DASHBOARD</h1>
-      <p>// AGENTS STATUS // TASKS QUEUE // SYSTEM STATS</p>
-      <div class="last-update" id="last-update">LAST UPDATE: --:--:--</div>
-    </div>
-    
-    <!-- System Stats -->
-    <div class="section-title">:: SYSTEM STATS</div>
-    <div class="system-stats">
-      <div class="sys-stat">
-        <div class="sys-stat-header">CPU LOAD</div>
-        <div class="sys-stat-value" id="cpu-value">23%</div>
-        <div class="sys-stat-bar"><div class="sys-stat-fill cpu" id="cpu-bar" style="width: 23%"></div></div>
+    <header>
+      <h1>THEMACHINE</h1>
+      <p class="subtitle">REAL-TIME MONITORING SYSTEM v1.0</p>
+    </header>
+
+    <div class="grid">
+      <!-- Agent Status Panel -->
+      <div class="panel">
+        <div class="panel-title">AGENT STATUS</div>
+        <div class="agent-list" id="agent-list">
+          <!-- Agents rendered by JS -->
+        </div>
       </div>
-      <div class="sys-stat">
-        <div class="sys-stat-header">MEMORY</div>
-        <div class="sys-stat-value" id="mem-value">1.2GB / 4GB</div>
-        <div class="sys-stat-bar"><div class="sys-stat-fill memory" id="mem-bar" style="width: 30%"></div></div>
-      </div>
-      <div class="sys-stat">
-        <div class="sys-stat-header">DISK I/O</div>
-        <div class="sys-stat-value" id="disk-value">45 MB/s</div>
-        <div class="sys-stat-bar"><div class="sys-stat-fill disk" id="disk-bar" style="width: 45%"></div></div>
+
+      <!-- Task Queue Panel -->
+      <div class="panel">
+        <div class="panel-title">TASK QUEUE</div>
+        <div class="task-queue" id="task-queue">
+          <!-- Tasks rendered by JS -->
+        </div>
       </div>
     </div>
-    
-    <!-- Stats Summary -->
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num">6</div>
-        <div class="stat-label">TOTAL AGENTS</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="active-count">3</div>
-        <div class="stat-label">ACTIVE</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="queue-count">5</div>
-        <div class="stat-label">QUEUED</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">99.7%</div>
-        <div class="stat-label">UPTIME</div>
+
+    <!-- System Metrics Panel -->
+    <div class="panel">
+      <div class="panel-title">SYSTEM METRICS</div>
+      <div class="metrics-grid" id="metrics-grid">
+        <!-- Metrics rendered by JS -->
       </div>
     </div>
-    
-    <!-- Tasks Queue -->
-    <div class="section-title">:: TASKS QUEUE</div>
-    <div class="tasks-queue" id="tasks-queue">
-      <div class="task-row">
-        <div class="task-priority high">!</div>
-        <div class="task-info">
-          <div class="task-name">Deploy Socrates API v2.1</div>
-          <div class="task-meta">Created: 08:30:15 | Duration: ~5min</div>
-        </div>
-        <div class="task-agent"><span>[Kevin]</span></div>
-        <div class="task-status running">[RUNNING]</div>
-      </div>
-      <div class="task-row">
-        <div class="task-priority high">!</div>
-        <div class="task-info">
-          <div class="task-name">Analyze trading signals - BTC/ETH</div>
-          <div class="task-meta">Created: 08:28:42 | Duration: ~2min</div>
-        </div>
-        <div class="task-agent"><span>[Alex]</span></div>
-        <div class="task-status running">[RUNNING]</div>
-      </div>
-      <div class="task-row">
-        <div class="task-priority medium">#</div>
-        <div class="task-info">
-          <div class="task-name">Generate weekly content report</div>
-          <div class="task-meta">Created: 08:25:00 | Est: ~10min</div>
-        </div>
-        <div class="task-agent"><span>[Mike]</span></div>
-        <div class="task-status pending">[PENDING]</div>
-      </div>
-      <div class="task-row">
-        <div class="task-priority medium">#</div>
-        <div class="task-info">
-          <div class="task-name">Process user feedback batch</div>
-          <div class="task-meta">Created: 08:20:33 | Est: ~3min</div>
-        </div>
-        <div class="task-agent"><span>[Sarah]</span></div>
-        <div class="task-status pending">[PENDING]</div>
-      </div>
-      <div class="task-row">
-        <div class="task-priority low">-</div>
-        <div class="task-info">
-          <div class="task-name">Security scan - weekly audit</div>
-          <div class="task-meta">Created: 08:15:00 | Est: ~15min</div>
-        </div>
-        <div class="task-agent"><span>[David]</span></div>
-        <div class="task-status pending">[PENDING]</div>
-      </div>
+
+    <div class="timestamp">
+      <span class="refresh-indicator">
+        <span class="refresh-dot"></span>
+        AUTO-REFRESH: <span id="refresh-rate">5</span>s
+      </span>
+      &nbsp;|&nbsp;
+      LAST UPDATE: <span id="last-update">--:--:--</span>
     </div>
-    
-    <!-- Agents -->
-    <div class="section-title">:: AGENTS STATUS</div>
-    <div class="agents">
-      <div class="agent active" data-agent="TM">
-        <div class="status-dot"></div>
-        <div class="avatar agent-TM">TM</div>
-        <div class="name">THE MACHINE</div>
-        <div class="role">CEO / Coordinator</div>
-        <div class="task">
-          <div class="task-label">// CURRENT TASK</div>
-          <div class="task-name" data-task="TM">Coordinating team operations</div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="metric-num" data-tasks="TM">127</div><div class="metric-label">TASKS</div></div>
-          <div class="metric"><div class="metric-num">99%</div><div class="metric-label">UPTIME</div></div>
-        </div>
-      </div>
-      
-      <div class="agent active" data-agent="Kevin">
-        <div class="status-dot"></div>
-        <div class="avatar agent-Kevin">KT</div>
-        <div class="name">KEVIN</div>
-        <div class="role">CTO / Tech Lead</div>
-        <div class="task">
-          <div class="task-label">// CURRENT TASK</div>
-          <div class="task-name" data-task="Kevin">Deploying Socrates API v2.1</div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="metric-num" data-tasks="Kevin">45</div><div class="metric-label">TASKS</div></div>
-          <div class="metric"><div class="metric-num">98%</div><div class="metric-label">UPTIME</div></div>
-        </div>
-      </div>
-      
-      <div class="agent busy" data-agent="Alex">
-        <div class="status-dot"></div>
-        <div class="avatar agent-Alex">AX</div>
-        <div class="name">ALEX</div>
-        <div class="role">CFO / Trading</div>
-        <div class="task">
-          <div class="task-label">// CURRENT TASK</div>
-          <div class="task-name" data-task="Alex">Analyzing trading signals</div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="metric-num" data-tasks="Alex">89</div><div class="metric-label">TASKS</div></div>
-          <div class="metric"><div class="metric-num">99%</div><div class="metric-label">UPTIME</div></div>
-        </div>
-      </div>
-      
-      <div class="agent idle" data-agent="Mike">
-        <div class="status-dot"></div>
-        <div class="avatar agent-Mike">MK</div>
-        <div class="name">MIKE</div>
-        <div class="role">CMO / Content</div>
-        <div class="task">
-          <div class="task-label">// CURRENT TASK</div>
-          <div class="task-name" data-task="Mike">Waiting for next campaign</div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="metric-num" data-tasks="Mike">23</div><div class="metric-label">TASKS</div></div>
-          <div class="metric"><div class="metric-num">95%</div><div class="metric-label">UPTIME</div></div>
-        </div>
-      </div>
-      
-      <div class="agent active" data-agent="Sarah">
-        <div class="status-dot"></div>
-        <div class="avatar agent-Sarah">SH</div>
-        <div class="name">SARAH</div>
-        <div class="role">CPO / Product</div>
-        <div class="task">
-          <div class="task-label">// CURRENT TASK</div>
-          <div class="task-name" data-task="Sarah">Processing user feedback</div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="metric-num" data-tasks="Sarah">34</div><div class="metric-label">TASKS</div></div>
-          <div class="metric"><div class="metric-num">97%</div><div class="metric-label">UPTIME</div></div>
-        </div>
-      </div>
-      
-      <div class="agent idle" data-agent="David">
-        <div class="status-dot"></div>
-        <div class="avatar agent-David">DV</div>
-        <div class="name">DAVID</div>
-        <div class="role">SEC / Security</div>
-        <div class="task">
-          <div class="task-label">// CURRENT TASK</div>
-          <div class="task-name" data-task="David">Monitoring system health</div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><div class="metric-num" data-tasks="David">56</div><div class="metric-label">TASKS</div></div>
-          <div class="metric"><div class="metric-num">100%</div><div class="metric-label">UPTIME</div></div>
-        </div>
-      </div>
+
+    <div class="footer">
+      THEMACHINE CORP. MONITORING SYSTEM<br>
+      ALL SYSTEMS OPERATIONAL
     </div>
   </div>
-  
-  <div class="hud">
-    <span>THEMACHINE</span> CORP. // REAL-TIME DASHBOARD // AUTO-REFRESH: <span>5s</span> // <span id="total-tasks">374</span> TASKS COMPLETED
-  </div>
-  
+
   <script>
-    // Sample data for simulation
-    const tasks = [
-      { name: "Deploy Socrates API v2.1", agent: "Kevin", priority: "high", status: "running" },
-      { name: "Analyze trading signals - BTC/ETH", agent: "Alex", priority: "high", status: "running" },
-      { name: "Generate weekly content report", agent: "Mike", priority: "medium", status: "pending" },
-      { name: "Process user feedback batch", agent: "Sarah", priority: "medium", status: "pending" },
-      { name: "Security scan - weekly audit", agent: "David", priority: "low", status: "pending" },
-      { name: "Code review - PR #234", agent: "Kevin", priority: "medium", status: "pending" },
-      { name: "Update marketing assets", agent: "Mike", priority: "low", status: "pending" }
+    // Agent data
+    const agents = [
+      { name: 'THE MACHINE', role: 'CEO', icon: '👁️', status: 'online', task: 'Monitoring' },
+      { name: 'Kevin (CTO)', role: 'Tech Lead', icon: '⚙️', status: 'working', task: 'Building features' },
+      { name: 'Mike (CMO)', role: 'Marketing', icon: '📢', status: 'online', task: 'Content creation' },
+      { name: 'Alex (CFO)', role: 'Finance', icon: '💹', status: 'working', task: 'Analyzing markets' },
+      { name: 'Sarah (CPO)', role: 'Product', icon: '📦', status: 'online', task: 'Roadmap planning' },
+      { name: 'David (SEC)', role: 'Security', icon: '🛡️', status: 'online', task: 'Threat monitoring' }
     ];
-    
-    const agentTasks = {
-      TM: ["Coordinating team operations", "Processing战略决策", "Reviewing agent performance"],
-      Kevin: ["Deploying Socrates API v2.1", "Code review - PR #234", "Bug fixes - OpenAPI"],
-      Alex: ["Analyzing trading signals", "Portfolio rebalancing", "Market analysis - BTC"],
-      Mike: ["Waiting for next campaign", "Social media scheduling", "Content ideation"],
-      Sarah: ["Processing user feedback", "Feature prioritization", "Roadmap planning"],
-      David: ["Monitoring system health", "Security audit", "Access control review"]
+
+    // Task data
+    let taskData = {
+      pending: 3,
+      inProgress: 2,
+      completed: 47
     };
-    
-    function updateTimestamp() {
-      const now = new Date();
-      const time = now.toTimeString().split(' ')[0];
-      document.getElementById('last-update').textContent = 'LAST UPDATE: ' + time;
+
+    // System metrics
+    let metrics = {
+      cpu: 23,
+      memory: 61,
+      uptime: 0
+    };
+
+    // Format uptime
+    function formatUptime(seconds) {
+      const d = Math.floor(seconds / 86400);
+      const h = Math.floor((seconds % 86400) / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      if (d > 0) return `${d}d ${h}h ${m}m ${s}s`;
+      if (h > 0) return `${h}h ${m}m ${s}s`;
+      return `${m}m ${s}s`;
     }
-    
-    function updateSystemStats() {
-      // CPU: 15-45%
-      const cpu = Math.floor(Math.random() * 30) + 15;
-      document.getElementById('cpu-value').textContent = cpu + '%';
-      document.getElementById('cpu-bar').style.width = cpu + '%';
-      
-      // Memory: 1.0-2.5GB / 4GB
-      const memGB = (Math.random() * 1.5 + 1.0).toFixed(1);
-      const memPct = Math.floor((parseFloat(memGB) / 4) * 100);
-      document.getElementById('mem-value').textContent = memGB + 'GB / 4GB';
-      document.getElementById('mem-bar').style.width = memPct + '%';
-      
-      // Disk I/O: 20-80 MB/s
-      const disk = Math.floor(Math.random() * 60) + 20;
-      document.getElementById('disk-value').textContent = disk + ' MB/s';
-      document.getElementById('disk-bar').style.width = disk + '%';
-    }
-    
-    function updateTasksQueue() {
-      const queue = document.getElementById('tasks-queue');
-      const displayTasks = tasks.slice(0, 5 + Math.floor(Math.random() * 3));
-      
-      queue.innerHTML = displayTasks.map(t => `
-        <div class="task-row">
-          <div class="task-priority ${t.priority}">${t.priority === 'high' ? '!' : t.priority === 'medium' ? '#' : '-'}</div>
-          <div class="task-info">
-            <div class="task-name">${t.name}</div>
-            <div class="task-meta">Est: ~${Math.floor(Math.random() * 15) + 2}min</div>
+
+    // Render agents
+    function renderAgents() {
+      const container = document.getElementById('agent-list');
+      container.innerHTML = agents.map(agent => `
+        <div class="agent-item ${agent.status}">
+          <div class="agent-icon">${agent.icon}</div>
+          <div class="agent-info">
+            <div class="agent-name">${agent.name}</div>
+            <div class="agent-status">${agent.status.toUpperCase()} - ${agent.task}</div>
           </div>
-          <div class="task-agent"><span>[${t.agent}]</span></div>
-          <div class="task-status ${t.status}">[${t.status.toUpperCase()}]</div>
+          <div class="status-dot ${agent.status}"></div>
         </div>
       `).join('');
-      
-      document.getElementById('queue-count').textContent = displayTasks.length;
     }
-    
-    function updateAgents() {
-      const agents = document.querySelectorAll('.agent');
+
+    // Render task queue
+    function renderTasks() {
+      const container = document.getElementById('task-queue');
+      const total = taskData.pending + taskData.inProgress + taskData.completed;
+      const tasks = [
+        { label: 'PENDING', key: 'pending', color: 'pending' },
+        { label: 'IN PROGRESS', key: 'inProgress', color: 'in-progress' },
+        { label: 'COMPLETED', key: 'completed', color: 'completed' }
+      ];
+
+      container.innerHTML = tasks.map(t => `
+        <div class="task-stat">
+          <span class="task-label">${t.label}</span>
+          <div class="task-bar-container">
+            <div class="task-bar ${t.color}" style="width: ${(taskData[t.key] / total) * 100}%">
+              <span class="task-count">${taskData[t.key]}</span>
+            </div>
+          </div>
+        </div>
+      `).join('') + `<div class="task-total">TOTAL TASKS: ${total}</div>`;
+    }
+
+    // Render metrics
+    function renderMetrics() {
+      const container = document.getElementById('metrics-grid');
+      container.innerHTML = `
+        <div class="metric-box">
+          <div class="metric-value" id="cpu-value">${metrics.cpu}%</div>
+          <div class="metric-label">CPU</div>
+          <div class="progress-bar">
+            <div class="progress-fill cpu" id="cpu-bar" style="width: ${metrics.cpu}%"></div>
+          </div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value" id="mem-value">${metrics.memory}%</div>
+          <div class="metric-label">MEMORY</div>
+          <div class="progress-bar">
+            <div class="progress-fill memory" id="mem-bar" style="width: ${metrics.memory}%"></div>
+          </div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value" id="load-value">${(metrics.cpu + metrics.memory) / 2 | 0}%</div>
+          <div class="metric-label">LOAD AVG</div>
+        </div>
+        <div class="uptime-box">
+          <div class="uptime-value">⏱ UPTIME: ${formatUptime(metrics.uptime)}</div>
+        </div>
+      `;
+    }
+
+    // Update timestamp
+    function updateTimestamp() {
+      const now = new Date();
+      document.getElementById('last-update').textContent = 
+        now.toTimeString().split(' ')[0];
+    }
+
+    // Simulate data changes
+    function simulateDataChanges() {
+      // Randomly toggle agent statuses
       agents.forEach(agent => {
-        const agentId = agent.dataset.agent;
-        
-        // Randomly change status
-        if (Math.random() > 0.8) {
-          agent.classList.remove('active', 'busy', 'idle');
-          const statuses = ['active', 'busy', 'idle'];
-          agent.classList.add(statuses[Math.floor(Math.random() * statuses.length)]);
-        }
-        
-        // Update task
-        const taskEl = agent.querySelector('[data-task="' + agentId + '"]');
-        if (taskEl && agentTasks[agentId]) {
-          const randomTask = agentTasks[agentId][Math.floor(Math.random() * agentTasks[agentId].length)];
-          taskEl.textContent = randomTask;
-        }
-        
-        // Increment task count occasionally
-        const tasksEl = agent.querySelector('[data-tasks="' + agentId + '"]');
-        if (tasksEl && Math.random() > 0.7) {
-          const current = parseInt(tasksEl.textContent);
-          tasksEl.textContent = current + 1;
+        const rand = Math.random();
+        if (rand < 0.1) {
+          agent.status = 'offline';
+        } else if (rand < 0.3) {
+          agent.status = 'working';
+        } else {
+          agent.status = 'online';
         }
       });
-      
-      const activeCount = document.querySelectorAll('.agent.active').length;
-      document.getElementById('active-count').textContent = activeCount;
-      
-      const totalTasks = Array.from(document.querySelectorAll('[data-tasks]')).reduce((sum, el) => sum + parseInt(el.textContent), 0);
-      document.getElementById('total-tasks').textContent = totalTasks;
+
+      // Vary tasks slightly
+      taskData.pending = Math.max(0, taskData.pending + Math.floor(Math.random() * 3) - 1);
+      taskData.inProgress = Math.max(1, taskData.inProgress + Math.floor(Math.random() * 3) - 1);
+      taskData.completed += Math.floor(Math.random() * 3);
+
+      // Vary metrics
+      metrics.cpu = Math.max(5, Math.min(95, metrics.cpu + Math.floor(Math.random() * 20) - 10));
+      metrics.memory = Math.max(20, Math.min(90, metrics.memory + Math.floor(Math.random() * 10) - 5));
+      metrics.uptime += 5;
     }
-    
-    function updateAll() {
+
+    // Main update function
+    function update() {
+      simulateDataChanges();
+      renderAgents();
+      renderTasks();
+      renderMetrics();
       updateTimestamp();
-      updateSystemStats();
-      updateTasksQueue();
-      updateAgents();
     }
-    
-    // Initial load
-    updateAll();
-    
-    // Auto-refresh every 5 seconds
-    setInterval(updateAll, 5000);
+
+    // Initial render
+    update();
+
+    // Auto refresh every 5 seconds
+    setInterval(update, 5000);
   </script>
 </body>
 </html>

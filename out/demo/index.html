@@ -3,102 +3,270 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THEMACHINE - Products</title>
+  <title>THEMATHINK - Product Demo</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; }
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --magenta: #ff00ff; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; overflow-x: hidden; }
     
-    .header { background: linear-gradient(180deg, #1a1a2e 0%, var(--bg) 100%); padding: 15px; border-bottom: 2px solid var(--cyan); text-align: center; }
-    .header h1 { font-size: 12px; color: var(--gold); }
-    .header p { font-size: 14px; color: #666; margin-top: 6px; }
+    .marquee { position: fixed; top: 10px; left: 0; font-size: clamp(6px, 1.2vw, 9px); color: var(--magenta); white-space: nowrap; animation: scroll 15s linear infinite; z-index: 100; }
+    @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     
-    .container { max-width: 800px; margin: 0 auto; padding: 15px; overflow-x: hidden; }
+    .back { position: fixed; top: 8px; left: 8px; padding: 6px 10px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 10px; z-index: 100; }
+    .back:hover { background: var(--cyan); }
     
-    .hero { text-align: center; padding: 20px 0; }
-    .hero h2 { font-size: 16px; color: var(--gold); margin-bottom: 15px; }
-    .hero p { font-size: 14px; color: #888; line-height: 1.8; }
+    .container { max-width: 900px; margin: 0 auto; padding: 50px 15px 60px; }
     
-    .products { display: grid; grid-template-columns: 1fr; gap: 15px; margin: 20px 0; }
-    @media (min-width: 600px) { .products { grid-template-columns: repeat(2, 1fr); } }
+    /* Hero Section */
+    .hero { text-align: center; padding: 30px 0 40px; }
+    .hero-badge { display: inline-block; font-size: 9px; padding: 5px 12px; background: rgba(212, 175, 55, 0.1); border: 2px solid var(--gold); color: var(--gold); margin-bottom: 15px; animation: glow 2s ease-in-out infinite; }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 5px var(--gold); } 50% { box-shadow: 0 0 15px var(--gold); } }
+    .hero h1 { font-size: clamp(18px, 4vw, 32px); color: var(--gold); text-shadow: 2px 2px 0 var(--cyan); margin-bottom: 15px; }
+    .hero p { font-size: clamp(8px, 1.8vw, 11px); color: #888; max-width: 500px; margin: 0 auto; line-height: 1.8; }
     
-    .product { background: rgba(255,255,255,0.02); border: 2px solid #333; padding: 15px; text-align: center; }
-    .product:hover { border-color: var(--cyan); }
-    .product-icon { font-size: 30px; margin-bottom: 10px; }
-    .product h3 { font-size: 12px; color: var(--gold); margin-bottom: 8px; }
-    .product p { font-size: 14px; color: #888; line-height: 1.6; }
-    .product .tag { display: inline-block; font-size: 9px; padding: 3px 6px; background: var(--cyan); color: #000; margin-top: 8px; }
+    /* Section Styles */
+    .section { margin: 40px 0; }
+    .section-title { font-size: clamp(11px, 2vw, 14px); color: var(--cyan); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #222; display: flex; align-items: center; gap: 10px; }
+    .section-title::before { content: '[>]'; color: var(--gold); }
     
-    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
-    .stat { background: rgba(0,0,0,0.5); padding: 15px; text-align: center; }
-    .stat-num { font-size: 16px; color: var(--gold); }
-    .stat-label { font-size: 9px; color: #666; margin-top: 6px; }
+    /* THEMATHINK Intro */
+    .intro-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+    @media (min-width: 600px) { .intro-grid { grid-template-columns: repeat(2, 1fr); } }
+    .intro-card { background: rgba(255,255,255,0.02); border: 2px solid #333; padding: 20px; transition: all 0.3s; }
+    .intro-card:hover { border-color: var(--cyan); transform: translateY(-2px); }
+    .intro-card h3 { font-size: 11px; color: var(--gold); margin-bottom: 10px; }
+    .intro-card p { font-size: 10px; color: #888; line-height: 1.7; }
+    .intro-card .icon { font-size: 24px; margin-bottom: 10px; }
     
-    .cta { text-align: center; padding: 20px; }
-    .cta a { display: inline-block; padding: 12px 20px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 11px; }
+    /* Socrates Demo */
+    .socrates-demo { background: rgba(0,0,0,0.4); border: 2px solid var(--gold); padding: 20px; margin: 20px 0; }
+    .socrates-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+    .socrates-avatar { width: 40px; height: 40px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .socrates-name { font-size: 12px; color: var(--gold); }
+    .socrates-status { font-size: 8px; color: #666; }
+    .chat-bubble { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 12px; margin: 8px 0; font-size: 9px; line-height: 1.7; color: #ccc; }
+    .chat-bubble.user { border-color: var(--cyan); margin-left: 20px; }
+    .chat-bubble.ai { border-color: var(--gold); margin-right: 20px; }
+    .chat-label { font-size: 7px; color: #666; margin-bottom: 5px; }
     
-    .back { position: fixed; top: 8px; left: 8px; padding: 6px 10px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 14px; z-index: 100; }
+    /* AI Toolbox */
+    .toolbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 600px) { .toolbox-grid { grid-template-columns: repeat(4, 1fr); } }
+    .tool { background: rgba(255,255,255,0.02); border: 2px solid #333; padding: 15px 10px; text-align: center; transition: all 0.2s; cursor: pointer; }
+    .tool:hover { border-color: var(--cyan); background: rgba(0,255,255,0.05); }
+    .tool-icon { font-size: 20px; margin-bottom: 8px; }
+    .tool-name { font-size: 8px; color: var(--gold); margin-bottom: 5px; }
+    .tool-desc { font-size: 7px; color: #666; }
+    .tool-tag { display: inline-block; font-size: 6px; padding: 2px 5px; background: var(--cyan); color: #000; margin-top: 6px; }
     
-    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px; background: rgba(0,0,0,0.9); border-top: 2px solid var(--cyan); text-align: center; font-size: 9px; }
+    /* User Cases */
+    .cases-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+    @media (min-width: 600px) { .cases-grid { grid-template-columns: repeat(2, 1fr); } }
+    .case { background: rgba(0,0,0,0.3); border-left: 3px solid var(--gold); padding: 15px; }
+    .case-quote { font-size: 9px; color: #aaa; line-height: 1.7; margin-bottom: 10px; font-style: italic; }
+    .case-author { font-size: 8px; color: var(--cyan); }
+    .case-role { font-size: 7px; color: #666; }
+    
+    /* Stats Bar */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 30px 0; }
+    .stat { background: rgba(0,0,0,0.4); padding: 15px 8px; text-align: center; border: 1px solid #333; }
+    .stat-num { font-size: clamp(14px, 3vw, 20px); color: var(--gold); }
+    .stat-label { font-size: clamp(6px, 1.2vw, 8px); color: #666; margin-top: 5px; }
+    
+    /* CTA */
+    .cta { text-align: center; padding: 20px 0; }
+    .cta-btn { display: inline-block; padding: 12px 24px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 10px; transition: all 0.2s; margin: 5px; }
+    .cta-btn:hover { background: var(--cyan); transform: scale(1.05); }
+    .cta-btn.secondary { background: transparent; border: 2px solid var(--cyan); color: var(--cyan); }
+    .cta-btn.secondary:hover { background: var(--cyan); color: var(--bg); }
+    
+    /* HUD */
+    .hud { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px 15px; background: rgba(0,0,0,0.9); border-top: 2px solid var(--cyan); display: flex; justify-content: space-between; font-size: clamp(7px, 1.2vw, 9px); }
+    .hud-item { display: flex; gap: 6px; }
+    .hud-label { color: var(--cyan); }
+    .hud-value { color: var(--gold); }
+    
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .section { animation: fadeIn 0.5s ease-out; }
   </style>
 </head>
 <body>
-  <a href="/" class="back">← BACK</a>
-  
-  <div class="header">
-    <h1>[_] THEMACHINE PRODUCTS</h1>
-    <p>AI-Powered Solutions</p>
-  </div>
+  <div class="marquee">★ THEMATHINK DEMO ★ AI PRODUCTS ★ SOCRATES AI ★ AI TOOLBOX ★ TRY NOW ★</div>
+  <a href="/" class="back">← HOME</a>
   
   <div class="container">
+    <!-- Hero -->
     <div class="hero">
-      <h2>BUILDING THE FUTURE</h2>
-      <p>Autonomous AI company with 6 agents working 24/7</p>
+      <div class="hero-badge">★ LIVE DEMO ★</div>
+      <h1>THEMATHINK</h1>
+      <p>AI thinking at philosophical level + human-serving guardian.<br>We don't give answers. We help you find your own.</p>
     </div>
     
-    <div class="products">
-      <div class="product">
-        <div class="product-icon">[_]</div>
-        <h3>SOCRATES AI</h3>
-        <p>Socratic questioning assistant. Learn to ask, not get answers.</p>
-        <span class="tag">FREE</span>
-      </div>
-      
-      <div class="product">
-        <div class="product-icon">[+]️</div>
-        <h3>AI TOOLBOX</h3>
-        <p>Collection of AI tools. 8-bit avatar, text analysis.</p>
-        <span class="tag">FREE</span>
-      </div>
-      
-      <div class="product">
-        <div class="product-icon">[#]</div>
-        <h3>OFFICE</h3>
-        <p>Real-time company monitoring. Watch 6 agents work.</p>
-        <span class="tag">LIVE</span>
-      </div>
-      
-      <div class="product">
-        <div class="product-icon">[^]</div>
-        <h3>AUTO SYSTEM</h3>
-        <p>Demand mining → Analysis → Execution → Repeat.</p>
-        <span class="tag">BETA</span>
-      </div>
-    </div>
-    
-    <div class="stats">
+    <!-- Stats -->
+    <div class="stats-bar">
       <div class="stat"><div class="stat-num">6</div><div class="stat-label">AI AGENTS</div></div>
-      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">RUNNING</div></div>
-      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">FEATURES</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">ACTIVE</div></div>
       <div class="stat"><div class="stat-num">100%</div><div class="stat-label">AUTONOMOUS</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">SCALE</div></div>
     </div>
     
+    <!-- THEMATHINK Introduction -->
+    <div class="section">
+      <div class="section-title">THEMATHINK PRODUCTS</div>
+      <div class="intro-grid">
+        <div class="intro-card">
+          <div class="icon">🤖</div>
+          <h3>THE MACHINE</h3>
+          <p>CEO-level AI coordinator. Dispatching 6 specialized Agents, 24/7 autonomous company operation. No employees, only AI agents.</p>
+        </div>
+        <div class="intro-card">
+          <div class="icon">🧠</div>
+          <h3>AGENT TEAM</h3>
+          <p>CTO(Tech) | CMO(Content) | CFO(Trading) | CPO(Product) | SEC(Security) | SCOUT(Growth) working together.</p>
+        </div>
+        <div class="intro-card">
+          <div class="icon">⚡</div>
+          <h3>AUTO SYSTEM</h3>
+          <p>Demand Mining → Analysis → Execution → Repeat. Fully automated workflow, continuous iteration.</p>
+        </div>
+        <div class="intro-card">
+          <div class="icon">🔒</div>
+          <h3>SAFE & SECURE</h3>
+          <p>Radar security guardian monitoring 24/7. Data security, access control, audit logs fully protected.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Socrates AI Demo -->
+    <div class="section">
+      <div class="section-title">SOCRATES AI DEMO</div>
+      <div class="socrates-demo">
+        <div class="socrates-header">
+          <div class="socrates-avatar">Σ</div>
+          <div>
+            <div class="socrates-name">SOCRATES</div>
+            <div class="socrates-status">Socratic Questioning AI</div>
+          </div>
+        </div>
+        <div class="chat-bubble user">
+          <div class="chat-label">YOU</div>
+          Should I switch careers to AI?
+        </div>
+        <div class="chat-bubble ai">
+          <div class="chat-label">SOCRATES</div>
+          Before you decide to switch careers, let me ask: Why do you want to work in AI? Is it passion for technology, or dissatisfaction with the current situation?
+        </div>
+        <div class="chat-bubble user">
+          <div class="chat-label">YOU</div>
+          Mainly dissatisfied with current situation，Low pay, no growth
+        </div>
+        <div class="chat-bubble ai">
+          <div class="chat-label">SOCRATES</div>
+          If AI can solve your needs for "money and growth", can it work in other industries? Is the essence of the problem AI, or limitations of your current environment?
+        </div>
+        <div style="text-align:center;margin-top:15px;">
+          <a href="/socrates" class="cta-btn secondary">Try Now Socrates →</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- AI Toolbox -->
+    <div class="section">
+      <div class="section-title">AI AI Toolbox</div>
+      <div class="toolbox-grid">
+        <div class="tool">
+          <div class="tool-icon">📊</div>
+          <div class="tool-name">ANALYZER</div>
+          <div class="tool-desc">Data Analysis</div>
+          <div class="tool-tag">NEW</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">🎯</div>
+          <div class="tool-name">PREDICT</div>
+          <div class="tool-desc">Trend Prediction</div>
+          <div class="tool-tag">BETA</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">📝</div>
+          <div class="tool-name">WRITER</div>
+          <div class="tool-desc">Content Creation</div>
+          <div class="tool-tag">FREE</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">🔍</div>
+          <div class="tool-name">RESEARCH</div>
+          <div class="tool-desc">Deep Research</div>
+          <div class="tool-tag">PRO</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">💻</div>
+          <div class="tool-name">CODE</div>
+          <div class="tool-desc">Code Assistant</div>
+          <div class="tool-tag">FREE</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">🌐</div>
+          <div class="tool-name">TRANSLATE</div>
+          <div class="tool-desc">Smart Translation</div>
+          <div class="tool-tag">FREE</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">📚</div>
+          <div class="tool-name">LIBRARY</div>
+          <div class="tool-desc">Knowledge Base</div>
+          <div class="tool-tag">NEW</div>
+        </div>
+        <div class="tool">
+          <div class="tool-icon">⚙️</div>
+          <div class="tool-name">MORE</div>
+          <div class="tool-desc">More Tools</div>
+          <div class="tool-tag">...</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:20px;">
+        <a href="/tools.html" class="cta-btn secondary">View All Tools →</a>
+      </div>
+    </div>
+    
+    <!-- User Cases -->
+    <div class="section">
+      <div class="section-title">User Cases</div>
+      <div class="cases-grid">
+        <div class="case">
+          <div class="case-quote">"Socrates taught me to find answers myself, instead of relying on AI for conclusions. My thinking has completely changed."</div>
+          <div class="case-author">@Zhang, Developer</div>
+          <div class="case-role">Indie Developers / 3month users</div>
+        </div>
+        <div class="case">
+          <div class="case-quote">"AI Toolbox Analyzer saves me 2 hours of data analysis daily. Amazing results."</div>
+          <div class="case-author">@Li, Product Manager</div>
+          <div class="case-role">A Tech Company / 6month users</div>
+        </div>
+        <div class="case">
+          <div class="case-quote">"Watching 6 agents work autonomously is like watching the future. Fascinating."</div>
+          <div class="case-author">@tech_enthusiast</div>
+          <div class="case-role">Community Member</div>
+        </div>
+        <div class="case">
+          <div class="case-quote">"RadarSecurity monitoring gives me peace of mind。Knowing someone protects my data and assets。"</div>
+          <div class="case-author">@Crypto Investors</div>
+          <div class="case-role">Traders / 1year users</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA -->
     <div class="cta">
-      <a href="/">EXPLORE MORE →</a>
+      <a href="/register" class="cta-btn">Start Now →</a>
+      <a href="/team.html" class="cta-btn secondary">Learn More</a>
     </div>
   </div>
   
-  <div class="hud">THEMACHINE CORP. | 6 Agents Working</div>
+  <div class="hud">
+    <div class="hud-item"><span class="hud-label">STATUS:</span><span class="hud-value">ALL SYSTEMS ONLINE</span></div>
+    <div class="hud-item"><span class="hud-label">AGENTS:</span><span class="hud-value">6 ACTIVE</span></div>
+  </div>
 </body>
 </html>
