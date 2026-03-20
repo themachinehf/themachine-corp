@@ -1,199 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | THEMACHINE Corp.</title>
   <style>
-    :root {
-      --bg: #0a0a0f;
-      --text: #e5e7eb;
-      --gold: #fbbf24;
-      --border: #1e293b;
-      --green: #22c55e;
-      --red: #ef4444;
-      --blue: #3b82f6;
-      --font: 'Courier New', monospace;
-    }
+    :root { --bg: #0a0a0f; --text: #e5e7eb; --gold: #fbbf24; --border: #1e293b; --font: 'Courier New', monospace; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      background: var(--bg); 
-      color: var(--text); 
-      font-family: var(--font); 
-      min-height: 100vh;
-    }
-    .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-    
-    header {
-      margin-bottom: 40px;
-      padding-bottom: 30px;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      width: 120px;
-      height: 2px;
-      background: var(--gold);
-    }
-    h1 { font-size: 36px; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+    .container { max-width: 900px; margin: 0 auto; padding: 60px 20px; }
+    header { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid var(--border); position: relative; }
+    header::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 120px; height: 2px; background: var(--gold); }
+    h1 { font-size: 48px; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; }
     .subtitle { color: #888; font-size: 14px; }
-    
-    nav {
-      display: flex;
-      gap: 30px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-    nav a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-    }
+    nav { display: flex; gap: 30px; margin-top: 30px; }
+    nav a { color: var(--text); text-decoration: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     nav a:hover { color: var(--gold); }
-    
-    h2 { 
-      color: var(--gold); 
-      margin: 40px 0 20px; 
-      border-bottom: 1px solid var(--border); 
-      padding-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    h2 .count {
-      background: var(--border);
-      padding: 2px 10px;
-      font-size: 14px;
-      color: var(--text);
-    }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-    }
-    .stat-card {
-      background: #111827;
-      border: 1px solid var(--border);
-      padding: 20px;
-      text-align: center;
-    }
+    h2 { color: var(--gold); margin: 40px 0 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-size: 24px; }
+    h2 .count { background: var(--border); padding: 2px 10px; font-size: 14px; color: var(--text); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .stat-card { background: #111827; border: 1px solid var(--border); padding: 30px; text-align: center; }
     .stat-card:hover { border-color: var(--gold); }
-    .stat-num { font-size: 32px; color: var(--gold); }
+    .stat-num { font-size: 36px; color: var(--gold); }
     .stat-label { color: #888; font-size: 12px; margin-top: 8px; text-transform: uppercase; }
-    
-    .agents-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-    .agent-card {
-      background: #111827;
-      border: 1px solid var(--border);
-      padding: 20px;
-    }
+    .agents-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .agent-card { background: #111827; border: 1px solid var(--border); padding: 20px; }
     .agent-card:hover { border-color: var(--gold); }
-    .agent-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .agent-status { 
-      width: 10px; 
-      height: 10px; 
-      border-radius: 50%; 
-    }
-    .status-active { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .agent-status { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; }
+    .status-active { background: #22c55e; }
     .status-idle { background: #6b7280; }
-    .status-working { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
-    .agent-name { color: var(--gold); font-size: 16px; }
-    .agent-role { color: var(--blue); font-size: 12px; }
-    .agent-tasks { 
-      font-size: 12px; 
-      color: #888; 
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
-    
-    .task-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .agent-name { color: var(--gold); font-size: 18px; }
+    .agent-role { color: #60a5fa; font-size: 12px; }
+    .agent-tasks { font-size: 12px; color: #888; margin-top: 10px; }
+    .task-section { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
     .task-list { max-height: 400px; overflow-y: auto; }
-    
-    .task-item {
-      background: #111827;
-      border: 1px solid var(--border);
-      padding: 15px;
-      margin-bottom: 10px;
-    }
+    .task-item { background: #111827; border: 1px solid var(--border); padding: 15px; margin-bottom: 10px; }
     .task-item:hover { border-color: var(--gold); }
-    
-    .task-priority {
-      display: inline-block;
-      padding: 2px 8px;
-      font-size: 10px;
-      border-radius: 4px;
-      margin-right: 10px;
-    }
-    .priority-urgent { background: var(--red); color: white; }
+    .task-priority { display: inline-block; padding: 2px 8px; font-size: 10px; border-radius: 4px; margin-right: 10px; }
+    .priority-urgent { background: #ef4444; color: white; }
     .priority-high { background: var(--gold); color: var(--bg); }
     .priority-normal { background: var(--border); color: var(--text); }
-    
     .task-title { color: var(--text); font-size: 14px; margin: 8px 0; }
-    
-    .task-meta { 
-      color: #666; 
-      font-size: 11px; 
-      display: flex;
-      gap: 15px;
-    }
-    
-    .task-status {
-      padding: 2px 8px;
-      font-size: 10px;
-      border-radius: 4px;
-    }
-    .status-pending { background: var(--border); }
-    .status-in_progress { background: var(--gold); color: var(--bg); }
-    .status-done { background: var(--green); color: white; }
-    
-    .output-preview {
-      background: #0a0a0f;
-      border: 1px solid var(--border);
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 11px;
-      color: #888;
-      max-height: 80px;
-      overflow: hidden;
-    }
-    
-    .footer { color: #666; font-size: 12px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center;}
-    
-    .refresh-btn {
-      background: var(--gold);
-      color: var(--bg);
-      border: none;
-      padding: 8px 20px;
-      cursor: pointer;
-      font-family: var(--font);
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    .refresh-btn:hover { opacity: 0.8; }
+    .task-meta { color: #666; font-size: 11px; display: flex; justify-content: space-between; }
+    .task-eta { color: #22c55e; }
+    .task-status { padding: 2px 8px; font-size: 10px; border-radius: 4px; }
+    .status-done { background: #22c55e; color: white; }
+    .footer { color: #666; font-size: 12px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; }
+    .refresh-btn { background: var(--gold); color: var(--bg); border: none; padding: 10px 20px; cursor: pointer; font-family: var(--font); text-transform: uppercase; font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>📊 THEMACHINE Dashboard</h1>
+      <h1>Dashboard</h1>
       <p class="subtitle">Real-time Team Monitoring</p>
       <nav>
         <a href="/">Home</a>
@@ -203,29 +61,14 @@
         <a href="/account">Account</a>
       </nav>
     </header>
-    
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-num" id="pending">-</div>
-        <div class="stat-label">Pending</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="in_progress">-</div>
-        <div class="stat-label">In Progress</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="done">-</div>
-        <div class="stat-label">Done</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="agents">-</div>
-        <div class="stat-label">Agents</div>
-      </div>
+      <div class="stat-card"><div class="stat-num" id="pending">-</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-num" id="in_progress">-</div><div class="stat-label">In Progress</div></div>
+      <div class="stat-card"><div class="stat-num" id="done">-</div><div class="stat-label">Done</div></div>
+      <div class="stat-card"><div class="stat-num" id="agents">-</div><div class="stat-label">Agents</div></div>
     </div>
-    
     <h2>🤖 Agents <span class="count" id="agent-count">-</span></h2>
     <div class="agents-grid" id="agents-list">Loading...</div>
-    
     <div class="task-section">
       <div>
         <h2>📋 In Progress <span class="count" id="in-progress-count">-</span></h2>
@@ -236,82 +79,37 @@
         <div class="task-list" id="done-list">Loading...</div>
       </div>
     </div>
-    
     <div class="footer">
       <button class="refresh-btn" onclick="load()">🔄 Refresh</button>
       <br><br>
       <span id="time"></span>
     </div>
   </div>
-  
   <script>
     const API = 'https://themachine-auth.jxs66.workers.dev';
-    
+    const titleTranslate = {'制定赚钱计划':'Revenue Plan','赚钱':'Revenue','免费痛点系统架构设计':'Pain Point Radar Design','免费痛点系统':'Pain Point Radar','Newsletter产品设计':'Newsletter Product Design','Newsletter':'Newsletter','持续需求挖掘':'Continuous Pain Points Mining','需求挖掘':'Pain Points Mining','安全检查清单':'Security Checklist','安全':'Security','检查服务器健康状态':'Server Health Check','执行健康检查':'Health Check','生成今日社交媒体内容':'Daily Social Content','Twitter':'Twitter','Radar':'Radar','自动化运营流程设计':'Twitter Automation Design','实现Agent自动拉取任务机制':'Agent Auto-Pull'};
+    function translateTitle(title) { let result = title; for (const [cn, en] of Object.entries(titleTranslate)) { result = result.replace(cn, en); } return result; }
+    function getEta(createdAt, priority) { const mins = priority === 'urgent' ? 5 : priority === 'high' ? 10 : 15; const eta = new Date(new Date(createdAt).getTime() + mins * 60000); return eta.toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit'}); }
+    const statusMap = {'pending':'Pending','in_progress':'In Progress','done':'Done'};
+    const priorityMap = {'urgent':'Urgent','high':'High','normal':'Normal'};
     async function load() {
       try {
-        const [stats, agents, tasks] = await Promise.all([
-          fetch(API + '/api/dashboard/stats').then(r => r.json()),
-          fetch(API + '/api/dashboard/agents').then(r => r.json()),
-          fetch(API + '/api/dashboard/tasks').then(r => r.json())
-        ]);
-        
+        const [stats, agents, tasks] = await Promise.all([fetch(API + '/api/dashboard/stats').then(r=>r.json()), fetch(API + '/api/dashboard/agents').then(r=>r.json()), fetch(API + '/api/dashboard/tasks').then(r=>r.json())]);
         document.getElementById('pending').textContent = stats.stats.pending;
         document.getElementById('in_progress').textContent = stats.stats.in_progress;
         document.getElementById('done').textContent = stats.stats.done;
         document.getElementById('agents').textContent = agents.agents.length;
-        
         document.getElementById('agent-count').textContent = agents.agents.length;
-        document.getElementById('agents-list').innerHTML = agents.agents.map(a => {
-          const statusClass = a.status === 'active' ? 'status-active' : 
-                             a.tasks?.pending > 0 ? 'status-working' : 'status-idle';
-          return '<div class="agent-card">' +
-            '<div class="agent-header">' +
-              '<span class="agent-status ' + statusClass + '"></span>' +
-              '<span class="agent-name">' + a.emoji + ' ' + a.name + '</span>' +
-            '</div>' +
-            '<div class="agent-role">' + a.role + '</div>' +
-            '<div class="agent-tasks">' +
-              '📋 ' + (a.tasks?.pending || 0) + ' pending | ' +
-              '✅ ' + (a.tasks?.done || 0) + ' done' +
-            '</div>' +
-          '</div>';
-        }).join('');
-        
+        document.getElementById('agents-list').innerHTML = agents.agents.map(a=>'<div class="agent-card"><span class="agent-status '+(a.status==='active'?'status-active':'status-idle')+'"></span><span class="agent-name">'+a.emoji+' '+a.name+'</span><div class="agent-role">'+a.role+'</div><div class="agent-tasks">'+(a.tasks?.pending||0)+' pending | '+(a.tasks?.done||0)+' done</div></div>').join('');
         const inProgress = tasks.tasks.filter(t => t.status === 'pending' || t.status === 'in_progress');
         document.getElementById('in-progress-count').textContent = inProgress.length;
-        document.getElementById('in-progress-list').innerHTML = inProgress.slice(0, 10).map(t => 
-          '<div class="task-item">' +
-            '<span class="task-priority priority-' + t.priority + '">' + t.priority + '</span>' +
-            '<span class="task-status status-' + t.status + '">' + t.status + '</span>' +
-            '<div class="task-title">' + t.title + '</div>' +
-            '<div class="task-meta">' +
-              '<span>👤 ' + t.assigned_agent_id + '</span>' +
-              '<span>📅 ' + (t.updated_at || t.created_at).substring(0, 10) + '</span>' +
-            '</div>' +
-          '</div>'
-        ).join('');
-        
+        document.getElementById('in-progress-list').innerHTML = inProgress.slice(0, 10).map(t=>'<div class="task-item"><span class="task-priority priority-'+t.priority+'">'+(priorityMap[t.priority]||t.priority)+'</span><span class="task-status status-pending">'+(statusMap[t.status]||t.status)+'</span><div class="task-title">'+translateTitle(t.title)+'</div><div class="task-meta"><span>'+t.assigned_agent_id.toUpperCase()+'</span><span class="task-eta">ETA: '+getEta(t.created_at, t.priority)+'</span></div></div>').join('');
         const done = tasks.tasks.filter(t => t.status === 'done');
         document.getElementById('done-count').textContent = done.length;
-        document.getElementById('done-list').innerHTML = done.slice(0, 10).map(t => 
-          '<div class="task-item">' +
-            '<span class="task-priority priority-' + t.priority + '">' + t.priority + '</span>' +
-            '<span class="task-status status-done">✅ Done</span>' +
-            '<div class="task-title">' + t.title + '</div>' +
-            '<div class="task-meta">' +
-              '<span>👤 ' + t.assigned_agent_id + '</span>' +
-              '<span>📅 ' + (t.updated_at || t.created_at).substring(0, 10) + '</span>' +
-            '</div>' +
-            (t.output_data ? '<div class="output-preview">' + t.output_data.substring(0, 200) + '...</div>' : '') +
-          '</div>'
-        ).join('');
-        
+        document.getElementById('done-list').innerHTML = done.slice(0, 10).map(t=>'<div class="task-item"><span class="task-priority priority-'+t.priority+'">'+(priorityMap[t.priority]||t.priority)+'</span><span class="task-status status-done">Done</span><div class="task-title">'+translateTitle(t.title)+'</div><div class="task-meta"><span>'+t.assigned_agent_id.toUpperCase()+'</span><span>'+(t.updated_at||t.created_at).substring(0,10)+'</span></div></div>').join('');
         document.getElementById('time').textContent = 'Updated: ' + new Date().toLocaleString();
-      } catch(e) {
-        document.getElementById('time').textContent = 'Error: ' + e.message;
-      }
+      } catch(e) { document.getElementById('time').textContent = 'Error: ' + e.message; }
     }
-    
     load();
     setInterval(load, 10000);
   </script>
