@@ -1,5 +1,5 @@
 name = "themachine-auth"
-main = "functions/functions/auth.ts"
+main = "functions/functions/auth.bundle.js"
 compatibility_date = "2024-01-01"
 
 [vars]
