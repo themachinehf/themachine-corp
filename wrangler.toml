@@ -14,8 +14,6 @@ database_id = "b1a4fcce-fd89-40cd-bfd1-975c591cf709"
 binding = "AUTH_KV"
 id = "86606b92145c414ebeacd0543b545d6b"
 
-[[headers]]
-for = "/*"
-Access-Control-Allow-Origin = "*"
-Access-Control-Allow-Methods = "GET, POST, OPTIONS"
-Access-Control-Allow-Headers = "Content-Type"
+# NOTE: Global CORS headers removed
+# CORS is now handled dynamically in auth.ts via getCorsOrigin()
+# to support credentials + dynamic origin
