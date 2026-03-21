@@ -1,6 +1,9 @@
 // themachine-corp/functions/auth.ts
 // Cloudflare Workers Auth System (ES Module)
 
+// bcryptjs - bundled via esbuild for Cloudflare Workers compatibility
+import bcrypt from 'bcryptjs';
+
 interface Env {
   DB: D1Database;
   AUTH_KV: KVNamespace;
@@ -126,11 +129,8 @@ function generateId(): string {
 
 // bcryptjs for password hashing (Cloudflare Workers compatible)
 async function hashPassword(password: string): Promise<string> {
-  // Use SHA-256 as fallback (will be upgraded on first login)
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  // Use bcrypt with 10 rounds (OWASP minimum)
+  return bcrypt.hash(password, 10);
 }
 
 // Verify password with dual-hash support (bcrypt + legacy SHA-256)
@@ -138,14 +138,10 @@ async function verifyPassword(password: string, storedHash: string, userId?: str
   // bcrypt format: $2b$10$...
   if (storedHash.startsWith('$2b$')) {
     // Use bcryptjs for bcrypt hashes
-    // For now, we don't have bcryptjs imported, so this is a placeholder
-    // The actual bcrypt verification would be: return bcrypt.compare(password, storedHash);
-    // Since we need to add bcryptjs to the project, we fall back to sha256 check for now
-    // TODO: Add bcryptjs dependency and implement properly
-    return false; // Placeholder until bcryptjs is added
+    return bcrypt.compare(password, storedHash);
   }
   
-  // Legacy SHA-256 check
+  // Legacy SHA-256 check (with optional {sha256:} prefix)
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const buf = await crypto.subtle.digest('SHA-256', data);
@@ -155,10 +151,24 @@ async function verifyPassword(password: string, storedHash: string, userId?: str
   const storedHashClean = storedHash.replace('{sha256:}', '');
   
   if (hash === storedHashClean) {
-    // Auto-upgrade to bcrypt on next login (TODO: implement after bcryptjs added)
+    // Auto-upgrade to bcrypt on next successful login (non-blocking)
+    if (userId && env) {
+      // Fire-and-forget: upgrade hash in background
+      upgradePasswordHash(userId, password, env).catch(err => {
+        console.error('Password hash auto-upgrade failed:', err);
+      });
+    }
     return true;
   }
   return false;
+}
+
+// Auto-upgrade legacy SHA-256 hash to bcrypt
+async function upgradePasswordHash(userId: string, password: string, env: Env): Promise<void> {
+  const newHash = await bcrypt.hash(password, 10);
+  await env.DB.prepare(`
+    UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?
+  `).bind(newHash, Date.now(), userId).run();
 }
 
 function createToken(): string {

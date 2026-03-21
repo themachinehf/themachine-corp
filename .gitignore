@@ -1,0 +1,11 @@
+# Build outputs
+functions/functions/auth.bundle.js
+functions/functions/auth.bundle.js.map
+
+# Node modules
+functions/node_modules/
+functions/package-lock.json
+
+# OS
+.DS_Store
+*.swp

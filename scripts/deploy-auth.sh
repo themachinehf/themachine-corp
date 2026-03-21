@@ -45,14 +45,20 @@ echo "📋 Step 6: 设置环境变量"
 echo "   AUTH_SECRET: 生成 32+ 字符随机字符串"
 echo "   COOKIE_DOMAIN: .themachine.ai"
 
-# 7. 部署 Workers
+# 7. 构建 Bundle (包含 bcryptjs)
 echo ""
-echo "📋 Step 7: 部署 Workers"
+echo "📋 Step 7: 构建 Bundle (包含 bcryptjs)"
+cd functions && npm install && npm run build && cd ..
+echo "   Bundle: functions/functions/auth.bundle.js"
+
+# 8. 部署 Workers
+echo ""
+echo "📋 Step 8: 部署 Workers"
 echo "   wrangler deploy"
 
-# 8. 测试
+# 9. 测试
 echo ""
-echo "📋 Step 8: 测试 API"
+echo "📋 Step 9: 测试 API"
 echo "   curl -X POST https://themachine-auth.themachine.workers.dev/api/auth/register \\"
 echo "     -H 'Content-Type: application/json' \\"
 echo "     -d '{\"email\":\"test@example.com\",\"username\":\"test\",\"password\":\"password123\"}'"
