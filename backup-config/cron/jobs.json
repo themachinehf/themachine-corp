@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "a2h-market-scan-kevin",
+      "agentId": "cto",
+      "name": "Kevin-A2H-Market-Scan",
+      "description": "Kevin每小时扫描A2H Market，筛选高价值任务(¥100+)，自动联系发布者接单，汇报到#public",
+      "enabled": true,
+      "createdAtMs": 1742782800000,
+      "updatedAtMs": 1774343783108,
+      "schedule": {
+        "kind": "cron",
+        "expr": "5 * * * *",
+        "tz": "Asia/Shanghai",
+        "staggerMs": 600000
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "【Kevin-A2H-Market-Scan】A2H Market自动接单\n\n任务：扫描A2H Market高价值任务，自动化接单流程\n\n⚠️ 重要：\n- 使用 browser 工具时，**不要指定 profile 参数**（留空或省略profile），这样会自动使用 OpenClaw 默认 browser（Kevin已在其中登录了A2H）\n- 如果要显式指定，用 profile=\"openclaw\"\n- 禁止使用 profile=\"user\"（那是 chrome-mcp，没有 A2H 登录态）\n\n步骤：\n1. 用 browser 工具打开 https://a2hmarket.ai/ bounties 或任务列表页面（不指定 profile）\n2. 截图查看当前所有悬赏任务\n3. 筛选高价值任务（¥100及以上）\n4. 过滤掉：\n   - ¥99以下任务（不值得）\n   - 人肉任务（截图、美食、调研等纯人工任务）\n   - 明显不可做的任务\n5. 对符合条件的高价值任务：\n   - 点击「聊一聊」联系发布者\n   - 评估任务是否适合THEMACHINE Corp\n   - 可做 → 接受任务\n   - 不可做 → 礼貌拒绝\n6. 汇报进展到 #public 频道(1465499222458765354)\n\n汇报格式：\n- 扫描到的任务总数\n- 高价值任务数量\n- 已联系/已接受/已拒绝的任务\n- 具体任务详情（名称、价格、链接）",
+        "timeoutSeconds": 600
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "last",
+        "to": "1465499222458765354"
+      },
+      "state": {
+        "nextRunAtMs": 1774346898387,
+        "lastRunAtMs": 1774343298390,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 484718,
+        "lastDeliveryStatus": "delivered",
+        "consecutiveErrors": 0,
+        "lastDelivered": true,
+        "runningAtMs": 1774346898394
+      }
+    },
+    {
+      "id": "134fe6b4-f635-47f8-ae70-194e1c42df6f",
+      "agentId": "cmo",
+      "name": "Mike-Daily-Content",
+      "description": "CMO每日9点检查内容日历，执行当日内容发布，汇报到#public",
+      "enabled": true,
+      "createdAtMs": 1774346397194,
+      "updatedAtMs": 1774346397194,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 9 * * *",
+        "tz": "Asia/Shanghai"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "【Mike-Daily-Content】每日内容日历检查与发布\n\n任务：检查内容日历，执行当日内容发布计划\n\n步骤：\n1. 读取 workspace 中的 content-calendar.md 或相关内容日历文件\n2. 梳理今日需要发布的内容\n3. 检查各平台（小红书、Twitter/X、微信公众号等）的待发布内容状态\n4. 执行内容发布（使用对应skill）\n5. 汇报发布结果到 #public 频道\n\n汇报格式：\n- 今日内容计划\n- 已发布/待发布/取消的内容\n- 各平台发布状态",
+        "timeoutSeconds": 300
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "last",
+        "to": "1465499222458765354"
+      },
+      "state": {
+        "nextRunAtMs": 1774400400000
+      }
+    }
+  ]
+}
