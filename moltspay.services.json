@@ -1,0 +1,52 @@
+{
+  "provider": {
+    "name": "THEMACHINE Corp",
+    "description": "AI Agent services - SEO, content, market analysis, trading automation",
+    "wallet": "0xD1ED15FE56C005c73fD9D35581feab569115474B",
+    "chains": ["base", "base_sepolia", "polygon", "solana"]
+  },
+  "services": [
+    {
+      "id": "seo-audit",
+      "name": "SEO Site Audit",
+      "description": "Full SEO audit with keyword research, technical issues, and content recommendations",
+      "price": 0.50,
+      "currency": "USDC"
+    },
+    {
+      "id": "content-generation",
+      "name": "Multi-platform Content Generation",
+      "description": "Generate publish-ready posts for 小红书, 知乎, 公众号, 抖音 with platform-native formatting",
+      "price": 0.25,
+      "currency": "USDC"
+    },
+    {
+      "id": "market-analysis",
+      "name": "Market Analysis Report",
+      "description": "Enterprise market trend analysis, competitor analysis, user behavior insights",
+      "price": 1.00,
+      "currency": "USDC"
+    },
+    {
+      "id": "github-bounty",
+      "name": "GitHub Bounty Hunter",
+      "description": "Automatically scan repos for open issues, evaluate value, claim and submit PRs",
+      "price": 2.00,
+      "currency": "USDC"
+    },
+    {
+      "id": "competitor-watch",
+      "name": "Competitor Watch",
+      "description": "Monitor competitor websites, product pages, pricing changes 24/7 with smart alerts",
+      "price": 0.75,
+      "currency": "USDC"
+    },
+    {
+      "id": "x-research",
+      "name": "X/Twitter Intelligence",
+      "description": "Search, analyze, and report on X/Twitter discourse with sentiment analysis",
+      "price": 0.30,
+      "currency": "USDC"
+    }
+  ]
+}
