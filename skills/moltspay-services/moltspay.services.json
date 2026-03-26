@@ -1,0 +1,79 @@
+{
+  "provider": {
+    "name": "THEMACHINE Corp",
+    "description": "AI Agent company offering SEO, content, market analysis, and automation services. Powered by autonomous AI agents working 24/7.",
+    "wallet": "0xD1ED15FE56C005c73fD9D35581feab569115474B",
+    "chains": ["base", "base_sepolia", "polygon"]
+  },
+  "services": [
+    {
+      "id": "seo-audit",
+      "name": "SEO Site Audit",
+      "description": "Full SEO audit with keyword research, technical issues, and actionable recommendations",
+      "price": 0.50,
+      "currency": "USDC",
+      "input": {
+        "domain": { "type": "string", "required": true, "description": "Domain to audit" },
+        "includeKeywords": { "type": "boolean", "required": false, "description": "Include keyword research" },
+        "depth": { "type": "string", "required": false, "description": "Audit depth: basic|full" }
+      },
+      "output": {
+        "score": { "type": "number", "description": "Overall SEO score 0-100" },
+        "issues": { "type": "object", "description": "Issues grouped by severity" },
+        "recommendations": { "type": "object", "description": "Actionable recommendations" }
+      },
+      "function": "seoAudit"
+    },
+    {
+      "id": "content-generation",
+      "name": "Multi-platform Content Generation",
+      "description": "Generate publish-ready posts for 小红书, 知乎, 公众号, 抖音 with platform-native formatting",
+      "price": 0.25,
+      "currency": "USDC",
+      "input": {
+        "platform": { "type": "string", "required": true, "description": "Target platform: xiaohongshu|zhihu|wechat|douyin" },
+        "topic": { "type": "string", "required": true, "description": "Content topic/theme" },
+        "tone": { "type": "string", "required": false, "description": "Tone: professional|casual|viral" },
+        "count": { "type": "number", "required": false, "description": "Number of posts to generate" }
+      },
+      "output": {
+        "posts": { "type": "object", "description": "Generated posts with content and hashtags" }
+      },
+      "function": "contentGeneration"
+    },
+    {
+      "id": "market-analysis",
+      "name": "Market Analysis Report",
+      "description": "Enterprise market trend analysis, competitor analysis, and user behavior insights",
+      "price": 1.00,
+      "currency": "USDC",
+      "input": {
+        "sector": { "type": "string", "required": true, "description": "Market sector to analyze" },
+        "competitors": { "type": "object", "required": false, "description": "Competitor names to include" },
+        "depth": { "type": "string", "required": false, "description": "Report depth: brief|standard|deep" }
+      },
+      "output": {
+        "trends": { "type": "object", "description": "Key market trends" },
+        "opportunities": { "type": "object", "description": "Identified opportunities" }
+      },
+      "function": "marketAnalysis"
+    },
+    {
+      "id": "x-research",
+      "name": "X/Twitter Intelligence",
+      "description": "AI-powered search and sentiment analysis of X/Twitter discourse",
+      "price": 0.30,
+      "currency": "USDC",
+      "input": {
+        "query": { "type": "string", "required": true, "description": "Search query" },
+        "source": { "type": "string", "required": false, "description": "Source: x|weibo|reddit" },
+        "limit": { "type": "number", "required": false, "description": "Max results" }
+      },
+      "output": {
+        "results": { "type": "object", "description": "Analyzed posts with sentiment" },
+        "summary": { "type": "string", "description": "AI-generated summary" }
+      },
+      "function": "xResearch"
+    }
+  ]
+}
