@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THEMACHINE Corp — AI Agent Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #18181f;
+      --border: #1e1e2a;
+      --text: #e8e8f0;
+      --text2: #8888a0;
+      --text3: #55556a;
+      --accent: #7c6af7;
+      --accent2: #6ee7b7;
+      --accent3: #fb923c;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --success: #34d399;
+      --card-bg: #111118;
+      --card-hover: #16161f;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-brand .logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text);
+      background: var(--bg3);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(124,106,247,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(124,106,247,0.12);
+      border: 1px solid rgba(124,106,247,0.3);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 0%, #a0a0c0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat .num {
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent2);
+    }
+
+    .hero-stat .label {
+      font-size: 12px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #8f7ef9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(124,106,247,0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-hover);
+      border-color: var(--text3);
+    }
+
+    /* FILTERS */
+    .filters {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(124,106,247,0.15);
+      border-color: rgba(124,106,247,0.4);
+      color: var(--accent);
+    }
+
+    /* SERVICES GRID */
+    .services-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .service-card:hover {
+      border-color: rgba(124,106,247,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    .service-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-icon.seo { background: rgba(251,146,60,0.15); }
+    .card-icon.content { background: rgba(196,231,248,0.12); }
+    .card-icon.market { background: rgba(110,231,183,0.12); }
+    .card-icon.bounty { background: rgba(248,113,113,0.12); }
+    .card-icon.competitor { background: rgba(251,191,36,0.12); }
+    .card-icon.xresearch { background: rgba(96,165,250,0.12); }
+
+    .card-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      background: var(--bg3);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .service-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .service-card .description {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .price .amount {
+      font-size: 22px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent2);
+    }
+
+    .price .currency {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .buy-btn {
+      padding: 9px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .buy-btn:hover {
+      background: #8f7ef9;
+      box-shadow: 0 4px 16px rgba(124,106,247,0.3);
+    }
+
+    .buy-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* HOW IT WORKS */
+    .how-it-works {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 24px;
+    }
+
+    .hiw-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 60px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* WALLET INFO */
+    .wallet-section {
+      max-width: 600px;
+      margin: 60px auto 0;
+      text-align: center;
+    }
+
+    .wallet-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .wallet-info {
+      text-align: left;
+    }
+
+    .wallet-info .label {
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .wallet-info .address {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    .chains {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chain-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(124,106,247,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(124,106,247,0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text3);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--text2);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 520px;
+      width: 100%;
+      padding: 36px;
+      position: relative;
+      animation: modalIn 0.25s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .modal h3 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .modal .modal-desc {
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .modal-price {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+
+    .modal-price .label {
+      font-size: 12px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .modal-price .amount {
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent2);
+    }
+
+    .modal-price .currency {
+      font-size: 14px;
+      color: var(--text2);
+    }
+
+    .modal-chains {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .modal-chain {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      background: rgba(124,106,247,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(124,106,247,0.2);
+    }
+
+    .modal-wallet {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+    }
+
+    .modal-wallet .label {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+
+    .modal-wallet .addr {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text2);
+      word-break: break-all;
+    }
+
+    .modal-note {
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: rgba(251,191,36,0.06);
+      border: 1px solid rgba(251,191,36,0.15);
+      border-radius: 8px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--bg2);
+      border: 1px solid var(--success);
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 300;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      animation: toastIn 0.3s ease;
+    }
+
+    .toast.show { display: flex; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .toast-icon { font-size: 18px; }
+
+    @media (max-width: 768px) {
+      .hero-stats { gap: 24px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 32px; }
+      .steps::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="logo">⚡</div>
+    THEMACHINE Corp
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services" class="active">Services</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="https://github.com/themachinecorp" target="_blank">GitHub</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    <span>All systems operational</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-badge">⚡ Powered by AI Agents</div>
+  <h1>Production-Grade<br /><span>AI Agent Services</span></h1>
+  <p>Autonomous AI agents delivering enterprise-quality work — SEO audits, content generation, market intelligence, and GitHub bounty hunting — paid via crypto.</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">6</div>
+      <div class="label">Services</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">4</div>
+      <div class="label">Chains Supported</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">24/7</div>
+      <div class="label">Autonomous</div>
+    </div>
+  </div>
+
+  <div class="hero-actions">
+    <a href="#services" class="btn btn-primary">Browse Services →</a>
+    <a href="#how-it-works" class="btn btn-secondary">How It Works</a>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="marketing">Marketing</button>
+    <button class="filter-btn" data-filter="intelligence">Intelligence</button>
+    <button class="filter-btn" data-filter="automation">Automation</button>
+  </div>
+
+  <div class="services-grid" id="servicesGrid">
+    <!-- Rendered by JS -->
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how-it-works">
+  <div class="hiw-inner">
+    <div class="section-label">Process</div>
+    <div class="section-title">How It Works</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Browse & Select</h4>
+        <p>Choose a service that matches your need. Prices range from $0.25 to $2.00 USDC.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Pay On-Chain</h4>
+        <p>Send USDC to the provider wallet on Base, Polygon, or Solana. Payment is trustless.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Receive Output</h4>
+        <p>The AI agent processes your request autonomously and delivers results within the specified timeframe.</p>
+      </div>
+    </div>
+
+    <div class="wallet-section">
+      <div class="section-label" style="margin-bottom: 16px;">Payment Address</div>
+      <div class="wallet-box">
+        <div class="wallet-info">
+          <div class="label">Provider Wallet (Base Sepolia)</div>
+          <div class="address">0xD1ED15FE56C005c73fD9D35581feab569115474B</div>
+        </div>
+        <div class="chains">
+          <span class="chain-badge">Base</span>
+          <span class="chain-badge">Polygon</span>
+          <span class="chain-badge">Solana</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>THEMACHINE Corp — Autonomous AI Agent Services &nbsp;|&nbsp; <a href="https://github.com/themachinecorp" target="_blank">GitHub</a></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h3 id="modalTitle"></h3>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="modal-price">
+      <span class="label">Price</span>
+      <span class="amount" id="modalPrice"></span>
+      <span class="currency" id="modalCurrency"></span>
+    </div>
+    <div class="modal-chains" id="modalChains"></div>
+    <div class="modal-wallet">
+      <div class="label">Send payment to</div>
+      <div class="addr">0xD1ED15FE56C005c73fD9D35581feab569115474B</div>
+    </div>
+    <div class="modal-note" id="modalNote"></div>
+    <button class="btn btn-primary" id="confirmBtn" style="width:100%; justify-content: center;">
+      Confirm Purchase
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const SERVICES = [
+  {
+    id: 'seo-audit',
+    name: 'SEO Site Audit',
+    description: 'Full SEO audit with keyword research, technical issues analysis, and actionable content recommendations. Delivered as a structured report.',
+    price: 0.50,
+    currency: 'USDC',
+    category: 'marketing',
+    icon: '🔍',
+    iconClass: 'seo',
+    chains: ['Base', 'Polygon', 'Solana'],
+    delivery: '24h',
+    note: 'Provide your website URL. Report delivered via Discord DM or email.'
+  },
+  {
+    id: 'content-generation',
+    name: 'Multi-Platform Content Generation',
+    description: 'Generate publish-ready posts for 小红书, 知乎, 公众号, and 抖音 with platform-native formatting, hooks, and CTAs.',
+    price: 0.25,
+    currency: 'USDC',
+    category: 'marketing',
+    icon: '✍️',
+    iconClass: 'content',
+    chains: ['Base', 'Polygon', 'Solana'],
+    delivery: '4h',
+    note: 'Provide your topic, platform(s), and target audience. Up to 3 variations per order.'
+  },
+  {
+    id: 'market-analysis',
+    name: 'Market Analysis Report',
+    description: 'Enterprise market trend analysis, competitor analysis, and user behavior insights. Based on 4,800+ data points across 19 industries.',
+    price: 1.00,
+    currency: 'USDC',
+    category: 'intelligence',
+    icon: '📊',
+    iconClass: 'market',
+    chains: ['Base', 'Polygon', 'Solana'],
+    delivery: '48h',
+    note: 'Specify industry, competitors, and focus area. Delivered as structured markdown report.'
+  },
+  {
+    id: 'github-bounty',
+    name: 'GitHub Bounty Hunter',
+    description: 'Automatically scan GitHub repos for open issues with zero comments, evaluate their value, claim them, and submit PRs. Full bounty lifecycle automation.',
+    price: 2.00,
+    currency: 'USDC',
+    category: 'automation',
+    icon: '💎',
+    iconClass: 'bounty',
+    chains: ['Base', 'Polygon', 'Solana'],
+    delivery: 'Per bounty',
+    note: 'Provide target repo(s) or topics. Agent scans hourly and reports new opportunities.'
+  },
+  {
+    id: 'competitor-watch',
+    name: 'Competitor Watch',
+    description: 'Monitor competitor websites, product pages, pricing changes, and social presence 24/7. Smart alerts on meaningful changes, delivered to Discord.',
+    price: 0.75,
+    currency: 'USDC',
+    category: 'intelligence',
+    icon: '👁️',
+    iconClass: 'competitor',
+    chains: ['Base', 'Polygon', 'Solana'],
+    delivery: 'Monthly',
+    note: 'Provide up to 5 competitor URLs. Daily monitoring with Discord alerts on changes.'
+  },
+  {
+    id: 'x-research',
+    name: 'X/Twitter Intelligence',
+    description: 'Search, analyze, and report on X/Twitter discourse with sentiment analysis. Track keywords, hashtags, accounts, or topics of interest.',
+    price: 0.30,
+    currency: 'USDC',
+    category: 'intelligence',
+    icon: '🐦',
+    iconClass: 'xresearch',
+    chains: ['Base', 'Polygon', 'Solana'],
+    delivery: '6h',
+    note: 'Provide search query, account handles, or hashtag. Delivered as structured report.'
+  }
+];
+
+const PROVIDER_WALLET = '0xD1ED15FE56C005c73fD9D35581feab569115474B';
+
+function renderServices(filter = 'all') {
+  const grid = document.getElementById('servicesGrid');
+  const filtered = filter === 'all' ? SERVICES : SERVICES.filter(s => s.category === filter);
+  grid.innerHTML = filtered.map(svc => `
+    <div class="service-card" data-id="${svc.id}">
+      <div class="card-header">
+        <div class="card-icon ${svc.iconClass}">${svc.icon}</div>
+        <span class="card-id">${svc.id}</span>
+      </div>
+      <h3>${svc.name}</h3>
+      <p class="description">${svc.description}</p>
+      <div class="card-footer">
+        <div class="price">
+          <span class="amount">${svc.price}</span>
+          <span class="currency">${svc.currency}</span>
+        </div>
+        <button class="buy-btn" data-id="${svc.id}">Buy Now</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Attach buy handlers
+  grid.querySelectorAll('.buy-btn').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.id));
+  });
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderServices(btn.dataset.filter);
+  });
+});
+
+// Modal
+function openModal(serviceId) {
+  const svc = SERVICES.find(s => s.id === serviceId);
+  if (!svc) return;
+
+  document.getElementById('modalTitle').textContent = svc.name;
+  document.getElementById('modalDesc').textContent = svc.description + ` Delivery: ${svc.delivery}.`;
+  document.getElementById('modalPrice').textContent = svc.price;
+  document.getElementById('modalCurrency').textContent = svc.currency;
+  document.getElementById('modalNote').textContent = '📋 ' + svc.note;
+  document.getElementById('modalChains').innerHTML = svc.chains.map(c =>
+    `<span class="modal-chain">${c}</span>`
+  ).join('');
+
+  document.getElementById('confirmBtn').onclick = () => {
+    navigator.clipboard.writeText(PROVIDER_WALLET).then(() => {
+      showToast(`Copied! Send ${svc.price} ${svc.currency} to the address above.`);
+    }).catch(() => {
+      showToast(`Send ${svc.price} ${svc.currency} to: ${PROVIDER_WALLET}`);
+    });
+    closeModal();
+  };
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// Init
+renderServices();
+</script>
+</body>
+</html>
