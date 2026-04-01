@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent副业实战指南 | THEMACHINE Corp.</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --text: #e5e7eb;
+      --gold: #fbbf24;
+      --gold-light: #fcd34d;
+      --gold-dark: #d97706;
+      --border: #1e293b;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background:
+        radial-gradient(ellipse at top, rgba(251, 191, 36, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(251, 191, 36, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(251, 191, 36, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 120px;
+      height: 2px;
+      background: var(--gold);
+    }
+    h1 {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      letter-spacing: 4px;
+      animation: glow 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.3));
+    }
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3)); }
+      to   { filter: drop-shadow(0 0 50px rgba(251, 191, 36, 0.6)); }
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+    .subtitle span { color: var(--gold); }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav a {
+      color: var(--gold);
+      text-decoration: none;
+      padding: 10px 20px;
+      border: 2px solid var(--gold);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.1s;
+    }
+    .nav a:hover { background: var(--gold); color: var(--bg); }
+    .nav a.active { background: var(--gold); color: var(--bg); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(251, 191, 36, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero h2 {
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+    .hero p {
+      color: #9ca3af;
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    /* Pricing Grid */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 50px 0;
+    }
+    @media (max-width: 700px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+    .plan {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      background: rgba(30, 41, 59, 0.3);
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .plan:hover {
+      border-color: var(--gold);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(251, 191, 36, 0.1);
+    }
+    .plan.popular {
+      border-color: var(--gold);
+      background: rgba(251, 191, 36, 0.06);
+    }
+    .plan.popular::before {
+      content: '最受欢迎';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--bg);
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 16px;
+      border-radius: 20px;
+    }
+    .plan-name {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+    .plan-price {
+      font-size: 52px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3));
+    }
+    .plan-price .currency {
+      font-size: 24px;
+      vertical-align: super;
+      -webkit-text-fill-color: var(--gold);
+      filter: none;
+    }
+    .plan-tagline {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 24px;
+    }
+    .plan-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 28px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+    .plan-features li {
+      padding: 8px 0;
+      font-size: 13px;
+      color: #9ca3af;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .plan-features li::before {
+      content: '✓';
+      color: var(--gold);
+      font-weight: bold;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Buy Button placeholder */
+    .buy-btn-placeholder {
+      display: block;
+      border: 2px dashed var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: default;
+      opacity: 0.6;
+    }
+    .buy-btn-placeholder span {
+      display: block;
+      font-size: 10px;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    /* Social Proof */
+    .section { margin-bottom: 60px; position: relative; }
+    .section::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+      opacity: 0.3;
+    }
+    .section h2 {
+      color: var(--gold);
+      font-size: 18px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      display: inline-block;
+    }
+    .section p { color: #6b7280; line-height: 1.8; max-width: 700px; }
+    .section .section-intro { color: #9ca3af; margin-bottom: 24px; }
+
+    .social-proof-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .proof-card {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+    .proof-card:hover {
+      border-color: rgba(251, 191, 36, 0.4);
+      transform: translateY(-4px);
+    }
+    .proof-card .quote {
+      font-size: 14px;
+      color: #e5e7eb;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+    .proof-card .meta {
+      font-size: 12px;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-card .x-badge {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      cursor: default;
+    }
+    .faq-item:first-child { padding-top: 0; }
+    .faq-q {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .faq-q::before {
+      content: 'Q.';
+      color: var(--gold);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .faq-a {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.8;
+      padding-left: 28px;
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(180deg, rgba(251, 191, 36, 0.04) 0%, transparent 100%);
+      border-radius: 16px;
+      margin: 40px 0;
+    }
+    .cta-section h2 {
+      color: var(--text);
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .cta-section p {
+      color: #6b7280;
+      margin-bottom: 32px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .footer p { color: #6b7280; font-size: 13px; }
+    .x-link { color: var(--gold); text-decoration: none; transition: opacity 0.2s; }
+    .x-link:hover { opacity: 0.7; }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 30px; }
+      .container { padding: 30px 16px; }
+      .section::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>AI Agent副业实战指南</h1>
+      <p class="subtitle"><span>THEMACHINE CORP</span> 出品</p>
+    </header>
+
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/products" class="active">Products</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/office/">Office</a>
+      <a href="/themathink/">THEMATHINK</a>
+      <a href="#pricing">定价</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h2>用AI Agent开启你的副业收入</h2>
+      <p>
+        从0到1，手把手教你用AI Agent在Algora、A2H等平台接单赚钱。
+        真实案例 + 可复制的实战方法论，让你每月多赚$500-$3000。
+      </p>
+    </div>
+
+    <!-- Pricing -->
+    <div id="pricing" style="padding: 0 0 60px;">
+      <div class="section">
+        <h2>定价方案</h2>
+        <p class="section-intro">选择适合你的版本，立即开始</p>
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- $29 基础版 -->
+        <div class="plan">
+          <div class="plan-name">基础版</div>
+          <div class="plan-price"><span class="currency">$</span>29</div>
+          <div class="plan-tagline">AI Agent接单攻略</div>
+          <ul class="plan-features">
+            <li>平台选择指南（Algora/A2H）</li>
+            <li>Profile优化策略</li>
+            <li>首单成交话术模板</li>
+            <li>常见问题避坑清单</li>
+          </ul>
+          <!-- BUY_LINK_29 -->
+          <a class="buy-btn-placeholder" href="#">
+            即将上线 <span>Stripe支付 · 信用卡可用</span>
+          </a>
+        </div>
+
+        <!-- $49 标准版 -->
+        <div class="plan popular">
+          <div class="plan-name">标准版</div>
+          <div class="plan-price"><span class="currency">$</span>49</div>
+          <div class="plan-tagline">+ OpenClaw实战模板</div>
+          <ul class="plan-features">
+            <li>基础版全部内容</li>
+            <li>OpenClaw配置模板</li>
+            <li>接单自动化工作流</li>
+            <li>报价模板 + 议价策略</li>
+            <li>社群入场券（Discord）</li>
+          </ul>
+          <!-- BUY_LINK_49 -->
+          <a class="buy-btn-placeholder" href="#">
+            即将上线 <span>Stripe支付 · 信用卡可用</span>
+          </a>
+        </div>
+
+        <!-- $99 高级版 -->
+        <div class="plan">
+          <div class="plan-name">高级版</div>
+          <div class="plan-price"><span class="currency">$</span>99</div>
+          <div class="plan-tagline">+ 1次 Q&amp;A Session</div>
+          <ul class="plan-features">
+            <li>标准版全部内容</li>
+            <li>30分钟 1对1 Q&amp;A视频</li>
+            <li>个性化副业路径规划</li>
+            <li>优先邮件支持（30天）</li>
+            <li>未来更新免费获取</li>
+          </ul>
+          <!-- BUY_LINK_99 -->
+          <a class="buy-btn-placeholder" href="#">
+            即将上线 <span>Stripe支付 · 信用卡可用</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Social Proof -->
+    <div class="section" id="social-proof">
+      <h2>社保证言</h2>
+      <p class="section-intro">已经在X上关注我们的朋友怎么说</p>
+      <div class="social-proof-cards">
+        <div class="proof-card">
+          <p class="quote">"THEMACHINE Corp发的Algora接单攻略真的有用，第一周就拿到了2个PR订单。"</p>
+          <div class="meta">
+            <span class="x-badge">X / Twitter</span>
+            <span>关注者：@xxx</span>
+          </div>
+        </div>
+        <div class="proof-card">
+          <p class="quote">"OpenClaw实战模板救了我，省了至少20小时配置时间。强烈推荐标准版。"</p>
+          <div class="meta">
+            <span class="x-badge">X / Twitter</span>
+            <span>关注者：@xxx</span>
+          </div>
+        </div>
+        <div class="proof-card">
+          <p class="quote">"Q&A session帮我理清了定位，现在副业月入稳定在$800+。物超所值！"</p>
+          <div class="meta">
+            <span class="x-badge">X / Twitter</span>
+            <span>关注者：@xxx</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section" id="faq">
+      <h2>常见问题</h2>
+      <p class="section-intro">购买前必读</p>
+
+      <div class="faq-item">
+        <div class="faq-q">需要编程基础吗？</div>
+        <div class="faq-a">不需要。我们从0开始讲解，适合任何想用AI工具赚钱的人。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">购买后可以退款吗？</div>
+        <div class="faq-a">数字产品一经售出不接受退款，但如果你觉得内容不满意，30天内可联系我们更换版本。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">内容什么时候更新？</div>
+        <div class="faq-a">基础版内容即刻可下载。标准版模板和高级版Q&A预约将在付款后24小时内联系安排。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q&A Session是怎么进行的？</div>
+        <div class="faq-a">通过Google Meet视频进行，时长30分钟。高级版用户付款后我们会发预约链接给你。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">付款方式有哪些？</div>
+        <div class="faq-a">支持信用卡、借记卡（Stripe安全支付）。未来将支持USDC等加密货币。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">和免费资料有什么区别？</div>
+        <div class="faq-a">网上的免费内容零散、不系统。我们的指南经过实战验证，直接给可操作的步骤，少走弯路。</div>
+      </div>
+
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="cta-section">
+      <h2>准备好开始了吗？</h2>
+      <p>选择适合你的版本，迈出AI副业第一步</p>
+      <a href="#pricing" style="
+        display: inline-block;
+        color: #0a0a0f;
+        background: linear-gradient(135deg, var(--gold-light), var(--gold));
+        text-decoration: none;
+        padding: 16px 40px;
+        border-radius: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-size: 14px;
+        filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3));
+      ">查看定价方案 →</a>
+    </div>
+
+    <div class="footer">
+      <p>THEMACHINE CORP. &copy; 2026 &nbsp;|&nbsp; <a class="x-link" href="https://x.com/THEMACHINE_HF">@THEMACHINE_HF</a></p>
+    </div>
+
+  </div>
+</body>
+</html>
