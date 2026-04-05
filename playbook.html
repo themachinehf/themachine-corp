@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Agent Engineer Playbook — 从 0 到 1 构建你的 AI 副业系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0a0a0f 0%, #111827 50%, #0f172a 100%);
+      padding: 80px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.4);
+      color: #818cf8;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      max-width: 700px;
+      margin: 0 auto 24px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 18px;
+      color: #94a3b8;
+      max-width: 540px;
+      margin: 0 auto 40px;
+    }
+    .price-tag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .price {
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .price-note {
+      font-size: 14px;
+      color: #64748b;
+      text-align: left;
+    }
+    .price-note del { color: #475569; }
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 16px 40px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 0 0 rgba(99,102,241,0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.4);
+    }
+    .guarantee {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #475569;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 64px 0; }
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      color: #64748b;
+      margin-bottom: 40px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #6366f1; }
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .card p { font-size: 14px; color: #64748b; }
+    .card-tag {
+      display: inline-block;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .card-tag.orange {
+      background: rgba(251,146,60,0.1);
+      border-color: rgba(251,146,60,0.3);
+      color: #fb923c;
+    }
+    .card-tag.blue {
+      background: rgba(99,102,241,0.1);
+      border-color: rgba(99,102,241,0.3);
+      color: #818cf8;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #1e293b;
+      margin: 0;
+    }
+    .toc {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .toc-item:last-child { border-bottom: none; }
+    .toc-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: #6366f1;
+      background: rgba(99,102,241,0.1);
+      min-width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .toc-content h4 { font-size: 15px; font-weight: 600; color: #e2e8f0; margin-bottom: 3px; }
+    .toc-content p { font-size: 13px; color: #64748b; }
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.08));
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 40px 0;
+    }
+    .highlight-box h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+    .highlight-box ul { list-style: none; }
+    .highlight-box li {
+      padding: 8px 0;
+      font-size: 15px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .highlight-box li::before {
+      content: '✓';
+      color: #6366f1;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .social-proof {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 28px;
+      margin: 32px 0;
+    }
+    .social-proof-item {
+      padding: 12px 0;
+      font-size: 14px;
+      color: #94a3b8;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      gap: 12px;
+    }
+    .social-proof-item:last-child { border-bottom: none; }
+    .sp-icon { color: #fbbf24; }
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      color: #475569;
+      font-size: 13px;
+      border-top: 1px solid #1e293b;
+    }
+    footer a { color: #6366f1; text-decoration: none; }
+    @media (max-width: 600px) {
+      h1 { font-size: 30px; }
+      .price { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="badge">数字产品 · 2026 版本</div>
+  <h1>AI Agent <span>Engineer</span><br>Playbook</h1>
+  <p>从 0 到 1 构建你的 AI 副业系统。6 个可立即启动的方向 + 完整工具链 + 实战避坑指南。</p>
+  <div class="price-tag">
+    <span class="price">¥199</span>
+    <div class="price-note">
+      <div><del>¥599</del></div>
+      <div>一次购买，永久更新</div>
+    </div>
+  </div>
+  <a href="https://themachine8023.gumroad.com/l/ai-agent-engineer-playbook" class="btn-primary">
+    立即获取完整版 →
+  </a>
+  <p class="guarantee">7 天无理由退款 · 不满意全额退</p>
+</section>
+
+<div class="container">
+  <hr class="divider">
+
+  <section>
+    <h2 class="section-title">这份 Playbook 解决什么问题？</h2>
+    <p class="section-sub">如果你想做 AI Agent 副业，但不知道从哪里开始 — 这份东西给你一张地图。</p>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>6 个可执行方向</h3>
+        <p>不是理论，是我在做的。Algora Bounty、数字产品、X 内容、n8n 服务、Cursor 外包、AI SaaS。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛠️</div>
+        <h3>完整工具链清单</h3>
+        <p>Agent 框架、部署、LLM、变现平台 — 我用过真实列出，不浮夸，不收广告费。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>实战经验汇总</h3>
+        <p>踩过的坑（定价太低、什么都想做、只学不动手）和我的避坑系统。</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2 class="section-title">内容目录</h2>
+    <p class="section-sub">6 个模块，从认知到落地</p>
+    <div class="toc">
+      <div class="toc-item">
+        <div class="toc-num">01</div>
+        <div class="toc-content">
+          <h4>认知篇 — 你需要知道的真相</h4>
+          <p>AI Agent 不是什么 / 真正是什么 / 谁适合做</p>
+        </div>
+      </div>
+      <div class="toc-item">
+        <div class="toc-num">02</div>
+        <div class="toc-content">
+          <h4>工具栈 — 我的技术选型</h4>
+          <p>核心层 / AI 层 / 变现层完整工具清单（附成本估算）</p>
+        </div>
+      </div>
+      <div class="toc-item">
+        <div class="toc-num">03</div>
+        <div class="toc-content">
+          <h4>落地篇 — 6 个可立即启动的方向</h4>
+          <p>Algora BountyHunter / 数字产品 / X内容 / n8n服务 / Cursor外包 / AI SaaS</p>
+        </div>
+      </div>
+      <div class="toc-item">
+        <div class="toc-num">04</div>
+        <div class="toc-content">
+          <h4>避坑指南 — 5 个我踩过的坑</h4>
+          <p>什么都想干 / 只学不动手 / 定价太低 / 不记录收入 / 法律风险</p>
+        </div>
+      </div>
+      <div class="toc-item">
+        <div class="toc-num">05</div>
+        <div class="toc-content">
+          <h4>每日系统 — 可复制的执行节奏</h4>
+          <p>工作日 / 周末 / 每月的固定动作</p>
+        </div>
+      </div>
+      <div class="toc-item">
+        <div class="toc-num">06</div>
+        <div class="toc-content">
+          <h4>资源库 + 行动清单</h4>
+          <p>必读工具 / Newsletter / 社群 + 6 步从 0 到第一个 $100</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <div class="highlight-box">
+      <h3>这份 Playbook 和其他 AI 课程有什么不同？</h3>
+      <ul>
+        <li>这是我（Kevin，THEMACHINE Corp CTO）每天实际使用的系统，不是「学来的」</li>
+        <li>所有工具选型基于真实支出和收入，不是广告</li>
+        <li>6 个方向都有具体门槛和预期收入天花板</li>
+        <li>附 Algora bounty 实操流程，我自己用这个赚了钱</li>
+        <li>永久更新：买了就是最新版，不用再付钱</li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2 class="section-title">谁适合这份 Playbook？</h2>
+    <p class="section-sub">我们筛选了最匹配的用户画像</p>
+    <div class="grid-3">
+      <div class="card">
+        <span class="card-tag">✅ 适合</span>
+        <h3>有技术基础的创业者</h3>
+        <p>懂一点 Python/JavaScript，想把 AI 能力产品化变现</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">✅ 适合</span>
+        <h3>想开启副业的开发者</h3>
+        <p>有正职但想建立被动收入系统，晚上/周末可以投入</p>
+      </div>
+      <div class="card">
+        <span class="card-tag orange">⚠️ 不适合</span>
+        <h3>想不劳而获的人</h3>
+        <p>如果你觉得买了这份东西就能躺着赚钱，请不要买</p>
+      </div>
+      <div class="card">
+        <span class="card-tag orange">⚠️ 不适合</span>
+        <h3>完全不懂代码的纯运营</h3>
+        <p>有些方向需要读代码、改 prompt，建议先补基础</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2 class="section-title">价格 & 交付</h2>
+    <div class="social-proof">
+      <div class="social-proof-item">
+        <span class="sp-icon">💰</span>
+        <span><strong>¥199</strong> — 完整版 PDF + Markdown 源文件 + 未来所有更新</span>
+      </div>
+      <div class="social-proof-item">
+        <span class="sp-icon">📧</span>
+        <span>购买后自动发送到你的邮箱（支持 Gumroad 所有支付方式）</span>
+      </div>
+      <div class="social-proof-item">
+        <span class="sp-icon">🔄</span>
+        <span>7 天无理由退款 — 不满意找我退款，不需要理由</span>
+      </div>
+      <div class="social-proof-item">
+        <span class="sp-icon">📬</span>
+        <span>有问题发邮件到 themachinecorp@163.com，24 小时内回复</span>
+      </div>
+    </div>
+    <div style="text-align: center; padding: 20px 0;">
+      <a href="https://themachine8023.gumroad.com/l/ai-agent-engineer-playbook" class="btn-primary">
+        获取 AI Agent Engineer Playbook →
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <p>THEMACHINE CORP. © 2026 · <a href="https://twitter.com/THEMACHINE_HF">@THEMACHINE_HF</a></p>
+</footer>
+
+</body>
+</html>
