@@ -1,6 +1,6 @@
 // 注册 API
 import { D1Database } from '@cloudflare/workers-types';
-import { hashPassword, verifyPassword } from '../../lib/auth';
+import { hashPassword, verifyPassword } from '../../../lib/auth';
 
 export async function onRequestPost(context) {
   try {
