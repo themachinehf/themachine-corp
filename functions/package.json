@@ -8,6 +8,7 @@
     "dev": "npm run build && wrangler dev"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.2",
     "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
