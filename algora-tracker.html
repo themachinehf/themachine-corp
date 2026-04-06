@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algora Bounty Tracker — Never Lose a Bounty Again</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0d0d0d;
+      color: #e8e8e8;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255, 204, 0, 0.12);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      color: #ffcc00;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    h1 .highlight {
+      background: linear-gradient(135deg, #ffcc00, #ff8800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: #999;
+      max-width: 540px;
+      margin: 0 auto 40px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      background: #ffcc00;
+      color: #0d0d0d;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 13px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { background: #ffd633; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07);
+      color: #ccc;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 13px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+    .price-note {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      margin: 60px 0;
+    }
+
+    /* Problem */
+    .section { padding: 40px 0; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ffcc00;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .pain-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .pain-card .emoji { font-size: 22px; margin-bottom: 8px; }
+    .pain-card p { font-size: 14px; color: #999; }
+
+    /* Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .feature-card .icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 204, 0, 0.12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .feature-card h3 { font-size: 15px; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: #888; }
+
+    /* What You Get */
+    .get-section { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 36px; margin-top: 24px; border: 1px solid rgba(255,255,255,0.06); }
+    .get-list { list-style: none; margin-top: 20px; }
+    .get-list li { display: flex; gap: 12px; padding: 10px 0; font-size: 14px; color: #ccc; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .get-list li:last-child { border-bottom: none; }
+    .check { color: #ffcc00; font-weight: 700; }
+
+    /* Tracker Preview */
+    .tracker-preview {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 24px;
+      font-size: 13px;
+    }
+
+    .tracker-preview .header {
+      background: rgba(255,255,255,0.04);
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tracker-preview .header span { color: #888; font-size: 12px; }
+
+    .tracker-preview table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .tracker-preview th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tracker-preview td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    .tracker-preview tr:last-child td { border-bottom: none; }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .status-active { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .status-review { background: rgba(234,179,8,0.15); color: #eab308; }
+    .status-paid { background: rgba(34,197,94,0.15); color: #22c55e; }
+
+    /* Pricing */
+    .pricing-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 36px;
+      max-width: 420px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .pricing-card .price {
+      font-size: 52px;
+      font-weight: 800;
+      color: #fff;
+      margin: 16px 0 4px;
+    }
+
+    .pricing-card .price span {
+      font-size: 20px;
+      font-weight: 400;
+      color: #666;
+    }
+
+    .pricing-card .guarantee {
+      font-size: 12px;
+      color: #666;
+      margin: 12px 0 24px;
+    }
+
+    .pricing-features { list-style: none; text-align: left; margin: 24px 0; }
+    .pricing-features li { padding: 8px 0; font-size: 14px; color: #bbb; display: flex; gap: 10px; }
+    .pricing-features li::before { content: '✓'; color: #ffcc00; font-weight: 700; }
+
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 0;
+    }
+
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { font-weight: 600; color: #fff; margin-bottom: 6px; font-size: 15px; }
+    .faq-a { font-size: 14px; color: #888; }
+
+    /* Footer */
+    footer { text-align: center; padding: 40px 0; color: #555; font-size: 13px; }
+    footer a { color: #888; text-decoration: none; }
+    footer a:hover { color: #ffcc00; }
+
+    @media (max-width: 600px) {
+      .pain-grid, .features-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge">For Algora &amp; GitHub Bounty Hunters</div>
+    <h1>Stop Losing Track of<br /><span class="highlight">Your Bounties</span></h1>
+    <p class="hero-sub">The only tracker built specifically for GitHub bounty hunters. Know exactly where every PR stands, how much you're earning, and whether each bounty is actually worth your time.</p>
+    <div class="cta-row">
+      <a href="https://themachine8023.gumroad.com/l/algora-bounty-tracker" class="btn-primary">
+        Get the Tracker — $9
+      </a>
+      <a href="https://themachine8023.gumroad.com/l/ai-agent-engineer-playbook" class="btn-secondary">
+        See the Playbook → $19
+      </a>
+    </div>
+    <p class="price-note">One-time purchase. Download immediately. No subscription.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Problem -->
+  <section class="section">
+    <div class="section-label">The Problem</div>
+    <h2>You know that feeling...</h2>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="emoji">😤</div>
+        <p>"I have 5 bounties going at once and I genuinely don't know which PR is where."</p>
+      </div>
+      <div class="pain-card">
+        <div class="emoji">💸</div>
+        <p>"I finished a bounty 3 weeks ago but I still don't know if I got paid."</p>
+      </div>
+      <div class="pain-card">
+        <div class="emoji">⏰</div>
+        <p>"I spent 12 hours on a $150 bounty. I made $12.50/hr. I should have quit on hour 4."</p>
+      </div>
+      <div class="pain-card">
+        <div class="emoji">🤷</div>
+        <p>"I claimed a bounty, forgot about it, the /attempt lock expired, someone else took it."</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Solution -->
+  <section class="section">
+    <div class="section-label">The Solution</div>
+    <h2>One file. Complete clarity.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon">📋</div>
+        <h3>Active Bounty Table</h3>
+        <p>Every in-flight bounty with status, deadline, PR link, review status, and payment tracking in one table.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">💰</div>
+        <h3>Real $/hr Calculation</h3>
+        <p>Track hours spent vs. bounty price. Know your actual effective hourly rate before you waste more time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">⏱</div>
+        <h3>Time Tracking Log</h3>
+        <p>Per-session time logging with session notes. See exactly where your hours go.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📅</div>
+        <h3>Weekly & Monthly Reviews</h3>
+        <p>Weekly summary section + monthly revenue report. Know if you're actually improving.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔍</div>
+        <h3>Decision Tree Filter</h3>
+        <p>The 90-second decision checklist before you claim any bounty. Avoid the traps that waste your time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Payment Ledger</h3>
+        <p>Track when you got paid vs. when the bounty was merged. Spot slow-paying repos.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- What You Get -->
+  <section class="section">
+    <div class="section-label">What You Get</div>
+    <h2>Everything in the download</h2>
+    <div class="get-section">
+      <ul class="get-list">
+        <li><span class="check">✓</span> <strong>Algora-Bounty-Tracker.md</strong> — Full markdown tracker (use in any editor)</li>
+        <li><span class="check">✓</span> <strong>Active Bounties table</strong> — 5-row tracker with all key fields pre-labeled</li>
+        <li><span class="check">✓</span> <strong>Decision Tree</strong> — The 4-filter, 90-second bounty evaluation flowchart</li>
+        <li><span class="check">✓</span> <strong>Payment Ledger</strong> — Track merged → paid with days-to-pay column</li>
+        <li><span class="check">✓</span> <strong>Time Tracker</strong> — Session-by-session log with notes</li>
+        <li><span class="check">✓</span> <strong>Weekly & Monthly report templates</strong> — Fill-in-the-blanks, 5 minutes a week</li>
+        <li><span class="check">✓</span> <strong>Bounty Scout Log</strong> — Track unbountied issues you want to revisit</li>
+        <li><span class="check">✓</span> <strong>PR Submission Template</strong> — Copy-paste ready, maintainer-friendly format</li>
+        <li><span class="check">✓</span> <strong>Algora Setup Checklist</strong> — Get fully configured in 10 minutes</li>
+        <li><span class="check">✓</span> <strong>CSV Export format</strong> — Ready for Google Sheets / Excel import</li>
+        <li><span class="check">✓</span> <strong>Notion-compatible structure</strong> — Properties panel setup guide included</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Preview -->
+  <section class="section">
+    <div class="section-label">Preview</div>
+    <h2>This is what the tracker looks like</h2>
+    <div class="tracker-preview">
+      <div class="header">
+        <span>Active Bounties</span>
+        <span>Updated just now</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Bounty</th>
+            <th>Repo</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>$/hr</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fix null pointer in auth.go</td>
+            <td>zio/zio</td>
+            <td>$500</td>
+            <td><span class="status-badge status-review">Under Review</span></td>
+            <td>$83/hr</td>
+          </tr>
+          <tr>
+            <td>Add gRPC streaming support</td>
+            <td>kyo-project/kyo</td>
+            <td>$250</td>
+            <td><span class="status-badge status-active">Active</span></td>
+            <td>$41/hr</td>
+          </tr>
+          <tr>
+            <td>Update scalafmt config</td>
+            <td>zio/zio</td>
+            <td>$1,250</td>
+            <td><span class="status-badge status-paid">Paid ✓</span></td>
+            <td>$156/hr</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Pricing -->
+  <section class="section" style="text-align:center;">
+    <div class="section-label" style="text-align:center;">Pricing</div>
+    <h2>Less than one low-end bounty costs</h2>
+    <div class="pricing-card">
+      <div class="badge" style="margin-bottom:8px;">Algora Bounty Tracker</div>
+      <div class="price">$9 <span>USD</span></div>
+      <p class="guarantee">One-time purchase. Download instantly. Keep forever.</p>
+      <a href="https://themachine8023.gumroad.com/l/algora-bounty-tracker" class="btn-primary" style="width:100%; justify-content:center;">
+        Buy Now — $9
+      </a>
+      <ul class="pricing-features">
+        <li>Markdown file — works in any editor</li>
+        <li>Notion template structure included</li>
+        <li>CSV export for Google Sheets</li>
+        <li>Decision tree + red flags list</li>
+        <li>PR submission template</li>
+        <li>Free updates for life</li>
+      </ul>
+      <p class="guarantee">If this doesn't make bounty hunting more organized, you get your money back. Guaranteed.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="section-label">FAQ</div>
+    <h2>Common questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">Do I need Notion to use this?</div>
+      <div class="faq-a">No. It's a plain markdown file. Works in Obsidian, VS Code, iA Writer, or any text editor. Notion-compatible structure is included as a bonus.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is this specific to Algora or does it work for other bounty platforms?</div>
+      <div class="faq-a">Algora-specific by design, since that's where the highest-quality bounties are. But the structure works for any GitHub bounty platform (GitHub Bounties, LayerCI, etc.) with minor field tweaks.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Why would I pay $9 for a markdown file?</div>
+      <div class="faq-a">Because the decision tree alone will save you from claiming 3–5 wrong bounties. At $150/bounty average and 4 hours wasted each, that's $600–1,000 saved. The tracker pays for itself on the first bounty it helps you avoid.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Does this work for non-developers?</div>
+      <div class="faq-a">Mostly not — it assumes you can read and write code. If you're doing bounty-adjacent work (documentation, design, translation), swap the tech stack fields for your own domain fields.</div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Footer CTA -->
+  <section class="section" style="text-align:center;">
+    <h2 style="margin-bottom:12px;">Start your next bounty with clarity.</h2>
+    <p style="color:#888; margin-bottom:24px; font-size:15px;">Stop losing track. Start earning intentionally.</p>
+    <a href="https://themachine8023.gumroad.com/l/algora-bounty-tracker" class="btn-primary">Get the Algora Bounty Tracker — $9</a>
+  </section>
+
+  <footer>
+    <p>By <a href="https://themachine8023.gumroad.com">THEMACHINE CORP.</a> &nbsp;·&nbsp; <a href="https://themachine8023.gumroad.com/l/ai-agent-engineer-playbook">AI Agent Engineer Playbook →</a></p>
+    <p style="margin-top:8px;">&copy; 2026 THEMACHINE CORP. All rights reserved.</p>
+  </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50 ChatGPT Prompts for Developers | Ship Better Code Faster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0b;
+      color: #e4e4e7;
+      line-height: 1.6;
+    }
+    .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+    
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      color: #eab308;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 20px;
+      color: #71717a;
+      max-width: 520px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+    }
+    .price {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .price-note {
+      font-size: 14px;
+      color: #52525b;
+      margin-bottom: 32px;
+    }
+    .cta {
+      display: inline-block;
+      background: #eab308;
+      color: #000;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 16px 40px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+    .cta:hover { background: #facc15; transform: translateY(-1px); }
+    .guarantee {
+      font-size: 13px;
+      color: #52525b;
+    }
+    
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid #27272a;
+      margin: 60px 0;
+    }
+    
+    /* What's inside */
+    .inside { padding: 0 0 60px; }
+    .inside h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .inside .desc { color: #71717a; margin-bottom: 32px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .card .count { font-size: 32px; font-weight: 800; color: #eab308; }
+    .card .note { font-size: 13px; color: #52525b; margin-top: 4px; }
+    
+    /* Categories */
+    .categories { padding: 0 0 60px; }
+    .categories h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .categories .desc { color: #71717a; margin-bottom: 24px; }
+    .cat-list { list-style: none; }
+    .cat-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid #27272a;
+      font-size: 15px;
+    }
+    .cat-list li:last-child { border-bottom: none; }
+    .cat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #27272a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .cat-text strong { display: block; color: #e4e4e7; }
+    .cat-text span { font-size: 13px; color: #71717a; }
+    
+    /* Example */
+    .example { padding: 0 0 60px; }
+    .example h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .example .desc { color: #71717a; margin-bottom: 24px; }
+    .prompt-box {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .prompt-label {
+      background: #27272a;
+      padding: 10px 16px;
+      font-size: 12px;
+      color: #71717a;
+      font-family: 'JetBrains Mono', monospace;
+      border-bottom: 1px solid #3f3f46;
+    }
+    .prompt-text {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #d4d4d8;
+      white-space: pre-wrap;
+    }
+    .prompt-tag {
+      display: inline-block;
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.2);
+      color: #eab308;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin: 16px 20px 0;
+    }
+    
+    /* Who */
+    .who { padding: 0 0 60px; }
+    .who h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; color: #fff; }
+    .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .who-item {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .who-item .check { color: #eab308; font-size: 16px; margin-bottom: 8px; }
+    .who-item h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .who-item p { font-size: 13px; color: #71717a; }
+    
+    /* FAQ */
+    .faq { padding: 0 0 60px; }
+    .faq h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; color: #fff; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-q {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #e4e4e7;
+      cursor: pointer;
+    }
+    .faq-a {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #71717a;
+      margin-top: -8px;
+    }
+    
+    /* Footer CTA */
+    .footer-cta {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .footer-cta h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+    .footer-cta p { color: #71717a; margin-bottom: 28px; font-size: 16px; }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; }
+      .grid, .who-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge">50 Battle-Tested Prompts</div>
+    <h1>50 ChatGPT Prompts<br>for Developers</h1>
+    <p class="subtitle">The exact prompts I use every day to review code, debug faster, design systems, and write better documentation — all ready to paste into ChatGPT.</p>
+    <div class="price">$9.00 USD</div>
+    <div class="price-note">Instant download · PDF · Editable Markdown</div>
+    <a href="#" class="cta">Get the Playbook →</a><br>
+    <span class="guarantee">One-time payment. Keep forever. Free updates.</span>
+  </section>
+  
+  <hr class="divider">
+  
+  <!-- WHAT'S INSIDE -->
+  <section class="inside">
+    <h2>What's Inside</h2>
+    <p class="desc">50 production-ready prompts across 7 categories. Each one tested in real development scenarios.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Code Review</h3>
+        <div class="count">8</div>
+        <div class="note">Security, performance, bugs, PRs</div>
+      </div>
+      <div class="card">
+        <h3>Debugging</h3>
+        <div class="count">8</div>
+        <div class="note">Crashes, memory leaks, race conditions</div>
+      </div>
+      <div class="card">
+        <h3>Architecture</h3>
+        <div class="count">8</div>
+        <div class="note">System design, APIs, migrations</div>
+      </div>
+      <div class="card">
+        <h3>Writing</h3>
+        <div class="count">8</div>
+        <div class="note">READMEs, PRs, docs, ADRs</div>
+      </div>
+      <div class="card">
+        <h3>Testing</h3>
+        <div class="count">6</div>
+        <div class="note">Unit, E2E, regression, benchmarks</div>
+      </div>
+      <div class="card">
+        <h3>DevOps</h3>
+        <div class="count">6</div>
+        <div class="note">Docker, K8s, CI/CD, Terraform</div>
+      </div>
+      <div class="card" style="grid-column: 1/-1;">
+        <h3>AI + Productivity</h3>
+        <div class="count">6</div>
+        <div class="note">+ 2 bonus chain workflows: Bug → Fixed PR · Feature Request → Merged PR</div>
+      </div>
+    </div>
+  </section>
+  
+  <hr class="divider">
+  
+  <!-- CATEGORIES -->
+  <section class="categories">
+    <h2>Every Prompt is Ready to Use</h2>
+    <p class="desc">No theory. No fluff. Just the exact text to paste into ChatGPT.</p>
+    <ul class="cat-list">
+      <li>
+        <div class="cat-icon">🔍</div>
+        <div class="cat-text"><strong>Code Review</strong><span>General review, security audit, performance, PR feedback, refactoring, test coverage, dependency check, error handling</span></div>
+      </li>
+      <li>
+        <div class="cat-icon">🐛</div>
+        <div class="cat-text"><strong>Debugging</strong><span>Crash analysis, memory leaks, race conditions, N+1 queries, production hotfixes, network latency, null errors, CI failures</span></div>
+      </li>
+      <li>
+        <div class="cat-icon">🏗️</div>
+        <div class="cat-text"><strong>Architecture & Design</strong><span>System design, microservices boundaries, REST APIs, database schemas, event-driven architecture, tech stack decisions, scaling roadmaps</span></div>
+      </li>
+      <li>
+        <div class="cat-icon">📝</div>
+        <div class="cat-text"><strong>Writing & Docs</strong><span>README generator, PR descriptions, commit messages, changelogs, ADRs, API docs, inline comments, onboarding docs</span></div>
+      </li>
+      <li>
+        <div class="cat-icon">🧪</div>
+        <div class="cat-text"><strong>Testing</strong><span>Test case generation, property-based testing, mocking, E2E scenarios, regression tests, performance benchmarks</span></div>
+      </li>
+      <li>
+        <div class="cat-icon">⚙️</div>
+        <div class="cat-text"><strong>DevOps & Infra</strong><span>Docker Compose, GitHub Actions CI/CD, Kubernetes manifests, Terraform, APM instrumentation, incident runbooks</span></div>
+      </li>
+    </ul>
+  </section>
+  
+  <hr class="divider">
+  
+  <!-- EXAMPLE PROMPT -->
+  <section class="example">
+    <h2>What These Prompts Look Like</h2>
+    <p class="desc">Every prompt includes context framing so ChatGPT gives you useful answers, not generic responses.</p>
+    <div class="prompt-box">
+      <div class="prompt-label">Prompt #13 — Fix Production Bug Fast</div>
+      <div class="prompt-text">URGENT: Production bug.
+
+Error: [PASTE ERROR MESSAGE]
+Affected users: [X] users
+Feature: [NAME]
+First seen: [TIME]
+
+Relevant code:
+```
+[PASTE RELEVANT CODE]
+```
+
+This is my debugging hypothesis: [YOUR HYPOTHESIS]
+
+Is my hypothesis correct? If not, what do you think is actually happening? Give me a fix I can ship in the next 10 minutes.</div>
+      <span class="prompt-tag">DEBUGGING</span>
+    </div>
+  </section>
+  
+  <hr class="divider">
+  
+  <!-- WHO IS THIS FOR -->
+  <section class="who">
+    <h2>Who This Is For</h2>
+    <div class="who-grid">
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Backend / Frontend Engineers</h4>
+        <p>Cut your code review and debugging time in half using structured prompts that get you actionable answers, not essays.</p>
+      </div>
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>DevOps / Platform Engineers</h4>
+        <p>Get production-ready Docker, Kubernetes, and Terraform configs generated from requirements, not guessed.</p>
+      </div>
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Tech Leads / Architects</h4>
+        <p>Use the architecture and system design prompts to stress-test your thinking before committing to a design.</p>
+      </div>
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Developers Learning AI Tooling</h4>
+        <p>Learn what a good prompt looks like by studying 50 real examples. See what context framing actually changes output quality.</p>
+      </div>
+    </div>
+  </section>
+  
+  <hr class="divider">
+  
+  <!-- FAQ -->
+  <section class="faq">
+    <h2>Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">What format is this delivered in?</div>
+      <div class="faq-a">Markdown file (.md) — works on any device, easy to search, copy-paste ready.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do these work with Claude / GPT-4 / Cursor?</div>
+      <div class="faq-a">Yes. All prompts work with any LLM. Most are also optimized for Claude which handles longer context better.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Are these just generic prompts I could find online?</div>
+      <div class="faq-a">No. These are battle-tested in real production codebases. Each one includes context framing, bracket placeholders for your code, and usage notes — not just the prompt text.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is this for beginners?</div>
+      <div class="faq-a">It's for developers who already use ChatGPT but find the outputs hit-or-miss. The context framing and specificity is what separates these from generic prompts.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I get updates?</div>
+      <div class="faq-a">Yes. Any updates to the prompt library are free for existing buyers.</div>
+    </div>
+  </section>
+  
+  <!-- FOOTER CTA -->
+  <section class="footer-cta">
+    <h2>Ship Better Code, Faster</h2>
+    <p>50 prompts. 7 categories. One afternoon to transform how you use AI in your workflow.</p>
+    <a href="#" class="cta">Get 50 ChatGPT Prompts for Developers — $9 →</a>
+    <br><br>
+    <span class="guarantee">Instant delivery. No account required to buy.</span>
+  </section>
+
+</div>
+
+</body>
+</html>

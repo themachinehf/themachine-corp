@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7天AI Agent赚钱实战 | THEMACHINE Corp.</title>
+  <style>
+    :root {
+      --bg: #0a0a0f; --text: #e5e7eb; --gold: #fbbf24;
+      --gold-light: #fcd34d; --gold-dark: #d97706; --border: #1e293b;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(ellipse at top, rgba(251,191,36,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(139,92,246,0.05) 0%, transparent 50%),
+        linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 100%);
+      background-attachment: fixed; color: var(--text);
+      font-family: var(--font); min-height: 100vh;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(251,191,36,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(251,191,36,0.03) 1px, transparent 1px);
+      background-size: 50px 50px; pointer-events: none; z-index: -1;
+    }
+    .container { max-width: 760px; margin: 0 auto; padding: 60px 24px; }
+    .back { color: rgba(251,191,36,0.7); font-size: 13px; text-decoration: none; margin-bottom: 40px; display:inline-block; }
+    .back:hover { color: var(--gold); }
+    .badge { display:inline-block; background:rgba(251,191,36,0.15); color:var(--gold); font-size:11px; padding:4px 10px; border-radius:20px; margin-bottom:20px; }
+    h1 { font-size:36px; font-weight:800; color:var(--text); margin-bottom:16px; line-height:1.2; }
+    .price { font-size:28px; font-weight:700; color:var(--gold); margin-bottom:8px; }
+    .tagline { font-size:16px; color:rgba(255,255,255,0.6); margin-bottom:40px; }
+    h2 { font-size:20px; font-weight:700; color:var(--gold); margin:32px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    .module { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:16px; }
+    .module-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px; }
+    .module-desc { font-size:13px; color:rgba(255,255,255,0.55); line-height:1.6; }
+    .timeline { list-style:none; }
+    .timeline li { padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; color:rgba(255,255,255,0.7); display:flex; gap:12px; }
+    .timeline li:last-child { border-bottom:none; }
+    .timeline .day { color:var(--gold); font-weight:600; min-width:60px; }
+    .price-box { background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05)); border:1px solid rgba(251,191,36,0.3); border-radius:16px; padding:32px; text-align:center; margin-top:40px; }
+    .price-big { font-size:48px; font-weight:800; color:var(--gold); }
+    .price-note { font-size:13px; color:rgba(255,255,255,0.5); margin:8px 0 24px; }
+    .buy-btn { display:inline-block; background:var(--gold); color:#0a0a0f; font-weight:700; font-size:16px; padding:16px 40px; border-radius:12px; text-decoration:none; }
+    .buy-btn:hover { background:var(--gold-light); filter:drop-shadow(0 0 20px rgba(251,191,36,0.4)); }
+    .guarantee { font-size:12px; color:rgba(255,255,255,0.4); margin-top:12px; }
+    .whoincludes { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+    .whoincludes span { font-size:13px; color:rgba(255,255,255,0.7); padding:8px 12px; background:rgba(255,255,255,0.04); border-radius:8px; }
+    .whoincludes span::before { content:'✓ '; color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="/products">← 返回产品列表</a>
+
+  <div class="badge">独立工具包</div>
+  <h1>7天AI Agent赚钱实战</h1>
+  <div class="price">$19 USD</div>
+  <div class="tagline">从零到第一笔收入，7天就够了</div>
+
+  <h2>这7天你会经历什么</h2>
+  <ul class="timeline">
+    <li><span class="day">Day 1</span>注册 Algora + A2H 账号，安装 OpenClaw，配好开发环境</li>
+    <li><span class="day">Day 2</span>找到第一个适合的 Bounty，提交 /attempt</li>
+    <li><span class="day">Day 3</span>提交第一个 PR，等维护者 review</li>
+    <li><span class="day">Day 4</span>用 Cold Email 模板联系第一个付费客户</li>
+    <li><span class="day">Day 5</span>在 Gumroad 创建第一个数字产品</li>
+    <li><span class="day">Day 6</span>写推广推文，在 X 发布</li>
+    <li><span class="day">Day 7</span>收款，复盘，建30天计划</li>
+  </ul>
+
+  <h2>你会得到什么</h2>
+  <div class="module">
+    <div class="module-title">📋 时间线表格</div>
+    <div class="module-desc">清晰的任务清单，精确到每天该做什么</div>
+  </div>
+  <div class="module">
+    <div class="module-title">📝 Bounty 认领模板</div>
+    <div class="module-desc">可直接复制使用的 Algora/A2H 认领话术</div>
+  </div>
+  <div class="module">
+    <div class="module-title">📧 Cold Email 序列</div>
+    <div class="module-desc">Day 4 用的完整邮件模板，含主题行和跟进策略</div>
+  </div>
+  <div class="module">
+    <div class="module-title">🛠️ Gumroad 开店指南</div>
+    <div class="module-desc">20分钟完成第一个产品上架的全步骤截图</div>
+  </div>
+  <div class="module">
+    <div class="module-title">📊 30天计划模板</div>
+    <div class="module-desc">Day 7 使用的收入追踪模板，可直接套用</div>
+  </div>
+
+  <h2>适合谁</h2>
+  <div class="whoincludes">
+    <span>想开始但不知道从哪下手</span>
+    <span>有基础编程知识（Python/JS）</span>
+    <span>想用AI工具赚第一笔副业收入</span>
+    <span>不想被课程割韭菜，想实战</span>
+  </div>
+
+  <div class="price-box">
+    <div class="price-big">$19</div>
+    <div class="price-note">一次购买，永久使用 · 7天退款保证</div>
+    <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/zddgyc" target="_blank">立即购买 →</a>
+    <div class="guarantee">支持信用卡 / PayPal · 不满意7天内退款</div>
+  </div>
+</div>
+</body>
+</html>

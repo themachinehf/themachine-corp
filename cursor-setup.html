@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor AI Setup Guide | Ship Code 3x Faster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #0a0a0b; color: #e4e4e7; line-height: 1.6; }
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+    .hero { padding: 80px 0 60px; text-align: center; }
+    .badge { display: inline-block; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 24px; }
+    h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subtitle { font-size: 20px; color: #71717a; max-width: 520px; margin: 0 auto 40px; }
+    .price { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .price-note { font-size: 14px; color: #52525b; margin-bottom: 32px; }
+    .cta { display: inline-block; background: #3b82f6; color: #fff; font-weight: 700; font-size: 16px; padding: 16px 40px; border-radius: 10px; text-decoration: none; transition: all 0.2s; margin-bottom: 16px; }
+    .cta:hover { background: #60a5fa; transform: translateY(-1px); }
+    .guarantee { font-size: 13px; color: #52525b; }
+    .divider { border: none; border-top: 1px solid #27272a; margin: 60px 0; }
+    .section { padding: 0 0 60px; }
+    .section h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .section .desc { color: #71717a; margin-bottom: 32px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 20px; }
+    .card h3 { font-size: 14px; font-weight: 600; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .card .count { font-size: 32px; font-weight: 800; color: #3b82f6; }
+    .card .note { font-size: 13px; color: #52525b; margin-top: 4px; }
+    .prompt-box { background: #18181b; border: 1px solid #27272a; border-radius: 12px; overflow: hidden; }
+    .prompt-label { background: #27272a; padding: 10px 16px; font-size: 12px; color: #71717a; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid #3f3f46; }
+    .prompt-text { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; color: #d4d4d8; white-space: pre-wrap; }
+    .prompt-tag { display: inline-block; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 16px 20px 0; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #27272a; font-size: 15px; }
+    .checklist li:last-child { border-bottom: none; }
+    .check-icon { width: 24px; height: 24px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #3b82f6; font-size: 13px; font-weight: 700; margin-top: 2px; }
+    .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .who-item { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 20px; }
+    .who-item .check { color: #3b82f6; font-size: 16px; margin-bottom: 8px; }
+    .who-item h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .who-item p { font-size: 13px; color: #71717a; }
+    .faq-item { margin-bottom: 12px; }
+    .faq-q { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 16px 20px; font-size: 15px; font-weight: 600; color: #e4e4e7; }
+    .faq-a { background: #18181b; border: 1px solid #27272a; border-top: none; border-radius: 0 0 10px 10px; padding: 16px 20px; font-size: 14px; color: #71717a; margin-top: -10px; }
+    .footer-cta { background: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 48px; text-align: center; margin-bottom: 60px; }
+    .footer-cta h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+    .footer-cta p { color: #71717a; margin-bottom: 28px; font-size: 16px; }
+    @media (max-width: 600px) { h1 { font-size: 32px; } .grid, .who-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <section class="hero">
+    <div class="badge">Cursor Setup Guide</div>
+    <h1>Cursor AI Setup Guide</h1>
+    <p class="subtitle">The configuration that makes Cursor actually useful — not just "AI in an IDE." A practical guide for developers who code daily.</p>
+    <div class="price">$14.00 USD</div>
+    <div class="price-note">Instant download · Markdown · Copy-paste configs included</div>
+    <a href="#" class="cta">Get the Setup Guide →</a><br>
+    <span class="guarantee">One-time payment. Keep forever. Free updates.</span>
+  </section>
+  
+  <hr class="divider">
+  
+  <section class="section">
+    <h2>What's Inside</h2>
+    <p class="desc">Everything you need to make Cursor actually powerful. No theory — just config files, shortcuts, and rules you can copy today.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Configuration</h3>
+        <div class="count">3</div>
+        <div class="note">Complete .cursorrules templates for Python, TypeScript, and Go</div>
+      </div>
+      <div class="card">
+        <h3>Settings</h3>
+        <div class="count">1</div>
+        <div class="note">Full Cursor settings.json with explanations</div>
+      </div>
+      <div class="card">
+        <h3>Extensions</h3>
+        <div class="count">6</div>
+        <div class="note">Must-have extensions ranked by impact</div>
+      </div>
+      <div class="card">
+        <h3>Shortcuts</h3>
+        <div class="count">10+</div>
+        <div class="note">Keyboard shortcuts that save real time</div>
+      </div>
+    </div>
+  </section>
+  
+  <hr class="divider">
+  
+  <section class="section">
+    <h2>The .cursorrules Templates</h2>
+    <p class="desc">This is the single most important file for Cursor. Three production-ready templates included.</p>
+    <div class="prompt-box" style="margin-bottom: 16px;">
+      <div class="prompt-label">Python/Django — .cursorrules excerpt</div>
+      <div class="prompt-text">## Code Style
+- Use type hints on all function signatures (Python 3.10+)
+- Prefer explicit over implicit: no "clever" one-liners
+- Import order: stdlib → third-party → local (enforced by isort)
+
+## API Conventions
+- Use DRF ViewSets and routers, not bare views
+- Always return proper HTTP status codes: 200, 201, 400, 401, 403, 404, 500
+- Never return 200 with an error payload
+
+## Error Handling
+- Never swallow exceptions silently
+- Always log with structured logging
+- Use custom exception classes, not generic Exception
+
+## Security
+- Never commit secrets to the repository
+- Use environment variables via django-environ or pydantic-settings</div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-label">TypeScript/Next.js — .cursorrules excerpt</div>
+      <div class="prompt-text">## Code Style
+- Use TypeScript strict mode
+- No any types — use unknown with proper type guards
+- Prefer interface over type for object shapes
+
+## Component Conventions
+- Server Components by default; add "use client" only when needed
+- Keep components small and focused (single responsibility)
+- Use named exports, not default exports for components
+
+## Data Fetching
+- Use server actions or route handlers, not client-side fetch
+- Always handle loading and error states explicitly
+- Never use useEffect for initial data fetching</div>
+    </div>
+    <span class="prompt-tag">HIGH IMPACT</span>
+  </section>
+  
+  <hr class="divider">
+  
+  <section class="section">
+    <h2>The Setup Checklist</h2>
+    <p class="desc">30 minutes. Here's exactly what to do in order.</p>
+    <ul class="checklist">
+      <li><div class="check-icon">✓</div><div><strong>Create .cursorrules</strong> — paste the template for your stack, customize in 5 minutes</div></li>
+      <li><div class="check-icon">✓</div><div><strong>Set cursor.contextLimit to 200</strong> — the default is too small for real codebases</div></li>
+      <li><div class="check-icon">✓</div><div><strong>Install Error Lens</strong> — inline error highlighting, never hover again</div></li>
+      <li><div class="check-icon">✓</div><div><strong>Install Thunder Client</strong> — API testing without leaving the editor</div></li>
+      <li><div class="check-icon">✓</div><div><strong>Set up CURSOR_CONTEXT.md</strong> — project memory that survives session restarts</div></li>
+      <li><div class="check-icon">✓</div><div><strong>Learn Cmd+K</strong> — inline edit that beats chat for single-file changes</div></li>
+      <li><div class="check-icon">✓</div><div><strong>Create your .cursorrules</strong> — the default one that ships with Cursor is mediocre</div></li>
+    </ul>
+  </section>
+  
+  <hr class="divider">
+  
+  <section class="section">
+    <h2>Who This Is For</h2>
+    <div class="who-grid">
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Backend Engineers</h4>
+        <p>Get Cursor to understand Django, FastAPI, or Go conventions so it stops suggesting Rails patterns in your Python code.</p>
+      </div>
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Frontend / Full-Stack</h4>
+        <p>Stop fighting Next.js App Router rules. Configure Cursor to know what "server component" means in your codebase.</p>
+      </div>
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Solo Developers</h4>
+        <p>You are the whole team. The .cursorrules file is your style guide + onboarding doc + knowledge base all in one.</p>
+      </div>
+      <div class="who-item">
+        <div class="check">✓</div>
+        <h4>Developers Who Tried Cursor and Quit</h4>
+        <p>You quit because it wasn't much better than Copilot. That's because you were using the defaults. This guide is how you fix that.</p>
+      </div>
+    </div>
+  </section>
+  
+  <hr class="divider">
+  
+  <section class="section">
+    <h2>Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">Does this work with VS Code Cursor fork or the new Cursor?</div>
+      <div class="faq-a">Both. The configuration applies to any Cursor installation. The .cursorrules file works across all versions.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I'm a beginner. Is this too advanced?</div>
+      <div class="faq-a">If you write code in a professional context (intern or above), this is for you. The setup takes 30 minutes and pays off every day after that.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Does this cover Agent mode?</div>
+      <div class="faq-a">This guide focuses on configuration and the core chat/inline-edit workflow. Agent mode is worth learning after you've mastered these basics.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What language stacks does this cover?</div>
+      <div class="faq-a">Includes templates for Python/Django, TypeScript/Next.js, and Go. The principles apply to any language — you can adapt the templates.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is this a PDF?</div>
+      <div class="faq-a">Markdown file (.md) — works on any device, easy to search, and you can copy-paste the config files directly.</div>
+    </div>
+  </section>
+  
+  <section class="footer-cta">
+    <h2>Stop Fighting Your IDE</h2>
+    <p>30 minutes of setup. Months of faster coding. This is the guide that makes Cursor worth using.</p>
+    <a href="#" class="cta">Get Cursor AI Setup Guide — $14 →</a>
+    <br><br>
+    <span class="guarantee">Instant delivery. No account required to buy.</span>
+  </section>
+
+</div>
+
+</body>
+</html>
