@@ -10,9 +10,57 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ae030de578dfa0a3e796a53380d03208
-          command: pages deploy . --project-name=themachine-corp
+
+      - name: Deploy to Cloudflare Pages via Direct Upload
+        run: |
+          echo "Triggering Cloudflare Pages deployment..."
+          
+          ACCOUNT_ID="${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          PROJECT="themachine-corp"
+          
+          # Create a new deployment
+          DEPLOYMENT=$(curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT}/deployments" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data "{\"branch\":\"main\"}")
+          
+          echo "Deployment response: ${DEPLOYMENT}"
+          
+          DEPLOYMENT_ID=$(echo "$DEPLOYMENT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('result',{}).get('id',''))" 2>/dev/null)
+          
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "Failed to create deployment. Response: ${DEPLOYMENT}"
+            exit 1
+          fi
+          
+          echo "Created deployment ID: ${DEPLOYMENT_ID}"
+          
+          # Get upload URL
+          UPLOAD_RESP=$(curl -s -X GET \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/pages/projects/${PROJECT}/deployments/${DEPLOYMENT_ID}/upload-url" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}")
+          
+          echo "Upload URL response: ${UPLOAD_RESP}"
+          
+          UPLOAD_URL=$(echo "$UPLOAD_RESP" | python3 -c "import sys,json; print(json.load(sys.stdin).get('result',{}).get('upload_url',''))" 2>/dev/null)
+          
+          if [ -z "$UPLOAD_URL" ]; then
+            echo "Failed to get upload URL"
+            exit 1
+          fi
+          
+          echo "Uploading files..."
+          
+          # Upload all files as a zip
+          zip -r /tmp/site.zip . -x ".git/*" -x "node_modules/*" -x "workers/*" -x "*.bak" -x ".github/*"
+          
+          curl -s -X PUT "$UPLOAD_URL" \
+            -H "Content-Type: application/zip" \
+            --data-binary @/tmp/site.zip \
+            -w "\nHTTP Status: %{http_code}\n"
+          
+          echo ""
+          echo "Upload complete!"
+          echo "Deployment ID: ${DEPLOYMENT_ID}"
+          echo "Site URL: https://themachine-corp.pages.dev"
