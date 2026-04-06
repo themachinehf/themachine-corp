@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>50 ChatGPT Prompts for Developers | Ship Better Code Faster</title>
@@ -9,7 +10,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Press Start 2P', monospace;
       background: #0a0a0b;
       color: #e4e4e7;
       line-height: 1.6;
@@ -26,7 +27,7 @@
       background: rgba(234, 179, 8, 0.1);
       border: 1px solid rgba(234, 179, 8, 0.3);
       color: #eab308;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -35,7 +36,7 @@
       margin-bottom: 24px;
     }
     h1 {
-      font-size: 48px;
+      font-size: 10px;
       font-weight: 800;
       line-height: 1.1;
       margin-bottom: 20px;
@@ -44,20 +45,20 @@
       -webkit-text-fill-color: transparent;
     }
     .subtitle {
-      font-size: 20px;
+      font-size: 10px;
       color: #71717a;
       max-width: 520px;
       margin: 0 auto 40px;
       font-weight: 400;
     }
     .price {
-      font-size: 32px;
+      font-size: 10px;
       font-weight: 700;
       color: #fff;
       margin-bottom: 8px;
     }
     .price-note {
-      font-size: 14px;
+      font-size: 10px;
       color: #52525b;
       margin-bottom: 32px;
     }
@@ -66,7 +67,7 @@
       background: #eab308;
       color: #000;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 10px;
       padding: 16px 40px;
       border-radius: 10px;
       text-decoration: none;
@@ -75,7 +76,7 @@
     }
     .cta:hover { background: #facc15; transform: translateY(-1px); }
     .guarantee {
-      font-size: 13px;
+      font-size: 10px;
       color: #52525b;
     }
     
@@ -89,7 +90,7 @@
     /* What's inside */
     .inside { padding: 0 0 60px; }
     .inside h2 {
-      font-size: 28px;
+      font-size: 10px;
       font-weight: 700;
       margin-bottom: 8px;
       color: #fff;
@@ -107,19 +108,19 @@
       padding: 20px;
     }
     .card h3 {
-      font-size: 14px;
+      font-size: 10px;
       font-weight: 600;
       color: #a1a1aa;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 8px;
     }
-    .card .count { font-size: 32px; font-weight: 800; color: #eab308; }
-    .card .note { font-size: 13px; color: #52525b; margin-top: 4px; }
+    .card .count { font-size: 10px; font-weight: 800; color: #eab308; }
+    .card .note { font-size: 10px; color: #52525b; margin-top: 4px; }
     
     /* Categories */
     .categories { padding: 0 0 60px; }
-    .categories h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .categories h2 { font-size: 10px; font-weight: 700; margin-bottom: 8px; color: #fff; }
     .categories .desc { color: #71717a; margin-bottom: 24px; }
     .cat-list { list-style: none; }
     .cat-list li {
@@ -128,7 +129,7 @@
       gap: 12px;
       padding: 14px 0;
       border-bottom: 1px solid #27272a;
-      font-size: 15px;
+      font-size: 10px;
     }
     .cat-list li:last-child { border-bottom: none; }
     .cat-icon {
@@ -139,15 +140,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 10px;
       flex-shrink: 0;
     }
     .cat-text strong { display: block; color: #e4e4e7; }
-    .cat-text span { font-size: 13px; color: #71717a; }
+    .cat-text span { font-size: 10px; color: #71717a; }
     
     /* Example */
     .example { padding: 0 0 60px; }
-    .example h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .example h2 { font-size: 10px; font-weight: 700; margin-bottom: 8px; color: #fff; }
     .example .desc { color: #71717a; margin-bottom: 24px; }
     .prompt-box {
       background: #18181b;
@@ -158,7 +159,7 @@
     .prompt-label {
       background: #27272a;
       padding: 10px 16px;
-      font-size: 12px;
+      font-size: 10px;
       color: #71717a;
       font-family: 'JetBrains Mono', monospace;
       border-bottom: 1px solid #3f3f46;
@@ -166,7 +167,7 @@
     .prompt-text {
       padding: 20px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
+      font-size: 10px;
       line-height: 1.7;
       color: #d4d4d8;
       white-space: pre-wrap;
@@ -176,7 +177,7 @@
       background: rgba(234, 179, 8, 0.1);
       border: 1px solid rgba(234, 179, 8, 0.2);
       color: #eab308;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       padding: 2px 8px;
       border-radius: 4px;
@@ -185,7 +186,7 @@
     
     /* Who */
     .who { padding: 0 0 60px; }
-    .who h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; color: #fff; }
+    .who h2 { font-size: 10px; font-weight: 700; margin-bottom: 24px; color: #fff; }
     .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .who-item {
       background: #18181b;
@@ -193,20 +194,20 @@
       border-radius: 12px;
       padding: 20px;
     }
-    .who-item .check { color: #eab308; font-size: 16px; margin-bottom: 8px; }
-    .who-item h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
-    .who-item p { font-size: 13px; color: #71717a; }
+    .who-item .check { color: #eab308; font-size: 10px; margin-bottom: 8px; }
+    .who-item h4 { font-size: 10px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .who-item p { font-size: 10px; color: #71717a; }
     
     /* FAQ */
     .faq { padding: 0 0 60px; }
-    .faq h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; color: #fff; }
+    .faq h2 { font-size: 10px; font-weight: 700; margin-bottom: 24px; color: #fff; }
     .faq-item { margin-bottom: 16px; }
     .faq-q {
       background: #18181b;
       border: 1px solid #27272a;
       border-radius: 10px;
       padding: 16px 20px;
-      font-size: 15px;
+      font-size: 10px;
       font-weight: 600;
       color: #e4e4e7;
       cursor: pointer;
@@ -217,7 +218,7 @@
       border-top: none;
       border-radius: 0 0 10px 10px;
       padding: 16px 20px;
-      font-size: 14px;
+      font-size: 10px;
       color: #71717a;
       margin-top: -8px;
     }
@@ -231,12 +232,12 @@
       text-align: center;
       margin-bottom: 60px;
     }
-    .footer-cta h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-    .footer-cta p { color: #71717a; margin-bottom: 28px; font-size: 16px; }
+    .footer-cta h2 { font-size: 10px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+    .footer-cta p { color: #71717a; margin-bottom: 28px; font-size: 10px; }
     
     /* Responsive */
     @media (max-width: 600px) {
-      h1 { font-size: 32px; }
+      h1 { font-size: 10px; }
       .grid, .who-grid { grid-template-columns: 1fr; }
     }
   </style>

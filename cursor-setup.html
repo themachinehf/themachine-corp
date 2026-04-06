@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cursor AI Setup Guide | Ship Code 3x Faster</title>
@@ -8,46 +9,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, sans-serif; background: #0a0a0b; color: #e4e4e7; line-height: 1.6; }
+    body { font-family: 'Press Start 2P', monospace; background: #0a0a0b; color: #e4e4e7; line-height: 1.6; }
     .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
     .hero { padding: 80px 0 60px; text-align: center; }
-    .badge { display: inline-block; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 24px; }
-    h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .subtitle { font-size: 20px; color: #71717a; max-width: 520px; margin: 0 auto 40px; }
-    .price { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .price-note { font-size: 14px; color: #52525b; margin-bottom: 32px; }
-    .cta { display: inline-block; background: #3b82f6; color: #fff; font-weight: 700; font-size: 16px; padding: 16px 40px; border-radius: 10px; text-decoration: none; transition: all 0.2s; margin-bottom: 16px; }
+    .badge { display: inline-block; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 24px; }
+    h1 { font-size: 10px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subtitle { font-size: 10px; color: #71717a; max-width: 520px; margin: 0 auto 40px; }
+    .price { font-size: 10px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .price-note { font-size: 10px; color: #52525b; margin-bottom: 32px; }
+    .cta { display: inline-block; background: #3b82f6; color: #fff; font-weight: 700; font-size: 10px; padding: 16px 40px; border-radius: 10px; text-decoration: none; transition: all 0.2s; margin-bottom: 16px; }
     .cta:hover { background: #60a5fa; transform: translateY(-1px); }
-    .guarantee { font-size: 13px; color: #52525b; }
+    .guarantee { font-size: 10px; color: #52525b; }
     .divider { border: none; border-top: 1px solid #27272a; margin: 60px 0; }
     .section { padding: 0 0 60px; }
-    .section h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .section h2 { font-size: 10px; font-weight: 700; margin-bottom: 8px; color: #fff; }
     .section .desc { color: #71717a; margin-bottom: 32px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .card { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 20px; }
-    .card h3 { font-size: 14px; font-weight: 600; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-    .card .count { font-size: 32px; font-weight: 800; color: #3b82f6; }
-    .card .note { font-size: 13px; color: #52525b; margin-top: 4px; }
+    .card h3 { font-size: 10px; font-weight: 600; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .card .count { font-size: 10px; font-weight: 800; color: #3b82f6; }
+    .card .note { font-size: 10px; color: #52525b; margin-top: 4px; }
     .prompt-box { background: #18181b; border: 1px solid #27272a; border-radius: 12px; overflow: hidden; }
-    .prompt-label { background: #27272a; padding: 10px 16px; font-size: 12px; color: #71717a; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid #3f3f46; }
-    .prompt-text { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; color: #d4d4d8; white-space: pre-wrap; }
-    .prompt-tag { display: inline-block; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 16px 20px 0; }
+    .prompt-label { background: #27272a; padding: 10px 16px; font-size: 10px; color: #71717a; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid #3f3f46; }
+    .prompt-text { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.7; color: #d4d4d8; white-space: pre-wrap; }
+    .prompt-tag { display: inline-block; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin: 16px 20px 0; }
     .checklist { list-style: none; }
-    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #27272a; font-size: 15px; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #27272a; font-size: 10px; }
     .checklist li:last-child { border-bottom: none; }
-    .check-icon { width: 24px; height: 24px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #3b82f6; font-size: 13px; font-weight: 700; margin-top: 2px; }
+    .check-icon { width: 24px; height: 24px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #3b82f6; font-size: 10px; font-weight: 700; margin-top: 2px; }
     .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .who-item { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 20px; }
-    .who-item .check { color: #3b82f6; font-size: 16px; margin-bottom: 8px; }
-    .who-item h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
-    .who-item p { font-size: 13px; color: #71717a; }
+    .who-item .check { color: #3b82f6; font-size: 10px; margin-bottom: 8px; }
+    .who-item h4 { font-size: 10px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .who-item p { font-size: 10px; color: #71717a; }
     .faq-item { margin-bottom: 12px; }
-    .faq-q { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 16px 20px; font-size: 15px; font-weight: 600; color: #e4e4e7; }
-    .faq-a { background: #18181b; border: 1px solid #27272a; border-top: none; border-radius: 0 0 10px 10px; padding: 16px 20px; font-size: 14px; color: #71717a; margin-top: -10px; }
+    .faq-q { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 16px 20px; font-size: 10px; font-weight: 600; color: #e4e4e7; }
+    .faq-a { background: #18181b; border: 1px solid #27272a; border-top: none; border-radius: 0 0 10px 10px; padding: 16px 20px; font-size: 10px; color: #71717a; margin-top: -10px; }
     .footer-cta { background: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 48px; text-align: center; margin-bottom: 60px; }
-    .footer-cta h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-    .footer-cta p { color: #71717a; margin-bottom: 28px; font-size: 16px; }
-    @media (max-width: 600px) { h1 { font-size: 32px; } .grid, .who-grid { grid-template-columns: 1fr; } }
+    .footer-cta h2 { font-size: 10px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+    .footer-cta p { color: #71717a; margin-bottom: 28px; font-size: 10px; }
+    @media (max-width: 600px) { h1 { font-size: 10px; } .grid, .who-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
