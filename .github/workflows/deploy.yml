@@ -10,9 +10,78 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Trigger Cloudflare Pages deployment
+
+      - name: Deploy via Cloudflare Pages Direct Upload
         run: |
-          echo "Cloudflare Pages GitHub integration will auto-deploy on push."
-          echo "Pushed commit: ${{ github.sha }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Done! Cloudflare handles the rest."
+          pip install -q requests 2>/dev/null || true
+          
+          python3 << 'PYEOF'
+          import os, json, hashlib, urllib.request, urllib.error, subprocess
+
+          account_id = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          token = "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          hf = {"Authorization": f"Bearer {token}"}
+          project = "themachine-corp"
+
+          # Build manifest
+          manifest = {}
+          skip = {".git", "node_modules", ".github", "workers", ".venv", "__pycache__"}
+          for root, dirs, files in os.walk("."):
+              dirs[:] = [d for d in dirs if d not in skip]
+              for f in files:
+                  if f.endswith(".bak"):
+                      continue
+                  path = os.path.join(root, f)
+                  name = path[2:]
+                  try:
+                      with open(path, "rb") as fp:
+                          h = hashlib.sha256(fp.read()).hexdigest()
+                      manifest[name] = h
+                  except:
+                      pass
+
+          print(f"Manifest: {len(manifest)} files")
+
+          # Create deployment
+          manifest_json = json.dumps(manifest)
+          result = subprocess.run([
+              "curl", "-s", "--noproxy", "*", "-X", "POST",
+              f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/{project}/deployments",
+              "-H", f"Authorization: Bearer {token}",
+              "-F", "branch=main",
+              "-F", f"manifest={manifest_json};type=application/json"
+          ], capture_output=True, text=True)
+
+          resp = json.loads(result.stdout)
+          if not resp.get("success"):
+              print("Error:", resp.get("errors"))
+              exit(1)
+
+          dep = resp["result"]
+          dep_id = dep["id"]
+          upload_url = dep.get("upload_url", "")
+          print(f"Deployment: {dep_id}")
+          print(f"URL: https://{dep_id[:8]}.themachine-corp-6qq.pages.dev")
+
+          if not upload_url:
+              print("No upload_url. Response:", json.dumps(dep, indent=2)[:300])
+              exit(0)
+
+          # Upload files
+          for fname, fhash in manifest.items():
+              if not os.path.exists(fname):
+                  continue
+              req = urllib.request.Request(
+                  upload_url,
+                  data=open(fname, "rb").read(),
+                  headers={"x-content-hash": fhash, "Content-Type": "application/octet-stream"},
+                  method="PUT"
+              )
+              try:
+                  resp2 = urllib.request.urlopen(req)
+                  print(f"  {fname}: {resp2.status}")
+              except urllib.error.HTTPError as e:
+                  print(f"  {fname}: ERROR {e.code} {e.read().decode()[:80]}")
+
+          print(f"\nDone! Deployment: {dep_id}")
+          PYEOF
