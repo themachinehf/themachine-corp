@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tools | THEMACHINE CORP.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --magenta: #ff00ff; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
+
+    /* NAV - Unified style */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:2px solid var(--cyan);background:rgba(0,0,0,0.8);position:sticky;top:0;z-index:100}
+    .nav-logo{font-size:clamp(12px,2vw,16px);color:var(--gold);text-shadow:2px 2px 0 var(--cyan);text-decoration:none}
+
+    /* HUD - Unified style */
+    .hud{position:fixed;bottom:0;left:0;right:0;padding:8px 15px;background:rgba(0,0,0,0.9);border-top:2px solid var(--cyan);display:flex;justify-content:space-between;font-size:clamp(6px,1.2vw,9px)}
+    .hud-item{display:flex;gap:6px}
+    .hud-label{color:var(--cyan)}
+    .hud-value{color:var(--gold)}
+
+    @media (max-width: 600px) { .tools-grid { grid-template-columns: repeat(2, 1fr) !important; } .tool-panel { padding: 15px !important; } .nav{flex-direction:column;gap:8px;text-align:center} }
+    .container { max-width: 900px; margin: 0 auto; padding: 60px 15px 70px; }
+    .subtitle { font-family: 'Press Start 2P', monospace; font-size: clamp(6px, 1.5vw, 8px); color: #555; text-align: center; margin-bottom: 20px; }
+    .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
+    .tool { background: rgba(255,0,255,0.05); border: 2px solid var(--magenta); padding: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .tool:hover, .tool.active { background: var(--magenta); color: var(--bg); transform: translateY(-2px); }
+    .tool-icon { font-size: 20px; margin-bottom: 6px; }
+    .tool h2 { font-family: 'Press Start 2P', monospace; font-size: 6px; color: var(--gold); margin-bottom: 5px; }
+    .tool:hover h2, .tool.active h2 { color: var(--bg); }
+    .tool p { font-size: 8px; color: #888; }
+    .tool:hover p { color: #333; }
+    .tool-panel { background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); padding: 20px; margin-bottom: 15px; display: none; }
+    .tool-panel.active { display: block; }
+    .tool-panel h3 { font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--gold); margin-bottom: 12px; }
+    textarea, input { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 2px solid var(--cyan); color: #fff; font-family: monospace; font-size: 13px; margin-bottom: 10px; }
+    textarea { height: 80px; resize: none; }
+    .btn { padding: 10px 20px; background: var(--cyan); border: none; color: var(--bg); font-family: 'Press Start 2P', monospace; font-size: 9px; cursor: pointer; }
+    .btn:hover { background: var(--gold); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .result { margin-top: 12px; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--gold); font-size: 11px; white-space: pre-wrap; color: #ddd; display: none; line-height: 1.6; }
+    .result.show { display: block; }
+    .result.error { border-color: #ff4444; color: #ff6666; }
+    .loading { color: var(--cyan); animation: blink 0.5s infinite; }
+    @keyframes blink { 50% { opacity: 0.5; } }
+  </style>
+</head>
+<body>
+<!-- NAV - Unified header -->
+<nav class="nav">
+  <a href="/" class="nav-logo">◈ THEMACHINE Corp.</a>
+</nav>
+
+  <div class="container">
+    <h1>🧰 AI TOOLBOX</h1>
+    <p class="subtitle">FREE AI-POWERED UTILITIES</p>
+    <div class="tools-grid">
+      <div class="tool" onclick="selectTool('summarizer')"><div class="tool-icon">📝</div><h2>SUMMARIZER</h2><p>Condense text</p></div>
+      <div class="tool" onclick="selectTool('analyzer')"><div class="tool-icon">🔍</div><h2>ANALYZER</h2><p>Sentiment detect</p></div>
+      <div class="tool" onclick="selectTool('ideator')"><div class="tool-icon">💡</div><h2>IDEATOR</h2><p>Generate ideas</p></div>
+      <div class="tool" onclick="selectTool('email')"><div class="tool-icon">📧</div><h2>EMAIL</h2><p>Write emails</p></div>
+      <div class="tool" onclick="selectTool('headline')"><div class="tool-icon">🎯</div><h2>HEADLINE</h2><p>Catchy titles</p></div>
+      <div class="tool" onclick="selectTool('translator')"><div class="tool-icon">🌐</div><h2>TRANSLATOR</h2><p>Multi-language</p></div>
+      <div class="tool" onclick="selectTool('code')"><div class="tool-icon">💻</div><h2>CODE</h2><p>Code helper</p></div>
+      <div class="tool" onclick="selectTool('joke')"><div class="tool-icon">😂</div><h2>JOKE</h2><p>Fun & humor</p></div>
+    </div>
+    <div id="panel-summarizer" class="tool-panel"><h3>📝 SUMMARIZER</h3><textarea id="summarizer-input" placeholder="Paste text to summarize..."></textarea><button class="btn" id="btn-summarizer" onclick="runAI('summarizer')">► SUMMARIZE</button><div id="summarizer-result" class="result"></div></div>
+    <div id="panel-analyzer" class="tool-panel"><h3>🔍 ANALYZER</h3><textarea id="analyzer-input" placeholder="Text to analyze..."></textarea><button class="btn" id="btn-analyzer" onclick="runAI('analyzer')">► ANALYZE</button><div id="analyzer-result" class="result"></div></div>
+    <div id="panel-ideator" class="tool-panel"><h3>💡 IDEATOR</h3><input type="text" id="ideator-input" placeholder="Topic for ideas..."><button class="btn" id="btn-ideator" onclick="runAI('ideator')">» GENERATE</button><div id="ideator-result" class="result"></div></div>
+    <div id="panel-email" class="tool-panel"><h3>📧 EMAIL</h3><input type="text" id="email-subject" placeholder="Subject line..."><textarea id="email-input" placeholder="What do you want to say?"></textarea><button class="btn" id="btn-email" onclick="runAI('email')">» WRITE</button><div id="email-result" class="result"></div></div>
+    <div id="panel-headline" class="tool-panel"><h3>🎯 HEADLINE</h3><input type="text" id="headline-input" placeholder="Topic or content..."><button class="btn" id="btn-headline" onclick="runAI('headline')">» GENERATE</button><div id="headline-result" class="result"></div></div>
+    <div id="panel-translator" class="tool-panel"><h3>🌐 TRANSLATOR</h3><input type="text" id="translator-from" placeholder="From (e.g. English)" value="English"><input type="text" id="translator-to" placeholder="To (e.g. Chinese)" value="Chinese"><textarea id="translator-input" placeholder="Text to translate..."></textarea><button class="btn" id="btn-translator" onclick="runAI('translator')">» TRANSLATE</button><div id="translator-result" class="result"></div></div>
+    <div id="panel-code" class="tool-panel"><h3>💻 CODE</h3><textarea id="code-input" placeholder="Describe what code you need..."></textarea><button class="btn" id="btn-code" onclick="runAI('code')">» HELP</button><div id="code-result" class="result"></div></div>
+    <div id="panel-joke" class="tool-panel"><h3>😂 JOKE</h3><input type="text" id="joke-input" placeholder="Topic (optional)..."><button class="btn" id="btn-joke" onclick="runAI('joke')">» TELL JOKE</button><div id="joke-result" class="result"></div></div>
+  </div>
+  <script>
+    const API_BASE = 'https://api.minimax.chat/v1/text/chatcompletion_v2';
+    const ENCODED_KEY = 'c2stYXBpLVFvQTdOS29qM1ViT3pJRHNwWnFxakw0Z1V4RUQ2U1lEc1NSSG5hMnR1VFExZ0thdlNXN29oVkd0U1dZeDFUZ1E0QUhtVlowLXR5NlBpSjQ1dHZHLUdMemNhNmtqVGRkNER2YVNieTJ0Rm13d2dKQzhSQWxsZ0kwCg==';
+    
+    function getApiKey() { try { return atob(ENCODED_KEY); } catch(e) { return null; } }
+    
+    function isChinese(text) {
+      return /[\u4e00-\u9fa5]/.test(text);
+    }
+    
+    function getLanguageInstruction(text) {
+      return isChinese(text) 
+        ? '请用中文回复。' 
+        : 'Please respond in English.';
+    }
+    
+    async function callMiniMax(prompt) {
+      const apiKey = getApiKey();
+      if (!apiKey) throw new Error('API key required');
+      
+      const response = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+        body: JSON.stringify({
+          model: 'abab6.5s-chat',
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.base_resp?.status_msg || 'API Error: ' + response.status);
+      }
+      
+      const data = await response.json();
+      if (!data.choices || !data.choices[0]) throw new Error('No response');
+      return data.choices[0].message?.content || 'No content';
+    }
+    
+    function selectTool(t) {
+      document.querySelectorAll('.tool').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.tool-panel').forEach(x => x.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('panel-' + t).classList.add('active');
+    }
+    
+    async function runAI(t) {
+      const btn = document.getElementById('btn-' + t);
+      const result = document.getElementById(t + '-result');
+      let prompt = '';
+      
+      const inputs = {
+        summarizer: document.getElementById('summarizer-input').value.trim(),
+        analyzer: document.getElementById('analyzer-input').value.trim(),
+        ideator: document.getElementById('ideator-input').value.trim(),
+        headline: document.getElementById('headline-input').value.trim(),
+        translator: document.getElementById('translator-input').value.trim(),
+        code: document.getElementById('code-input').value.trim(),
+        joke: document.getElementById('joke-input').value.trim(),
+        email: document.getElementById('email-input').value.trim()
+      };
+      
+      if (!inputs[t] && t !== 'joke') { alert('Enter text'); return; }
+      
+      const userText = t === 'email' 
+        ? (inputs[t] + ' ' + document.getElementById('email-subject').value)
+        : (inputs[t] || '');
+      const langInstruction = getLanguageInstruction(userText);
+      
+      switch(t) {
+        case 'summarizer': prompt = `${langInstruction} Summarize into 3-5 bullet points:\n\n` + inputs.summarizer; break;
+        case 'analyzer': prompt = `${langInstruction} Analyze sentiment and extract key entities:\n\n` + inputs.analyzer; break;
+        case 'ideator': prompt = `${langInstruction} Generate 5 creative ideas for: ` + inputs.ideator; break;
+        case 'email': prompt = `${langInstruction} Write professional email. Subject: ` + document.getElementById('email-subject').value + '\n\n' + inputs.email; break;
+        case 'headline': prompt = `${langInstruction} Generate 5 catchy headlines for: ` + inputs.headline; break;
+        case 'translator': prompt = `Translate from ` + (document.getElementById('translator-from').value || 'English') + ' to ' + (document.getElementById('translator-to').value || 'Chinese') + ':\n\n' + inputs.translator; break;
+        case 'code': prompt = `${langInstruction} Write code for: ` + inputs.code + '. Include comments.'; break;
+        case 'joke': prompt = inputs.joke ? `${langInstruction} Tell a funny joke about ` + inputs.joke : `${langInstruction} Tell a random funny joke`; break;
+      }
+      
+      btn.disabled = true;
+      result.classList.remove('error');
+      result.classList.add('show');
+      result.innerHTML = '<span class="loading">⚡ Processing...</span>';
+      
+      try { result.textContent = await callMiniMax(prompt); }
+      catch(e) { result.classList.add('error'); result.textContent = 'Error: ' + e.message; }
+      finally { btn.disabled = false; }
+    }
+  </script>
+
+<!-- HUD -->
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-item"><span class="hud-label">SYS:</span><span class="hud-value">TOOLS v1.0</span></div>
+  <div class="hud-item"><span class="hud-label">STATUS:</span><span class="hud-value">ONLINE</span></div>
+</div>
+</body>
+</html>

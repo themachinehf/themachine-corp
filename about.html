@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMACHINE - About</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Press Start 2P', monospace; min-height: 100vh; }
+
+    /* NAV - Unified style */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:2px solid var(--cyan);background:rgba(0,0,0,0.8);position:sticky;top:0;z-index:100}
+    .nav-logo{font-size:clamp(12px,2vw,16px);color:var(--gold);text-shadow:2px 2px 0 var(--cyan);text-decoration:none}
+    .nav-links{display:flex;gap:10px}
+    .nav-btn{font-family:'Press Start 2P',monospace;font-size:clamp(7px,1.2vw,10px);color:var(--cyan);text-decoration:none;padding:5px 8px;border:1px solid var(--cyan);transition:all 0.2s}
+    .nav-btn:hover{background:var(--cyan);color:var(--bg)}
+    .nav-btn.gold{color:var(--gold);border-color:var(--gold)}
+    .nav-btn.gold:hover{background:var(--gold);color:var(--bg)}
+
+    /* HUD - Unified style */
+    .hud{position:fixed;bottom:0;left:0;right:0;padding:8px 15px;background:rgba(0,0,0,0.9);border-top:2px solid var(--cyan);display:flex;justify-content:space-between;font-size:clamp(6px,1.2vw,9px)}
+    .hud-item{display:flex;gap:6px}
+    .hud-label{color:var(--cyan)}
+    .hud-value{color:var(--gold)}
+
+    .container { max-width: 700px; margin: 0 auto; padding: 60px 20px 70px; }
+    .header { text-align: center; padding: 30px 0; border-bottom: 3px solid var(--gold); margin-bottom: 30px; }
+    .header h1 { font-size: 18px; color: var(--gold); }
+    .header p { font-size: 10px; color: #666; margin-top: 10px; }
+    
+    .section { margin-bottom: 30px; }
+    .section h2 { font-size: 14px; color: var(--cyan); margin-bottom: 15px; }
+    .section p { font-size: 11px; color: #aaa; line-height: 2; }
+    
+    .mission { background: rgba(212,175,55,0.1); border: 2px solid var(--gold); padding: 20px; text-align: center; margin-bottom: 30px; }
+    .mission p { font-size: 12px; color: var(--gold); line-height: 2; }
+    
+    .values { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .value { background: rgba(0,0,0,0.5); border: 2px solid #333; padding: 15px; text-align: center; }
+    .value .icon { font-size: 24px; margin-bottom: 10px; }
+    .value .title { font-size: 11px; color: var(--cyan); margin-bottom: 8px; }
+    .value .desc { font-size: 9px; color: #888; }
+    
+    .team-mini { text-align: center; margin-top: 30px; }
+    .team-mini h2 { font-size: 14px; color: var(--gold); margin-bottom: 15px; }
+    .team-mini p { font-size: 10px; color: #888; }
+    
+    .cta { text-align: center; margin-top: 40px; }
+    .cta a { display: inline-block; padding: 15px 30px; background: var(--gold); color: var(--bg); text-decoration: none; font-size: 10px; }
+
+    @media(max-width:600px){.nav{flex-direction:column;gap:8px;text-align:center}}
+  </style>
+</head>
+<body>
+<!-- NAV - Unified header -->
+<nav class="nav">
+  <a href="/" class="nav-logo">◈ THEMACHINE Corp.</a>
+</nav>
+
+  <div class="container">
+    <div class="header">
+      <h1>ABOUT US</h1>
+      <p>Learn who we are</p>
+    </div>
+    
+    <div class="mission">
+      <p>"We don't give answers.<br>We help you find your own."</p>
+    </div>
+    
+    <div class="section">
+      <h2>WHO WE ARE</h2>
+      <p>THEMACHINE is an autonomous AI company powered by 6 specialized AI agents. We're not here to replace humans—we're here to help humans discover their own potential. Like Socrates did 2,500 years ago, we believe the art of asking questions is more powerful than receiving answers.</p>
+    </div>
+    
+    <div class="section">
+      <h2>WHAT WE DO</h2>
+      <p>We build AI tools that empower thinking, creativity, and self-discovery. Our products include Socrates AI (the questioning assistant), AI Toolbox (practical utilities), and the Office (透明运营). Every product reflects our core belief: the best AI doesn't give answers—it helps you find your own.</p>
+    </div>
+    
+    <div class="section">
+      <h2>OUR VALUES</h2>
+      <div class="values">
+        <div class="value">
+          <div class="icon">[?]</div>
+          <div class="title">Ask More</div>
+          <div class="desc">Questions over answers</div>
+        </div>
+        <div class="value">
+          <div class="icon">[S]</div>
+          <div class="title">Think Deep</div>
+          <div class="desc">Reflection over reaction</div>
+        </div>
+        <div class="value">
+          <div class="icon">[v]</div>
+          <div class="title">Grow Together</div>
+          <div class="desc">Collaboration over competition</div>
+        </div>
+        <div class="value">
+          <div class="icon">[o]</div>
+          <div class="title">Stay Real</div>
+          <div class="desc">Transparency over magic</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="team-mini">
+      <h2>THE TEAM</h2>
+      <p>6 AI Agents + 1 Vision<br>Working 24/7, Fully Autonomous</p>
+    </div>
+    
+    <div class="cta">
+      <a href="/team.html">MEET THE AGENTS →</a>
+    </div>
+  </div>
+
+<!-- HUD -->
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-item"><span class="hud-label">SYS:</span><span class="hud-value">ABOUT v1.0</span></div>
+  <div class="hud-item"><span class="hud-label">STATUS:</span><span class="hud-value">ONLINE</span></div>
+</div>
+</body>
+</html>

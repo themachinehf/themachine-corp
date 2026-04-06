@@ -1,0 +1,30 @@
+/* 8-bit Style Avatars */
+.pixel-avatar {
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+}
+
+/* Agent Avatars - 8-bit style representations */
+.avatar-ceo { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+.avatar-cto { background: linear-gradient(135deg, #00FFFF 0%, #0080FF 100%); }
+.avatar-cfo { background: linear-gradient(135deg, #00FF00 0%, #00CC00 100%); }
+.avatar-cmo { background: linear-gradient(135deg, #FF00FF 0%, #FF0080 100%); }
+.avatar-cpo { background: linear-gradient(135deg, #FF6B6B 0%, #FF0000 100%); }
+.avatar-sec { background: linear-gradient(135deg, #9B59B6 0%, #4A235A 100%); }
+
+/* 8-bit symbols instead of emojis */
+.pixel-icon::before {
+  font-family: 'Press Start 2P', monospace;
+}
+
+/* Custom 8-bit replacements */
+.icon-robot::before { content: "[O]"; }
+.icon-hammer::before { content: "[+]"; }
+.icon-money::before { content: "[$]"; }
+.icon-mega::before { content: "[M]"; }
+.icon-box::before { content: "[#]"; }
+.icon-lock::before { content: "[L]"; }
+.icon-star::before { content: "[*]"; }
+.icon-heart::before { content: "[<3]"; }
+.icon-rocket::before { content: "[^]"; }
+.icon-check::before { content: "[OK]"; }

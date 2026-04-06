@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Persona | THEMACHINE CORP.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0d0d12; --gold: #d4af37; --cyan: #00ffff; --magenta: #ff00ff; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; min-height: 100vh; cursor: crosshair; }
+
+    /* NAV - Unified style */
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:2px solid var(--cyan);background:rgba(0,0,0,0.8);position:sticky;top:0;z-index:100}
+    .nav-logo{font-size:clamp(12px,2vw,16px);color:var(--gold);text-shadow:2px 2px 0 var(--cyan);text-decoration:none}
+
+    /* HUD - Unified style */
+    .hud{position:fixed;bottom:0;left:0;right:0;padding:8px 15px;background:rgba(0,0,0,0.9);border-top:2px solid var(--cyan);display:flex;justify-content:space-between;font-size:clamp(6px,1.2vw,9px)}
+    .hud-item{display:flex;gap:6px}
+    .hud-label{color:var(--cyan)}
+    .hud-value{color:var(--gold)}
+
+    .container { max-width: 95%; margin: 0 auto; padding: 60px 20px 70px; }
+    .cursor { position: fixed; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; z-index: 9999; pointer-events: none; display: none; box-shadow: 0 0 6px var(--gold); }
+    .cursor.active { display: block; }
+    
+    .container { max-width: 95%; margin: 0 auto; padding: 40px 20px; }
+    h1 { font-family: 'Press Start 2P', cursive; font-size: clamp(14px, 4vw, 20px); color: var(--gold); margin: 30px 0 10px; text-align: center; }
+    .subtitle { font-family: 'Press Start 2P', monospace; font-size: 8px; color: #555; text-align: center; margin-bottom: 25px; }
+    .card { background: rgba(0,255,255,0.05); border: 2px solid var(--cyan); padding: 15px; margin-bottom: 20px; }
+    .card h2 { font-family: 'Press Start 2P', monospace; font-size: 11px; color: var(--gold); margin-bottom: 15px; }
+    .card p { font-size: 14px; line-height: 1.8; color: #aaa; }
+    .card ul { margin-left: 20px; color: #888; font-size: 13px; line-height: 1.8; }
+    .btn { display: inline-block; padding: 15px 30px; background: var(--magenta); border: none; color: #fff; font-family: 'Press Start 2P', monospace; font-size: clamp(7px, 2vw, 10px); cursor: pointer; margin-top: 15px; }
+    .btn:hover { background: var(--gold); color: var(--bg); }
+    .btn:disabled { opacity: 0.5; cursor: wait; }
+    .input { width: 100%; padding: 14px; background: rgba(0,0,0,0.5); border: 2px solid var(--cyan); color: #fff; font-family: monospace; font-size: 14px; margin-bottom: 12px; }
+    .input:focus { outline: none; border-color: var(--gold); }
+    
+    .spectrum { display: flex; gap: 10px; margin: 15px 0; }
+    .spectrum-btn { flex: 1; padding: 10px; background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); color: var(--cyan); font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; }
+    .spectrum-btn:hover, .spectrum-btn.active { background: var(--cyan); color: var(--bg); }
+    
+    .result { background: rgba(0,0,0,0.5); border: 2px solid var(--gold); padding: 20px; margin-top: 20px; display: none; }
+    .result.show { display: block; }
+    .result h3 { font-family: 'Press Start 2P', monospace; font-size: 12px; color: var(--gold); margin-bottom: 15px; }
+    .result-content { white-space: pre-wrap; line-height: 1.8; color: #ccc; font-size: 13px; }
+    .loading { text-align: center; padding: 20px; color: var(--cyan); font-family: 'Press Start 2P', monospace; font-size: 10px; }
+    
+    .trait-bar { display: flex; align-items: center; margin: 10px 0; }
+    .trait-label { width: 120px; font-size: 12px; color: var(--cyan); }
+    .trait-fill { flex: 1; height: 20px; background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); }
+    .trait-fill-inner { height: 100%; background: var(--cyan); transition: width 1s; }
+  </style>
+</head>
+<body onload="document.querySelector('.cursor').classList.add('active')">
+  <div class="cursor" id="cursor"></div>
+  <script>document.addEventListener('mousemove', e => { document.getElementById('cursor').style.left = e.clientX - 4 + 'px'; document.getElementById('cursor').style.top = e.clientY - 4 + 'px'; });</script>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo">◈ THEMACHINE Corp.</a>
+</nav>
+
+  <div class="container">
+    
+    <h1>🎭 PERSONA</h1>
+    <p class="subtitle">MULTI-DIMENSIONAL PERSONALITY ANALYSIS</p>
+    
+    <div class="card">
+      <h2>WHAT IS PERSONA?</h2>
+      <p>Discover your personality across multiple dimensions. Our AI analyzes your responses to reveal who you really are - your strengths, weaknesses, hidden traits, and potential growth areas.</p>
+    </div>
+    
+    <div class="card">
+      <h2>ANALYSIS DIMENSIONS</h2>
+      <ul>
+        <li>🎯 Core Traits - Your fundamental personality characteristics</li>
+        <li>💭 Cognitive Style - How you think and process information</li>
+        <li>❤️ Emotional Patterns - Your emotional responses and regulation</li>
+        <li>🤝 Social Behavior - How you interact with others</li>
+        <li>🚀 Motivation Drivers - What truly drives you forward</li>
+      </ul>
+    </div>
+    
+    <div class="card">
+      <h2>START ANALYSIS</h2>
+      <input type="text" class="input" id="name" placeholder="Your name...">
+      <input type="text" class="input" id="age" placeholder="Your age...">
+      <input type="text" class="input" id="occupation" placeholder="Your occupation...">
+      <input type="text" class="input" id="hobby" placeholder="Your main hobby...">
+      <input type="text" class="input" id="value" placeholder="What do you value most?">
+      <div class="spectrum">
+        <button class="spectrum-btn" onclick="selectSpectrum(this, 'shy')">SHY</button>
+        <button class="spectrum-btn" onclick="selectSpectrum(this, 'balanced')">BALANCED</button>
+        <button class="spectrum-btn" onclick="selectSpectrum(this, 'extrovert')">EXTROVERT</button>
+      </div>
+      <button class="btn" id="analyzeBtn" onclick="analyzePersona()">► START ANALYSIS</button>
+    </div>
+    
+    <div class="result" id="result">
+      <h3>📊 ANALYSIS COMPLETE</h3>
+      <div id="resultContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = 'sk-api-QoA7NKoj3UbOzIDspZqqjL4gUxED6SYDsSRHna2tuTQ1gKavSW7ohVGtSWYx1TgQ4AHmVZ0-ty6PiJ45tvG-GLzca6kjTdd4DvaSby2tFmwwgJC8RAllgI0';
+    let selectedSpectrum = '';
+    
+    function selectSpectrum(btn, type) {
+      document.querySelectorAll('.spectrum-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedSpectrum = type;
+    }
+    
+    function isChinese(text) {
+      return /[\u4e00-\u9fa5]/.test(text);
+    }
+    
+    function getLanguageInstruction(text) {
+      return isChinese(text) 
+        ? '请用中文回复。' 
+        : 'Please respond in English.';
+    }
+    
+    async function analyzePersona() {
+      const name = document.getElementById('name').value.trim();
+      const age = document.getElementById('age').value.trim();
+      const occupation = document.getElementById('occupation').value.trim();
+      const hobby = document.getElementById('hobby').value.trim();
+      const value = document.getElementById('value').value.trim();
+      
+      // 检测用户输入的语言
+      const userInput = `${name} ${age} ${occupation} ${hobby} ${value}`;
+      const langInstruction = getLanguageInstruction(userInput);
+      
+      if (!name || !age || !occupation) {
+        alert('Please fill in at least name, age, and occupation!');
+        return;
+      }
+      
+      const btn = document.getElementById('analyzeBtn');
+      const resultDiv = document.getElementById('result');
+      const resultContent = document.getElementById('resultContent');
+      
+      btn.disabled = true;
+      btn.textContent = '⏳ ANALYZING...';
+      resultDiv.classList.remove('show');
+      resultContent.innerHTML = '<div class="loading">🔮 SCANNING YOUR AURA...</div>';
+      resultDiv.classList.add('show');
+      
+      const prompt = `${langInstruction} You are an expert personality analyst. Analyze this person's persona based on the following information:
+
+Name: ${name}
+Age: ${age}
+Occupation: ${occupation}
+Hobby: ${hobby || 'Not specified'}
+Values: ${value || 'Not specified'}
+Social Style: ${selectedSpectrum || 'Not specified'}
+
+Provide a detailed personality analysis with the following sections:
+
+## 🎯 CORE TRAITS
+[List 5 key personality traits with brief explanations]
+
+## 💭 COGNITIVE STYLE
+[How they think, learn, and process information]
+
+## ❤️ EMOTIONAL PATTERNS
+[Their emotional strengths and challenges]
+
+## 🤝 SOCIAL BEHAVIOR
+[How they interact with others]
+
+## 🚀 MOTIVATION DRIVERS
+[What truly drives them]
+
+## 💡 GROWTH RECOMMENDATIONS
+[3-5 actionable suggestions for personal development]
+
+Make it engaging, insightful, and use the 8-bit game aesthetic in your tone!`;
+
+      try {
+        const response = await fetch('https://api.minimax.chat/v1/text/chatcompletion_v2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+          body: JSON.stringify({
+            model: 'abab6.5s-chat',
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.choices && data.choices[0]) {
+          resultContent.innerHTML = '<div class="result-content">' + data.choices[0].message.content + '</div>';
+        } else {
+          resultContent.innerHTML = '<div class="result-content" style="color:#ff6b6b">Analysis failed. Please try again.</div>';
+        }
+      } catch (err) {
+        resultContent.innerHTML = '<div class="result-content" style="color:#ff6b6b">Error: ' + err.message + '</div>';
+      }
+      
+      btn.disabled = false;
+      btn.textContent = '► START ANALYSIS';
+    }
+  </script>
+
+<!-- HUD -->
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-item"><span class="hud-label">SYS:</span><span class="hud-value">PERSONA v1.0</span></div>
+  <div class="hud-item"><span class="hud-label">STATUS:</span><span class="hud-value">ONLINE</span></div>
+</div>
+</body>
+</html>
