@@ -1,0 +1,5 @@
+name = "themachine-corp"
+main = "index.js"
+compatibility_date = "2024-01-01"
+account_id = "d54f82efc87256f8e5625c029184f434"
+pages_build_output_dir = ".."
