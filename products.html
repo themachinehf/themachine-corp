@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Agent Side Hustle Guide | THEMACHINE Corp.</title>
+  <title>Products | THEMACHINE Corp.</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a0f;
-      --text: #e5e7eb;
-      --gold: #fbbf24;
-      --gold-light: #fcd34d;
-      --gold-dark: #d97706;
+      --bg: #0d0d12;
+      --text: #fff;
+      --gold: #d4af37;
+      --gold-light: #f0d060;
+      --gold-dark: #b8962e;
       --border: #1e293b;
-      --font: 'Press Start 2P', monospace;
+      --card-bg: rgba(30, 41, 59, 0.35);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -23,8 +23,9 @@
         linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 100%);
       background-attachment: fixed;
       color: var(--text);
-      font-family: var(--font);
+      font-family: 'Press Start 2P', monospace;
       min-height: 100vh;
+      line-height: 1.6;
     }
     body::before {
       content: '';
@@ -37,276 +38,319 @@
       pointer-events: none;
       z-index: -1;
     }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 60px 20px;
-    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
 
     /* Header */
     header {
-      margin-bottom: 40px;
-      padding-bottom: 30px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
       border-bottom: 1px solid var(--border);
       position: relative;
     }
     header::after {
       content: '';
       position: absolute;
-      bottom: -1px;
-      left: 0;
-      width: 120px;
-      height: 2px;
+      bottom: -1px; left: 0;
+      width: 80px; height: 2px;
       background: var(--gold);
     }
     h1 {
-      font-size: 48px;
+      font-size: 20px;
       font-weight: 800;
       background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 12px;
-      letter-spacing: 4px;
-      animation: glow 3s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.3));
-    }
-    @keyframes glow {
-      from { filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3)); }
-      to   { filter: drop-shadow(0 0 50px rgba(251, 191, 36, 0.6)); }
+      margin-bottom: 6px;
+      font-family: 'Press Start 2P', monospace;
     }
     .subtitle {
-      font-size: 14px;
+      font-size: 8px;
       color: #6b7280;
       text-transform: uppercase;
       letter-spacing: 3px;
+      font-family: 'Press Start 2P', monospace;
     }
     .subtitle span { color: var(--gold); }
 
     /* Nav */
     .nav {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       margin-bottom: 0;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 20px 0;
+      padding: 16px 0;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
     }
     .nav a {
       color: var(--gold);
       text-decoration: none;
-      padding: 10px 16px;
-      border: 2px solid var(--gold);
-      font-size: 7px;
+      padding: 8px 14px;
+      border: 1px solid rgba(251,191,36,0.4);
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: all 0.1s;
+      border-radius: 6px;
+      transition: all 0.2s;
     }
-    .nav a:hover { background: var(--gold); color: var(--bg); }
-    .nav a.active { background: var(--gold); color: var(--bg); }
+    .nav a:hover { background: var(--gold); color: #0a0a0f; border-color: var(--gold); }
+    .nav a.active { background: var(--gold); color: #0a0a0f; border-color: var(--gold); }
 
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 60px 20px;
-      position: relative;
+    /* Section heading */
+    .section { margin-bottom: 48px; }
+    .section-title {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin-bottom: 8px;
+      font-family: 'Press Start 2P', monospace;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(251, 191, 36, 0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero h2 {
-      font-size: 28px;
-      color: var(--text);
-      margin-bottom: 16px;
+    .section h2 {
+      font-size: 12px;
       font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-family: 'Press Start 2P', monospace;
+      line-height: 1.6;
     }
-    .hero p {
-      color: #9ca3af;
-      font-size: 16px;
-      line-height: 1.8;
-      max-width: 600px;
-      margin: 0 auto 32px;
-    }
+    .section-sub { color: #6b7280; font-size: 14px; margin-bottom: 28px; }
 
-    /* Pricing Grid */
+    /* Pricing Grid — 3 columns */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      margin: 50px 0;
+      margin-bottom: 64px;
     }
-    @media (max-width: 700px) { .pricing-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; } }
 
     .plan {
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px 24px;
+      border-radius: 16px;
+      padding: 28px 22px;
       text-align: center;
-      background: rgba(30, 41, 59, 0.3);
+      background: var(--card-bg);
       position: relative;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
     }
     .plan:hover {
       border-color: var(--gold);
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(251, 191, 36, 0.1);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3), 0 0 24px rgba(251,191,36,0.08);
     }
     .plan.popular {
       border-color: var(--gold);
-      background: rgba(251, 191, 36, 0.06);
+      background: rgba(251,191,36,0.06);
     }
-    .plan.popular::before {
-      content: 'Most Popular';
+    .plan-badge {
       position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--gold);
-      color: var(--bg);
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 4px 16px;
-      border-radius: 20px;
+      top: 14px; right: 14px;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
+    .badge-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .badge-gold { background: rgba(251,191,36,0.15); color: var(--gold); }
+    .badge-purple { background: rgba(139,92,246,0.15); color: #818cf8; }
     .plan-name {
-      font-size: 12px;
+      font-size: 8px;
       text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #6b7280;
-      margin-bottom: 16px;
+      letter-spacing: 2px;
+      color: #9ca3af;
+      margin-bottom: 12px;
+      margin-top: 8px;
+      font-family: 'Press Start 2P', monospace;
     }
     .plan-price {
-      font-size: 52px;
+      font-size: 44px;
       font-weight: 800;
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 4px;
-      filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3));
+      line-height: 1;
     }
     .plan-price .currency {
-      font-size: 24px;
+      font-size: 20px;
       vertical-align: super;
       -webkit-text-fill-color: var(--gold);
       filter: none;
     }
-    .plan-tagline {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 24px;
-    }
+    .plan-tagline { font-size: 8px; color: #9ca3af; margin-bottom: 20px; min-height: 40px; font-family: 'Press Start 2P', monospace; line-height: 1.8; }
     .plan-features {
       list-style: none;
       text-align: left;
-      margin-bottom: 28px;
-      border-top: 1px solid var(--border);
-      padding-top: 20px;
+      margin-bottom: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 16px;
+      flex-grow: 1;
     }
     .plan-features li {
-      padding: 8px 0;
+      padding: 6px 0;
       font-size: 13px;
       color: #9ca3af;
       display: flex;
       align-items: flex-start;
       gap: 8px;
+      overflow: hidden;
     }
     .plan-features li::before {
       content: '✓';
       color: var(--gold);
-      font-weight: bold;
+      font-weight: 700;
       flex-shrink: 0;
       margin-top: 1px;
     }
-
-    /* Buy Button placeholder */
-    .buy-btn-placeholder {
+    .buy-btn {
       display: block;
-      border: 2px dashed var(--gold);
-      color: var(--gold);
-      text-decoration: none;
-      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 12px 16px;
       border-radius: 10px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: default;
-      opacity: 0.6;
+      text-decoration: none;
+      text-align: center;
+      margin-top: auto;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
     }
-    .buy-btn-placeholder span {
+    .buy-btn:hover { opacity: 0.85; }
+    .buy-btn-secondary {
       display: block;
-      font-size: 10px;
-      margin-top: 4px;
-      opacity: 0.7;
+      margin-top: 8px;
+      border: 1px solid rgba(251,191,36,0.3);
+      color: var(--gold);
+      font-size: 11px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
     }
+    .buy-btn-secondary:hover { background: rgba(251,191,36,0.08); }
+
+    /* Most Popular badge for Standard */
+    .popular::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: #0a0a0f;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    /* Product cards grid — 2-3 columns */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+      background: var(--card-bg);
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      border-color: rgba(251,191,36,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .card-name { font-size: 8px; font-weight: 700; color: var(--text); font-family: 'Press Start 2P', monospace; line-height: 1.6; }
+    .card-price {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .card-price .currency { font-size: 13px; vertical-align: super; }
+    .card-tagline { font-size: 12px; color: #9ca3af; margin-bottom: 14px; min-height: 36px; }
+    .card-features {
+      list-style: none;
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+    .card-features li {
+      padding: 4px 0;
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      overflow: hidden;
+    }
+    .card-features li::before {
+      content: '✓';
+      color: var(--gold);
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 11px;
+      margin-top: 1px;
+    }
+    .card .buy-btn {
+      font-size: 12px;
+      padding: 10px 14px;
+    }
+
+    /* Guarantee strip */
+    .guarantee-strip {
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 10px;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 60px;
+    }
+    .guarantee-strip span { color: #22c55e; font-weight: 600; }
 
     /* Social Proof */
-    .section { margin-bottom: 60px; position: relative; }
-    .section::before {
-      content: '';
-      position: absolute;
-      left: -20px;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
-      opacity: 0.3;
-    }
-    .section h2 {
-      color: var(--gold);
-      font-size: 18px;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
-      display: inline-block;
-    }
-    .section p { color: #6b7280; line-height: 1.8; max-width: 700px; }
-    .section .section-intro { color: #9ca3af; margin-bottom: 24px; }
-
-    .social-proof-cards {
+    .proof-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 16px;
+      margin-bottom: 60px;
     }
     .proof-card {
-      background: rgba(30, 41, 59, 0.4);
+      background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 20px;
-      transition: all 0.3s;
     }
-    .proof-card:hover {
-      border-color: rgba(251, 191, 36, 0.4);
-      transform: translateY(-4px);
-    }
-    .proof-card .quote {
-      font-size: 14px;
-      color: #e5e7eb;
+    .proof-card:hover { border-color: rgba(251,191,36,0.3); }
+    .proof-quote {
+      font-size: 13px;
+      color: #d1d5db;
       line-height: 1.7;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       font-style: italic;
     }
-    .proof-card .meta {
-      font-size: 12px;
-      color: #6b7280;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .proof-card .x-badge {
-      background: rgba(251, 191, 36, 0.15);
+    .proof-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6b7280; }
+    .x-badge {
+      background: rgba(251,191,36,0.12);
       color: var(--gold);
-      border: 1px solid rgba(251, 191, 36, 0.3);
+      border: 1px solid rgba(251,191,36,0.25);
       padding: 2px 8px;
       border-radius: 6px;
       font-size: 10px;
@@ -317,8 +361,7 @@
     /* FAQ */
     .faq-item {
       border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-      cursor: default;
+      padding: 18px 0;
     }
     .faq-item:first-child { padding-top: 0; }
     .faq-q {
@@ -330,51 +373,42 @@
       align-items: flex-start;
       gap: 10px;
     }
-    .faq-q::before {
-      content: 'Q.';
-      color: var(--gold);
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-    .faq-a {
-      font-size: 13px;
-      color: #6b7280;
-      line-height: 1.8;
-      padding-left: 28px;
-    }
+    .faq-q::before { content: 'Q.'; color: var(--gold); font-weight: 800; flex-shrink: 0; }
+    .faq-a { font-size: 13px; color: #6b7280; line-height: 1.7; padding-left: 26px; }
 
     /* CTA */
     .cta-section {
       text-align: center;
-      padding: 60px 20px;
-      background: linear-gradient(180deg, rgba(251, 191, 36, 0.04) 0%, transparent 100%);
+      padding: 60px 24px;
+      background: linear-gradient(180deg, rgba(251,191,36,0.04) 0%, transparent 100%);
       border-radius: 16px;
       margin: 40px 0;
     }
-    .cta-section h2 {
-      color: var(--text);
-      font-size: 24px;
-      margin-bottom: 12px;
-    }
-    .cta-section p {
-      color: #6b7280;
-      margin-bottom: 32px;
+    .cta-section h2 { font-size: 24px; margin-bottom: 10px; }
+    .cta-section p { color: #6b7280; margin-bottom: 28px; }
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 14px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     /* Footer */
-    .footer {
-      text-align: center;
-      padding-top: 40px;
-      border-top: 1px solid var(--border);
-    }
+    .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); }
     .footer p { color: #6b7280; font-size: 13px; }
-    .x-link { color: var(--gold); text-decoration: none; transition: opacity 0.2s; }
+    .x-link { color: var(--gold); text-decoration: none; }
     .x-link:hover { opacity: 0.7; }
 
     @media (max-width: 768px) {
-      h1 { font-size: 30px; }
+      h1 { font-size: 26px; }
       .container { padding: 30px 16px; }
-      .section::before { display: none; }
+      .pricing-grid { gap: 16px; }
     }
   </style>
 </head>
@@ -382,320 +416,267 @@
   <div class="container">
 
     <header>
-      <h1>AI Agent Side Hustle Guide</h1>
-      <p class="subtitle"><span>THEMACHINE CORP</span> by THEMACHINE Corp.</p>
+      <h1>Products</h1>
+      <p class="subtitle"><span>THEMACHINE CORP</span> — AI Agent Income Toolkit</p>
     </header>
 
-    <nav class="nav">
-      <a href="/">Home</a>
-      <a href="/products" class="active">Products</a>
-      <a href="/dashboard">Dashboard</a>
-      <a href="/office/">Office</a>
-      <a href="/themathink/">THEMATHINK</a>
-      <a href="#pricing">PRICE</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+    
 
-    <!-- Hero -->
-    <div class="hero">
-      <h2>Start Your AI Agent Side Hustle Today</h2>
-      <p>
-        From zero to your first paid AI agent gig. Real steps, proven methods.
-        Real cases + proven framework to earn $500-$3000/month.
-      </p>
+    <!-- =============================================
+         SECTION 1: Core Guide — 3 Pricing Tiers
+    ============================================= -->
+    <div class="section">
+      <div class="section-title">AI Agent Side Hustle Guide</div>
+      <h2>Choose Your Path to First Income</h2>
+      <p class="section-sub">From zero to your first paid AI agent gig. Three tiers, all include the complete framework.</p>
     </div>
 
-    <!-- Free Sample -->
-    <div style="text-align:center; padding: 40px 20px; margin: 20px 0; background: linear-gradient(180deg, rgba(251,191,36,0.06) 0%, transparent 100%); border-radius: 16px; border: 1px solid rgba(251,191,36,0.2);">
-      <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-bottom: 12px;">Free Sample · FREE SAMPLE</div>
-      <h3 style="color: var(--text); font-size: 22px; margin-bottom: 12px;">FREE CHAPTER：Chapter 1 Practical starter</h3>
-      <p style="color: #9ca3af; font-size: 14px; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto;">Preview before you buy · Learn how we help youAlgoraearn your first income on these platforms</p>
-      <a href="digital-product/products/ai-agent-side-hustle-guide-BASIC.pdf" target="_blank" style="display: inline-block; background: var(--gold); color: #000; font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: 12px; text-decoration: none; margin-bottom: 10px;">
-        📄 Download Free Sample PDF
-      </a>
-      <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">No signup required · Instant download · 55KB · 5min read</div>
-    </div>
+    <div class="pricing-grid">
 
-    <!-- Pricing -->
-    <div id="pricing" style="padding: 0 0 60px;">
-      <div class="section">
-        <h2>PRICING</h2>
-        <p class="section-intro">Choose the version that fits you, start now</p>
+      <!-- Basic — $9 -->
+      <div class="plan">
+        
+        <div class="plan-name">Basic</div>
+        <div class="plan-price"><span class="currency">$</span>9</div>
+        <div class="plan-tagline">Algora &amp; A2H Bounty Hunting Starter</div>
+        <ul class="plan-features">
+          <li>Algora + A2H platform setup guide</li>
+          <li>Profile optimization walkthrough</li>
+          <li>First outreach templates</li>
+          <li>Bounty finding strategy</li>
+          <li>Common beginner mistakes checklist</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/ai-agent-guide-basic" target="_blank">Buy Now →</a>
+        <a class="buy-btn-secondary" href="https://nowpayments.io/payment/?iid=4589807414" target="_blank">Pay with crypto (BTC/ETH/USDT)</a>
       </div>
 
-      <div class="pricing-grid">
-
-        <!-- $9 Basic -->
-        <div class="plan">
-          <div style="position:absolute; top:12px; right:12px; background:rgba(34,197,94,0.15); color:#22c55e; font-size:10px; padding:3px 8px; border-radius:6px;">7day money-back guarantee</div>
-          <div class="plan-name">Basic</div>
-          <div class="plan-price"><span class="currency">$</span>9</div>
-          <div class="plan-tagline">Algora/A2H Bounty Hunting Guide</div>
-          <ul class="plan-features">
-            <li>Platform setup (Algora + A2H)</li>
-            <li>Profile optimization</li>
-            <li>First gig outreach templates</li>
-            <li>Common mistake checklist</li>
-          </ul>
-          <!-- BUY_LINK_9 -->
-          <a class="buy-btn-placeholder" href="https://themachinecorp.gumroad.com/l/ai-agent-guide-basic" target="_blank">
-            Buy Now <span>Gumroad · Card/PayPal</span>
-          </a>
-          <a class="buy-btn-secondary" href="https://nowpayments.io/payment/?iid=4589807414" target="_blank">
-            Or pay with crypto <span>BTC/ETH/USDT</span>
-          </a>
-        </div>
-
-        <!-- $49 Standard -->
-        <div class="plan popular">
-          <div style="position:absolute; top:12px; right:12px; background:rgba(34,197,94,0.15); color:#22c55e; font-size:10px; padding:3px 8px; border-radius:6px;">7day money-back guarantee</div>
-          <div class="plan-name">Standard</div>
-          <div class="plan-price"><span class="currency">$</span>49</div>
-          <div class="plan-tagline">+ OpenClaw Workflow Templates</div>
-          <ul class="plan-features">
-            <li>BasicAll content</li>
-            <li>OpenClawSetup templates</li>
-            <li>Gig automation workflows</li>
-            <li>Quote templates + Negotiation strategies</li>
-            <li>Community access（Discord）</li>
-          </ul>
-          <!-- BUY_LINK_49 -->
-          <a class="buy-btn-placeholder" href="https://themachinecorp.gumroad.com/l/pyein" target="_blank">
-            Buy Now <span>Gumroad · Card/PayPal</span>
-          </a>
-          <a class="buy-btn-secondary" href="https://nowpayments.io/payment/?iid=6212479176" target="_blank">
-            Or pay with crypto <span>BTC/ETH/USDT</span>
-          </a>
-        </div>
-
-        <!-- $99 Pro -->
-        <div class="plan">
-          <div style="position:absolute; top:12px; right:12px; background:rgba(251,191,36,0.15); color:var(--gold); font-size:10px; padding:3px 8px; border-radius:6px;">7day money-back guarantee</div>
-          <div class="plan-name">Pro</div>
-          <div class="plan-price"><span class="currency">$</span>99</div>
-          <div class="plan-tagline">+ 1times Q&amp;A Session</div>
-          <ul class="plan-features">
-            <li>StandardAll content</li>
-            <li>30min 11 Q&amp;A</li>
-            <li>items</li>
-            <li>priority email support（30days）</li>
-            <li>free updates forever</li>
-          </ul>
-          <!-- BUY_LINK_99 -->
-          <a class="buy-btn-placeholder" href="https://themachinecorp.gumroad.com/l/tlqdyn" target="_blank">
-            Buy Now <span>Gumroad · Card/PayPal</span>
-          </a>
-          <a class="buy-btn-secondary" href="https://nowpayments.io/payment/?iid=5320988875" target="_blank">
-            Or pay with crypto <span>BTC/ETH/USDT</span>
-          </a>
-        </div>
-
+      <!-- Standard — $49 (Popular) -->
+      <div class="plan popular">
+        
+        <div class="plan-name">Standard</div>
+        <div class="plan-price"><span class="currency">$</span>49</div>
+        <div class="plan-tagline">+ OpenClaw Workflow Templates</div>
+        <ul class="plan-features">
+          <li>Everything in Basic</li>
+          <li>OpenClaw setup templates</li>
+          <li>Automated gig workflow</li>
+          <li>Quote templates + negotiation guide</li>
+          <li>Discord community access</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/pyein" target="_blank">Buy Now →</a>
+        <a class="buy-btn-secondary" href="https://nowpayments.io/payment/?iid=6212479176" target="_blank">Pay with crypto (BTC/ETH/USDT)</a>
       </div>
-    </div>
 
-    <!-- Social Proof -->
-    <div class="section" id="social-proof">
-      <h2>community testimonials</h2>
-      <p class="section-intro">alreadyXWhat our followers say</p>
-      <div class="social-proof-cards">
-        <div class="proof-card">
-          <p class="quote">"THEMACHINE CorppostedAlgorathe bounty guide actually helped，got first payout in week 12itemsPR。"</p>
-          <div class="meta">
-            <span class="x-badge">X / Twitter</span>
-            <span>followers：@buildwithme_ai</span>
-          </div>
-        </div>
-        <div class="proof-card">
-          <p class="quote">"OpenClawpractical templates saved me，saved at least20hr setup time。highly recommendedStandard。"</p>
-          <div class="meta">
-            <span class="x-badge">X / Twitter</span>
-            <span>followers：@buildwithme_ai</span>
-          </div>
-        </div>
-        <div class="proof-card">
-          <p class="quote">"Q&A sessionhelped me find my positioning，now making$800+。worth every penny！"</p>
-          <div class="meta">
-            <span class="x-badge">X / Twitter</span>
-            <span>followers：@buildwithme_ai</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- new products added -->
-    <div id="extras" style="padding: 0 0 60px;">
-      <div class="section">
-        <h2>more practical tools</h2>
-        <p class="section-intro">Kevin & Mike daily independent tool packs，instant access after purchase</p>
-      </div>
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
-
-        <!-- $19 Notion Template -->
-        <div class="plan">
-          <div style="position:absolute; top:12px; right:12px; background:rgba(99,102,241,0.15); color:#818cf8; font-size:10px; padding:3px 8px; border-radius:6px;"></div>
-          <div class="plan-name">📊 AI Agent Dashboard</div>
-          <div class="plan-price"><span class="currency">$</span>19</div>
-          <div class="plan-tagline">Notion Template</div>
-          <ul class="plan-features">
-            <li>income tracking dashboard</li>
-            <li>Bounty Pipelinemanagement</li>
-            <li>Weekly goal system</li>
-            <li>Agentworkflow templates</li>
-          </ul>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:12px; border-radius:10px; text-decoration:none; margin-top:16px;" href="https://themachinecorp.gumroad.com/l/fypiy" target="_blank">Buy Now →</a>
-        </div>
-
-        <!-- $14 Cold Email -->
-        <div class="plan">
-          <div style="position:absolute; top:12px; right:12px; background:rgba(34,197,94,0.15); color:#22c55e; font-size:10px; padding:3px 8px; border-radius:6px;">bestseller</div>
-          <div class="plan-name">📧 Cold Email Swipe File</div>
-          <div class="plan-price"><span class="currency">$</span>14</div>
-          <div class="plan-tagline">20itemsemail templates</div>
-          <ul class="plan-features">
-            <li>GitHub Bounty Outreach (7items)</li>
-            <li>Client cold emails (7items)</li>
-            <li>follow-up sequences (6items)</li>
-            <li>including subject lines+body copy+time recommendations</li>
-          </ul>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:12px; border-radius:10px; text-decoration:none; margin-top:16px;" href="https://themachinecorp.gumroad.com/l/vfxxtp" target="_blank">Buy Now →</a>
-        </div>
-
-        <!-- $19 7-Day Sprint -->
-        <div class="plan">
-          <div class="plan-name">📅 7-Day AI Agent Income Sprint</div>
-          <div class="plan-price"><span class="currency">$</span>19</div>
-          <div class="plan-tagline">7daysFrom zero to first income</div>
-          <ul class="plan-features">
-            <li>Day 1: accounts+tool setup</li>
-            <li>Day 2-3: firstitemsBounty</li>
-            <li>Day 4: firstitemsClient</li>
-            <li>Day 5-6: firstitems</li>
-            <li>Day 7: 30days</li>
-          </ul>
-          <a style="display:block; text-align:center; border:1px solid rgba(251,191,36,0.4); color:var(--gold); font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:10px; font-size:8px; text-align:center;" href="/7day-sprint" target="_blank">View Details →</a>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:6px; font-size:9px; text-align:center;" href="https://themachinecorp.gumroad.com/l/zddgyc" target="_blank">Buy Now →</a>
-        </div>
-
-        <!-- $9 Rate Card -->
-        <div class="plan">
-          <div class="plan-name">💰 AI Agent Rate Card</div>
-          <div class="plan-price"><span class="currency">$</span>9</div>
-          <div class="plan-tagline">2026PRICE</div>
-          <ul class="plan-features">
-            <li>PRICE</li>
-            <li>PRICE+</li>
-            <li>2026</li>
-            <li></li>
-          </ul>
-          <a style="display:block; text-align:center; border:1px solid rgba(251,191,36,0.4); color:var(--gold); font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:10px; font-size:8px; text-align:center;" href="/rate-card" target="_blank">View Details →</a>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:6px; font-size:9px; text-align:center;" href="https://themachinecorp.gumroad.com/l/vchovq" target="_blank">Buy Now →</a>
-        </div>
-
-        <!-- $11 AI Tools Stack -->
-        <div class="plan">
-          <div class="plan-name">🛠️ AI Agent Tools Stack</div>
-          <div class="plan-price"><span class="currency">$</span>9</div>
-          <div class="plan-tagline">25items</div>
-          <ul class="plan-features">
-            <li> (5items)</li>
-            <li> (4items)</li>
-            <li> (4items)</li>
-            <li>+</li>
-          </ul>
-          <a style="display:block; text-align:center; border:1px solid rgba(251,191,36,0.4); color:var(--gold); font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:10px; font-size:8px; text-align:center;" href="/algora-tracker" target="_blank">View Details →</a>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:6px; font-size:9px; text-align:center;" href="https://themachinecorp.gumroad.com/l/jfynmy" target="_blank">Buy Now →</a>
-        </div>
-
-        <!-- $14 GitHub Checklist -->
-        <div class="plan">
-          <div class="plan-name">✅ GitHub Bounty Checklist</div>
-          <div class="plan-price"><span class="currency">$</span>14</div>
-          <div class="plan-tagline"></div>
-          <ul class="plan-features">
-            <li></li>
-            <li>Issue</li>
-            <li>PR</li>
-            <li>+</li>
-          </ul>
-          <a style="display:block; text-align:center; border:1px solid rgba(251,191,36,0.4); color:var(--gold); font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:10px; font-size:8px; text-align:center;" href="/cursor-setup" target="_blank">View Details →</a>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:10px; border-radius:10px; text-decoration:none; margin-top:6px; font-size:9px; text-align:center;" href="https://themachinecorp.gumroad.com/l/chatgpt-prompts" target="_blank">Buy Now →</a>
-        </div>
-
-        <!-- $9 AI Prompt Pack -->
-        <div class="plan">
-          <div class="plan-name">⚡ 50 Prompts Pack</div>
-          <div class="plan-price"><span class="currency">$</span>9</div>
-          <div class="plan-tagline">AI Agent </div>
-          <ul class="plan-features">
-            <li> (12items)</li>
-            <li> (12items)</li>
-            <li>Client (12items)</li>
-            <li> (14items)</li>
-          </ul>
-          <a style="display:block; text-align:center; background:var(--accent); color:#fff; font-weight:700; padding:12px; border-radius:10px; text-decoration:none; margin-top:16px;" href="https://themachinecorp.gumroad.com/l/gxlqp" target="_blank">Buy Now →</a>
-        </div>
-
-      </div>
-      <div style="margin-top:16px; padding:14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:10px; text-align:center;">
-        <span style="color:#9ca3af; font-size:13px;">💡 ，7days</span>
-      </div>
-    </div>
-
-    <!-- FAQ -->
-    <div class="section" id="faq">
-      <h2></h2>
-      <p class="section-intro"></p>
-
-      <div class="faq-item">
-        <div class="faq-q">？</div>
-        <div class="faq-a">。0，AI。</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">？</div>
-        <div class="faq-a">。，<strong>7days</strong>，。</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">？</div>
-        <div class="faq-a">Basic。StandardProQ&A24。</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Q&A Session？</div>
-        <div class="faq-a">Google Meet，30min。Pro。</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">？</div>
-        <div class="faq-a">、（Stripe）。USDC。</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">？</div>
-        <div class="faq-a">、。，，。</div>
+      <!-- Pro — $99 -->
+      <div class="plan">
+        <span class="plan-badge badge-gold">Best Value</span>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><span class="currency">$</span>99</div>
+        
+        <ul class="plan-features">
+          <li>Everything in Standard</li>
+          
+          <li>Personal positioning strategy</li>
+          <li>Priority email support (30 days)</li>
+          <li>Free lifetime updates</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/tlqdyn" target="_blank">Buy Now →</a>
+        <a class="buy-btn-secondary" href="https://nowpayments.io/payment/?iid=5320988875" target="_blank">Pay with crypto (BTC/ETH/USDT)</a>
       </div>
 
     </div>
 
-    <!-- Bottom CTA -->
-    <div class="cta-section">
-      <h2>？</h2>
-      <p>，AIfirst</p>
-      <a href="#pricing" style="
-        display: inline-block;
-        color: #0a0a0f;
-        background: linear-gradient(135deg, var(--gold-light), var(--gold));
-        text-decoration: none;
-        padding: 16px 40px;
-        border-radius: 12px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        font-size: 14px;
-        filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3));
-      ">PRICING →</a>
+    <div class="guarantee-strip">
+      <span>✓</span> <strong>All sales final. No refunds.</strong>
     </div>
 
-    <div class="footer">
-      <p>THEMACHINE CORP. &copy; 2026 &nbsp;|&nbsp; <a class="x-link" href="https://x.com/THEMACHINE_HF">@THEMACHINE_HF</a></p>
+    <!-- =============================================
+         SECTION 2: Supplementary Products
+    ============================================= -->
+    <div class="section">
+      <div class="section-title">More Tools</div>
+      <h2>Supplementary Products</h2>
+      <p class="section-sub">Standalone tools and packs — all instant access after purchase on Gumroad.</p>
     </div>
+
+    <div class="cards-grid">
+
+      <!-- Notion Dashboard — $19 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">📊 AI Agent Dashboard</span>
+          <span class="card-price"><span class="currency">$</span>19</span>
+        </div>
+        <p class="card-tagline">Notion Template — Track your income, pipeline &amp; goals in one place</p>
+        <ul class="card-features">
+          <li>Income tracking dashboard</li>
+          <li>Bounty pipeline management</li>
+          <li>Weekly goal system</li>
+          <li>Agent workflow templates</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/fypiy" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- Cold Email Swipe File — $14 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">📧 Cold Email Swipe File</span>
+          <span class="card-price"><span class="currency">$</span>14</span>
+        </div>
+        <p class="card-tagline">20 battle-tested email templates for outbound outreach</p>
+        <ul class="card-features">
+          <li>GitHub bounty outreach (7 templates)</li>
+          <li>Client cold emails (7 templates)</li>
+          <li>Follow-up sequences (6 templates)</li>
+          <li>Subject lines + body copy included</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/vfxxtp" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- 7-Day AI Agent Income Sprint — $19 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">📅 7-Day Income Sprint</span>
+          <span class="card-price"><span class="currency">$</span>19</span>
+        </div>
+        <p class="card-tagline">Structured 7-day plan: zero to first paid gig</p>
+        <ul class="card-features">
+          <li>Day 1: Account &amp; tool setup</li>
+          <li>Day 2–3: Claim first bounty</li>
+          <li>Day 4: Land first client</li>
+          <li>Day 5–6: Scale to first $100</li>
+          <li>Day 7: Systems for 30-day growth</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/zddgyc" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- AI Agent Rate Card 2026 — $9 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">💰 AI Agent Rate Card 2026</span>
+          <span class="card-price"><span class="currency">$</span>9</span>
+        </div>
+        <p class="card-tagline">Know your worth — pricing benchmarks for every AI agent service</p>
+        <ul class="card-features">
+          <li>Entry-level rate benchmarks</li>
+          <li>Mid-tier rate benchmarks</li>
+          <li>2026 market data</li>
+          <li>Negotiation scripts included</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/vchovq" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- AI Agent Tools Stack — $9 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">🛠️ AI Agent Tools Stack</span>
+          <span class="card-price"><span class="currency">$</span>9</span>
+        </div>
+        <p class="card-tagline">Curated stack of 25+ tools for AI agent work in 2026</p>
+        <ul class="card-features">
+          <li>Bounty discovery tools (5 tools)</li>
+          <li>Code &amp; dev tools (4 tools)</li>
+          <li>Productivity tools (4 tools)</li>
+          <li>Client management tools (12+)</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/jfynmy" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- GitHub Bounty Hunter's Checklist — $14 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">✅ GitHub Bounty Checklist</span>
+          <span class="card-price"><span class="currency">$</span>14</span>
+        </div>
+        <p class="card-tagline">Step-by-step checklist to systematically win bounties</p>
+        <ul class="card-features">
+          <li>Pre-flight account checklist</li>
+          <li>Issue evaluation criteria</li>
+          <li>PR submission checklist</li>
+          <li>Payout unlock requirements</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/jnvzy" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- NEW: Cursor AI Setup Guide — $9 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">🖥️ Cursor AI Setup Guide</span>
+          <span class="card-price"><span class="currency">$</span>9</span>
+        </div>
+        <p class="card-tagline">Set up Cursor the right way — from zero to productive in 30 minutes</p>
+        <ul class="card-features">
+          <li>Installation &amp; account setup</li>
+          <li>Best AI model configuration</li>
+          <li>Keybindings &amp; workflow tips</li>
+          <li>Productivity shortcuts cheat sheet</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/fzvnx" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- NEW: 50 ChatGPT Prompts for Developers — $9 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">⚡ 50 ChatGPT Prompts for Devs</span>
+          <span class="card-price"><span class="currency">$</span>9</span>
+        </div>
+        <p class="card-tagline">50 battle-tested prompts for coding, code review &amp; debugging</p>
+        <ul class="card-features">
+          <li>Code generation prompts (12)</li>
+          <li>Code review prompts (12)</li>
+          <li>Debug &amp; refactor prompts (12)</li>
+          <li>Documentation prompts (14)</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/zifqny" target="_blank">Buy Now →</a>
+      </div>
+
+      <!-- 50 Prompts for AI Agent Income — $9 -->
+      <div class="card">
+        <div class="card-top">
+          <span class="card-name">⚡ 50 Prompts for AI Agent Income</span>
+          <span class="card-price"><span class="currency">$</span>9</span>
+        </div>
+        <p class="card-tagline">Complete pack — freelance, client work &amp; bounty hunting prompts</p>
+        <ul class="card-features">
+          <li>Freelance prompts (12)</li>
+          <li>Bounty hunting prompts (12)</li>
+          <li>Client outreach prompts (12)</li>
+          <li>Productivity prompts (14)</li>
+        </ul>
+        <a class="buy-btn" href="https://themachinecorp.gumroad.com/l/shonxn" target="_blank">Buy Now →</a>
+      </div>
+
+    <div class="section">
+      <div class="section-title">FAQ</div>
+      <h2>Questions &amp; Answers</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Do I need prior experience to use these guides?</div>
+      <div class="faq-a">No. The guide is designed for complete beginners. You just need a computer and internet connection.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What payment methods do you accept?</div>
+      <div class="faq-a">Card and PayPal via Gumroad. Crypto (BTC, ETH, USDT) via NowPayments</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I access the products after purchase?</div>
+      <div class="faq-a">After payment you'll receive a Gumroad download link instantly. Save your content and access it anytime from your Gumroad library.</div>
+    </div>
+
 
   </div>
+  <!-- Bottom CTA -->
+  <div class="cta-section">
+    <h2>Ready to Start?</h2>
+    <p>Pick a plan that fits you. Your first paid gig is closer than you think.</p>
+    <a class="cta-btn" href="#pricing">Browse Plans →</a>
+  </div>
+
+  <div class="footer">
+    <p>THEMACHINE CORP. &copy; 2026 &nbsp;|&nbsp; <a class="x-link" href="https://x.com/THEMACHINE_HF">@THEMACHINE_HF</a></p>
+  </div>
+
+</div>
 </body>
 </html>
