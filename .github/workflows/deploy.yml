@@ -10,10 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Trigger Cloudflare Pages deploy
-        run: |
-          echo "Cloudflare Pages GitHub integration auto-deploys on push."
-          echo "Commit: $GITHUB_SHA"
-          echo "Branch: $GITHUB_REF_NAME"
-          echo "Cloudflare handles the build and deploy automatically."
+      - name: Trigger deploy
+        run: echo "Cloudflare Pages GitHub integration auto-deploys on push"
