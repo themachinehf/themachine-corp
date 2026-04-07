@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to Cloudflare Worker
 
 on:
   push:
@@ -11,25 +11,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via Cloudflare Pages Direct Upload
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./workers
+
+      - name: Deploy Worker
+        run: npx wrangler deploy --token ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        working-directory: ./workers
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy static assets via Pages fallback
+        if: always()
         run: |
           pip install -q requests 2>/dev/null || true
-          
           python3 << 'PYEOF'
-          import os, json, hashlib, urllib.request, urllib.error, subprocess
-
-          account_id = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
-          token = "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          import os, json, hashlib, subprocess
+            
+          account_id = os.environ['CF_ACCOUNT_ID']
+          token = os.environ['CF_TOKEN']
           hf = {"Authorization": f"Bearer {token}"}
-          project = "themachine-corp"
-
-          # Build manifest
-          manifest = {}
+          
+          # Try to deploy as Pages project if worker doesn't handle static files
           skip = {".git", "node_modules", ".github", "workers", ".venv", "__pycache__"}
+          manifest = {}
           for root, dirs, files in os.walk("."):
-              dirs[:] = [d for d in dirs if d not in skip]
+              dirs[:] = [d for d in dirs if d not in skip and not d.startswith("workers")]
               for f in files:
-                  if f.endswith(".bak"):
+                  if f.endswith(".bak") or f.endswith(".toml"):
                       continue
                   path = os.path.join(root, f)
                   name = path[2:]
@@ -39,49 +53,26 @@ jobs:
                       manifest[name] = h
                   except:
                       pass
-
-          print(f"Manifest: {len(manifest)} files")
-
-          # Create deployment
+          
+          print(f"Static files: {len(manifest)}")
+          
+          # Create Pages deployment
           manifest_json = json.dumps(manifest)
           result = subprocess.run([
               "curl", "-s", "--noproxy", "*", "-X", "POST",
-              f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/{project}/deployments",
+              f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/themachine-corp/deployments",
               "-H", f"Authorization: Bearer {token}",
               "-F", "branch=main",
               "-F", f"manifest={manifest_json};type=application/json"
           ], capture_output=True, text=True)
-
+          
           resp = json.loads(result.stdout)
-          if not resp.get("success"):
-              print("Error:", resp.get("errors"))
-              exit(1)
-
-          dep = resp["result"]
-          dep_id = dep["id"]
-          upload_url = dep.get("upload_url", "")
-          print(f"Deployment: {dep_id}")
-          print(f"URL: https://{dep_id[:8]}.themachine-corp-6qq.pages.dev")
-
-          if not upload_url:
-              print("No upload_url. Response:", json.dumps(dep, indent=2)[:300])
-              exit(0)
-
-          # Upload files
-          for fname, fhash in manifest.items():
-              if not os.path.exists(fname):
-                  continue
-              req = urllib.request.Request(
-                  upload_url,
-                  data=open(fname, "rb").read(),
-                  headers={"x-content-hash": fhash, "Content-Type": "application/octet-stream"},
-                  method="PUT"
-              )
-              try:
-                  resp2 = urllib.request.urlopen(req)
-                  print(f"  {fname}: {resp2.status}")
-              except urllib.error.HTTPError as e:
-                  print(f"  {fname}: ERROR {e.code} {e.read().decode()[:80]}")
-
-          print(f"\nDone! Deployment: {dep_id}")
+          if resp.get("success"):
+              dep = resp["result"]
+              print(f"Pages deployment: {dep['id']}")
+          else:
+              print("Pages deploy skipped:", resp.get("errors", ["no pages project"])[0].get("message",""))
           PYEOF
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
