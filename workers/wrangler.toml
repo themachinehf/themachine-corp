@@ -1,0 +1,4 @@
+name = "themachine-corp"
+main = "auth.bundle.js"
+compatibility_date = "2024-01-01"
+account_id = "ae030de578dfa0a3e796a53380d03208"
