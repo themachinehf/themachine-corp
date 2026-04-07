@@ -21,58 +21,8 @@ jobs:
         working-directory: ./workers
 
       - name: Deploy Worker
-        run: npx wrangler deploy --token ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        working-directory: ./workers
+        run: npx wrangler deploy
+        working-directory: .
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Deploy static assets via Pages fallback
-        if: always()
-        run: |
-          pip install -q requests 2>/dev/null || true
-          python3 << 'PYEOF'
-          import os, json, hashlib, subprocess
-            
-          account_id = os.environ['CF_ACCOUNT_ID']
-          token = os.environ['CF_TOKEN']
-          hf = {"Authorization": f"Bearer {token}"}
-          
-          # Try to deploy as Pages project if worker doesn't handle static files
-          skip = {".git", "node_modules", ".github", "workers", ".venv", "__pycache__"}
-          manifest = {}
-          for root, dirs, files in os.walk("."):
-              dirs[:] = [d for d in dirs if d not in skip and not d.startswith("workers")]
-              for f in files:
-                  if f.endswith(".bak") or f.endswith(".toml"):
-                      continue
-                  path = os.path.join(root, f)
-                  name = path[2:]
-                  try:
-                      with open(path, "rb") as fp:
-                          h = hashlib.sha256(fp.read()).hexdigest()
-                      manifest[name] = h
-                  except:
-                      pass
-          
-          print(f"Static files: {len(manifest)}")
-          
-          # Create Pages deployment
-          manifest_json = json.dumps(manifest)
-          result = subprocess.run([
-              "curl", "-s", "--noproxy", "*", "-X", "POST",
-              f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/themachine-corp/deployments",
-              "-H", f"Authorization: Bearer {token}",
-              "-F", "branch=main",
-              "-F", f"manifest={manifest_json};type=application/json"
-          ], capture_output=True, text=True)
-          
-          resp = json.loads(result.stdout)
-          if resp.get("success"):
-              dep = resp["result"]
-              print(f"Pages deployment: {dep['id']}")
-          else:
-              print("Pages deploy skipped:", resp.get("errors", ["no pages project"])[0].get("message",""))
-          PYEOF
-        env:
-          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
