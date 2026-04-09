@@ -410,7 +410,27 @@
     }
 
     /* Footer */
-    .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); }
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .faq-item:first-child { padding-top: 0; }
+    .faq-q {
+      font-size: 11px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-family: 'Press Start 2P', monospace;
+    }
+    .faq-q::before { content: 'Q.'; color: var(--gold); font-weight: 800; flex-shrink: 0; }
+    .faq-a { font-size: 9px; color: #6b7280; line-height: 2; padding-left: 26px; }
+
+    /* Footer */
+    .footer { text-align: center; padding-top: 48px; border-top: 1px solid var(--border); margin-top: 0; }
     .footer p { color: #6b7280; font-size: 10px; }
     .x-link { color: var(--gold); text-decoration: none; }
     .x-link:hover { opacity: 0.7; }
@@ -602,6 +622,32 @@
       </div>
 
     </div>
+
+    <!-- FAQ -->
+    <div class="section">
+      <div class="section-label">FAQ</div>
+      <h2>Questions &amp; Answers</h2>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Do I need prior experience to use these guides?</div>
+      <div class="faq-a">No. The guide is designed for complete beginners. You just need a computer and internet connection.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What payment methods do you accept?</div>
+      <div class="faq-a">Card and PayPal via Gumroad. Crypto (BTC, ETH, USDT) via NowPayments.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I access the products after purchase?</div>
+      <div class="faq-a">After payment you'll receive a Gumroad download link instantly. Save your content and access it anytime from your Gumroad library.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Are these updates included?</div>
+      <div class="faq-a">Yes. All products include free lifetime updates as we improve and expand them.</div>
+    </div>
+
+    <!-- Spacer -->
+    <div style="height: 48px;"></div>
 
     <!-- CTA -->
     <div class="cta-section">
