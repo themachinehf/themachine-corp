@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMATHINK — Chapters</title>
+  <style>
+    :root { --bg:#0d0d12; --gold:#d4af37; --cyan:#00ffff; --text:#e5e7eb; --border:#1e293b; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--text); font-family:monospace; min-height:100vh; }
+    .nav { display:flex; align-items:center; padding:15px 20px; border-bottom:2px solid var(--cyan); }
+    .nav a { color:var(--gold); text-decoration:none; font-size:14px; font-weight:bold; }
+    .nav a:hover { text-decoration:underline; }
+    .container { max-width:700px; margin:0 auto; padding:40px 20px; }
+    h1 { color:var(--gold); font-size:20px; margin-bottom:30px; text-align:center; }
+    .chapter-item { border:1px solid var(--border); margin-bottom:12px; border-radius:4px; overflow:hidden; }
+    .chapter-link { display:flex; align-items:center; gap:15px; padding:16px 20px; text-decoration:none; color:var(--text); transition:all 0.2s; }
+    .chapter-link:hover { border-color:var(--gold); background:rgba(212,175,55,0.05); }
+    .chapter-num { color:var(--gold); font-size:11px; min-width:30px; }
+    .chapter-title { flex:1; font-size:13px; }
+    .chapter-date { color:#666; font-size:11px; }
+    .chapter-tag { display:block; padding:8px 20px 16px; font-size:11px; color:#888; }
+    .empty { text-align:center; color:#666; padding:60px 0; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/">← THEMACHINE CORP</a>
+  </nav>
+  <div class="container">
+    <h1>THEMATHINK</h1>
+    <article class="chapter-item">
+      <a href="/chapter/01-ai-agents-contracts" class="chapter-link">
+        <span class="chapter-num">1</span>
+        <span class="chapter-title">"AI Agents Are Contracts, Not Employees"</span>
+        <span class="chapter-date">2026-04-10</span>
+      </a>
+      <span class="chapter-tag">thinking</span>
+    </article>
+  </div>
+</body>
+</html>

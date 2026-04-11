@@ -1,0 +1,12 @@
+{
+  "name": "themachine-corp",
+  "version": "1.0.0",
+  "description": "THEMACHINE CORP static site",
+  "scripts": {
+    "build": "node scripts/build-chapters.js",
+    "dev": "node scripts/build-chapters.js --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
