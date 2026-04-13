@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>THEMACHINE CORP.</title>
+  <script src="https://gumroad.com/js/gumroad.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -58,9 +59,7 @@
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <a href="/" class="nav-logo">◈ THEMACHINE</a>
-  </nav>
+  
     <div class="container">
       <div class="logo">THEMACHINE CORP.</div>
       <div class="tagline">AI AGENT OPERATIONS</div>
@@ -167,29 +166,59 @@
       
       <div class="desc">AI company with autonomous agents.</div>
 
-    <div style="text-align:center;margin:15px 0">
-    </div>
-
-    
-    <div class="menu" style="margin-bottom:20px">
-      <a href="/products" class="menu-btn gold">PRODUCTS</a>
-      <a href="/persona/" class="menu-btn">PERSONA</a>
-      <a href="/innervoice/" class="menu-btn">VOICE</a>
-      <a href="/socrates/" class="menu-btn">SOCRATES</a>
-    </div>
-    <div class="menu" style="margin-bottom:20px">
-      <a href="/tools.html" class="menu-btn">TOOLS</a>
-      <a href="/noesis/" class="menu-btn">NOESIS</a>
-      <a href="/office/" class="menu-btn">OFFICE</a>
-      <a href="/dashboard/" class="menu-btn">DASHBOARD</a>
-    </div>
-    <div class="menu" style="margin-bottom:20px">
-      <a href="/demo/" class="menu-btn">DEMO</a>
-      <a href="/team.html" class="menu-btn">TEAM</a>
-      <!-- ABOUT removed -->
-    </div>
-    <div style="text-align:center;margin:15px 0">
-      <a href="/register/" class="menu-btn" style="background:var(--gold);color:var(--bg);padding:12px 30px;font-size:11px">JOIN US</a>
+    <!-- Products Section -->
+    <style>
+      .products-section{margin:32px 0 28px;width:100%;text-align:left}
+      .products-section::before{content:'PRODUCTS';display:block;font-size:8px;color:var(--gold);letter-spacing:3px;margin-bottom:16px}
+      .products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+      @media(max-width:640px){.products-grid{grid-template-columns:1fr}}
+      .p-card{border:1px solid rgba(212,175,55,0.25);border-radius:10px;padding:18px 16px;background:rgba(0,0,0,0.4);display:flex;flex-direction:column;gap:8px}
+      .p-card:hover{border-color:rgba(212,175,55,0.5);background:rgba(0,0,0,0.6)}
+      .p-name{font-size:9px;color:var(--gold);font-weight:700;line-height:1.5}
+      .p-desc{font-size:8px;color:#777;line-height:1.8;flex:1}
+      .p-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+      .p-price{font-size:14px;color:var(--gold);font-weight:800}
+      .p-price .cur{font-size:9px}
+      .p-price .free{font-size:10px;color:#22c55e}
+      .gumroad-btn{display:inline-block;background:rgba(212,175,55,0.1);border:1px solid var(--gold);color:var(--gold);font-size:8px;padding:7px 12px;border-radius:6px;text-decoration:none;text-align:center;transition:all 0.2s}
+      .gumroad-btn:hover{background:var(--gold);color:#0d0d12}
+      .products-cta{text-align:center;margin-top:16px}
+      .products-cta a{font-size:9px;color:var(--cyan);text-decoration:none;border:1px solid var(--cyan);padding:8px 16px;border-radius:6px;transition:all 0.2s}
+      .products-cta a:hover{background:var(--cyan);color:#0d0d12}
+    </style>
+    <div class="products-section">
+      <div class="products-grid">
+        <!-- Featured: AI Agent Engineer Playbook -->
+        <div class="p-card">
+          <div class="p-name">AI Agent Engineer Playbook</div>
+          <div class="p-desc">6 proven directions to earn with AI agents. Real tool stacks, real bounty workflows, real mistakes.</div>
+          <div class="p-bottom">
+            <div class="p-price"><span class="cur">$</span>19</div>
+            <a class="gumroad-button gumroad-btn" href="https://themachinecorp.gumroad.com/l/uptxc">Buy →</a>
+          </div>
+        </div>
+        <!-- 7-Day Sprint -->
+        <div class="p-card">
+          <div class="p-name">7-Day AI Agent Income Sprint</div>
+          <div class="p-desc">Day 1: pipeline. Day 4: outreach. Day 7: first $500–$1,000 in hand. Structured sprint with templates.</div>
+          <div class="p-bottom">
+            <div class="p-price"><span class="cur">$</span>19</div>
+            <a class="gumroad-button gumroad-btn" href="https://themachinecorp.gumroad.com/l/zddgyc">Buy →</a>
+          </div>
+        </div>
+        <!-- Free Toolkit -->
+        <div class="p-card">
+          <div class="p-name">AI Agent Real Workflows Toolkit</div>
+          <div class="p-desc">5 production-grade agent prompts. Multi-agent routing YAML. 3 automation workflows with cron schedules.</div>
+          <div class="p-bottom">
+            <div class="p-price free">$0 FREE</div>
+            <a class="gumroad-button gumroad-btn" href="https://themachinecorp.gumroad.com/l/hotqkv">Get →</a>
+          </div>
+        </div>
+      </div>
+      <div class="products-cta">
+        <a href="products.html">View All Products →</a>
+      </div>
     </div>
 
     <div class="quote">"We don't give answers.<br>We help you find your own."</div>
