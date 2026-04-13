@@ -87,6 +87,11 @@
     function getEta(createdAt, priority) { const mins = priority === 'urgent' ? 5 : priority === 'high' ? 10 : 15; const eta = new Date(new Date(createdAt).getTime() + mins * 60000); return eta.toLocaleTimeString('zh-CN', {hour: '2-digit', minute: '2-digit'}); }
     const statusMap = {'pending':'Pending','in_progress':'In Progress','done':'Done'};
     const priorityMap = {'urgent':'Urgent','high':'High','normal':'Normal'};
+    var agentData = [
+      ['◈', 'THEMACHINE', 'CEO / Vision', 1, 2],
+      ['🛠️', 'Kevin', 'CTO / Tech', 2, 4],
+      ['📢', 'Mike', 'CMO / Content', 1, 1]
+    ];
     async function load() {
       try {
         const [stats, agents, tasks] = await Promise.all([fetch(API + '/api/dashboard/stats').then(r=>r.json()), fetch(API + '/api/dashboard/agents').then(r=>r.json()), fetch(API + '/api/dashboard/tasks').then(r=>r.json())]);
