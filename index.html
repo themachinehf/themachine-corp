@@ -33,11 +33,13 @@
     .agent svg{width:100%;height:100%;image-rendering:pixelated}
     .agent{animation:bounce 1s infinite}
     .agent:nth-child(1){animation-delay:0s}
-    .agent:nth-child(2){animation-delay:0.1s}
-    .agent:nth-child(3){animation-delay:0.2s}
-    .agent:nth-child(4){animation-delay:0.3s}
-    .agent:nth-child(5){animation-delay:0.4s}
-    .agent:nth-child(6){animation-delay:0.5s}
+    .agent:nth-child(2){animation-delay:0.08s}
+    .agent:nth-child(3){animation-delay:0.16s}
+    .agent:nth-child(4){animation-delay:0.24s}
+    .agent:nth-child(5){animation-delay:0.32s}
+    .agent:nth-child(6){animation-delay:0.40s}
+    .agent:nth-child(7){animation-delay:0.48s}
+    .agent:nth-child(8){animation-delay:0.56s}
     @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
     
     .desc{font-size:clamp(9px,2vw,12px);color:#777;max-width:500px;margin-bottom:20px;line-height:1.6}
@@ -66,139 +68,22 @@
       <div class="tagline">AI AGENT OPERATIONS</div>
       
       <div class="agents">
-        <!-- CEO - 金色领袖 -->
-        <div class="agent">
-          <svg viewBox="0 0 40 55">
-            <rect x="14" y="2" width="12" height="12" fill="#d4af37"/>
-            <rect x="12" y="4" width="2" height="4" fill="#d4af37"/>
-            <rect x="26" y="4" width="2" height="4" fill="#d4af37"/>
-            <rect x="16" y="14" width="8" height="10" fill="#d4af37"/>
-            <rect x="10" y="24" width="20" height="14" fill="#2a2a4e"/>
-            <rect x="12" y="24" width="4" height="14" fill="#d4af37"/>
-            <rect x="24" y="24" width="4" height="14" fill="#d4af37"/>
-            <rect x="10" y="38" width="6" height="10" fill="#d4af37"/>
-            <rect x="24" y="38" width="6" height="10" fill="#d4af37"/>
-            <rect x="16" y="4" width="2" height="2" fill="#00ffff"/>
-            <rect x="22" y="4" width="2" height="2" fill="#00ffff"/>
-          </svg>
-        </div>
-        
-        <!-- CTO - 蓝领程序员 -->
-        <div class="agent">
-          <svg viewBox="0 0 40 55">
-            <rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/>
-            <rect x="12" y="2" width="16" height="4" fill="#333"/>
-            <rect x="10" y="14" width="20" height="8" fill="#3d5a80"/>
-            <rect x="8" y="18" width="24" height="14" fill="#3d5a80"/>
-            <rect x="10" y="20" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="26" y="20" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="10" y="32" width="6" height="10" fill="#00cccc"/>
-            <rect x="24" y="32" width="6" height="10" fill="#00cccc"/>
-            <rect x="16" y="6" width="2" height="2" fill="#000"/>
-            <rect x="22" y="6" width="2" height="2" fill="#000"/>
-          </svg>
-        </div>
-        
-        <!-- CFO - 绿装财务 -->
-        <div class="agent">
-          <svg viewBox="0 0 40 55">
-            <rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/>
-            <rect x="14" y="2" width="12" height="4" fill="#2d6a4f"/>
-            <rect x="12" y="14" width="16" height="16" fill="#2d6a4f"/>
-            <rect x="14" y="16" width="12" height="12" fill="#fff"/>
-            <rect x="10" y="30" width="6" height="12" fill="#2d6a4f"/>
-            <rect x="24" y="30" width="6" height="12" fill="#2d6a4f"/>
-            <rect x="10" y="42" width="6" height="8" fill="#00cccc"/>
-            <rect x="24" y="42" width="6" height="8" fill="#00cccc"/>
-            <rect x="16" y="6" width="2" height="2" fill="#000"/>
-            <rect x="22" y="6" width="2" height="2" fill="#000"/>
-          </svg>
-        </div>
-        
-        <!-- CMO - 红衣营销 -->
-        <div class="agent">
-          <svg viewBox="0 0 40 55">
-            <rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/>
-            <rect x="12" y="2" width="16" height="4" fill="#e63946"/>
-            <rect x="10" y="14" width="20" height="8" fill="#e63946"/>
-            <rect x="8" y="22" width="24" height="14" fill="#e63946"/>
-            <rect x="10" y="24" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="26" y="24" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="10" y="36" width="6" height="10" fill="#00cccc"/>
-            <rect x="24" y="36" width="6" height="10" fill="#00cccc"/>
-            <rect x="16" y="6" width="2" height="2" fill="#000"/>
-            <rect x="22" y="6" width="2" height="2" fill="#000"/>
-          </svg>
-        </div>
-        
-        <!-- CPO - 黄装产品 -->
-        <div class="agent">
-          <svg viewBox="0 0 40 55">
-            <rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/>
-            <rect x="14" y="2" width="12" height="4" fill="#e9c46a"/>
-            <rect x="12" y="14" width="16" height="8" fill="#e9c46a"/>
-            <rect x="10" y="22" width="20" height="14" fill="#e9c46a"/>
-            <rect x="12" y="24" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="24" y="24" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="10" y="36" width="6" height="10" fill="#00cccc"/>
-            <rect x="24" y="36" width="6" height="10" fill="#00cccc"/>
-            <rect x="16" y="6" width="2" height="2" fill="#000"/>
-            <rect x="22" y="6" width="2" height="2" fill="#000"/>
-          </svg>
-        </div>
-        
-        <!-- SEC - 黑装保安 -->
-        <div class="agent">
-          <svg viewBox="0 0 40 55">
-            <rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/>
-            <rect x="12" y="2" width="16" height="4" fill="#111"/>
-            <rect x="10" y="14" width="20" height="8" fill="#111"/>
-            <rect x="8" y="22" width="24" height="14" fill="#111"/>
-            <rect x="10" y="24" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="26" y="24" width="4" height="10" fill="#f5d0a9"/>
-            <rect x="10" y="36" width="6" height="10" fill="#00cccc"/>
-            <rect x="24" y="36" width="6" height="10" fill="#00cccc"/>
-            <rect x="16" y="6" width="2" height="2" fill="#000"/>
-            <rect x="22" y="6" width="2" height="2" fill="#000"/>
-            <rect x="28" y="30" width="4" height="4" fill="#d4af37"/>
-          </svg>
-        </div>
+        <!-- CEO - 金色 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="2" width="12" height="12" fill="#d4af37"/><rect x="12" y="4" width="2" height="4" fill="#d4af37"/><rect x="26" y="4" width="2" height="4" fill="#d4af37"/><rect x="16" y="14" width="8" height="10" fill="#d4af37"/><rect x="10" y="24" width="20" height="14" fill="#2a2a4e"/><rect x="12" y="24" width="4" height="14" fill="#d4af37"/><rect x="24" y="24" width="4" height="14" fill="#d4af37"/><rect x="10" y="38" width="6" height="10" fill="#d4af37"/><rect x="24" y="38" width="6" height="10" fill="#d4af37"/><rect x="16" y="4" width="2" height="2" fill="#00ffff"/><rect x="22" y="4" width="2" height="2" fill="#00ffff"/></svg></div>
+        <!-- COO - Emma 青绿 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="12" y="2" width="16" height="4" fill="#008080"/><rect x="10" y="14" width="20" height="8" fill="#008080"/><rect x="8" y="18" width="24" height="14" fill="#006666"/><rect x="10" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="26" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="10" y="32" width="6" height="10" fill="#00cccc"/><rect x="24" y="32" width="6" height="10" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/></svg></div>
+        <!-- CTO - Kevin 蓝 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="12" y="2" width="16" height="4" fill="#3d5a80"/><rect x="10" y="14" width="20" height="8" fill="#3d5a80"/><rect x="8" y="18" width="24" height="14" fill="#2c4a7c"/><rect x="10" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="26" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="10" y="32" width="6" height="10" fill="#00cccc"/><rect x="24" y="32" width="6" height="10" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/></svg></div>
+        <!-- CRO - Alex 橙 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="12" y="2" width="16" height="4" fill="#e67e22"/><rect x="10" y="14" width="20" height="8" fill="#e67e22"/><rect x="8" y="18" width="24" height="14" fill="#d35400"/><rect x="10" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="26" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="10" y="32" width="6" height="10" fill="#00cccc"/><rect x="24" y="32" width="6" height="10" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/></svg></div>
+        <!-- CMO - Mike 红 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="12" y="2" width="16" height="4" fill="#e63946"/><rect x="10" y="14" width="20" height="8" fill="#e63946"/><rect x="8" y="18" width="24" height="14" fill="#c1121f"/><rect x="10" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="26" y="20" width="4" height="10" fill="#f5d0a9"/><rect x="10" y="32" width="6" height="10" fill="#00cccc"/><rect x="24" y="32" width="6" height="10" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/></svg></div>
+        <!-- CFO - Alex兼 绿 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="14" y="2" width="12" height="4" fill="#2d6a4f"/><rect x="12" y="14" width="16" height="16" fill="#2d6a4f"/><rect x="14" y="16" width="12" height="12" fill="#fff"/><rect x="10" y="30" width="6" height="12" fill="#2d6a4f"/><rect x="24" y="30" width="6" height="12" fill="#2d6a4f"/><rect x="10" y="42" width="6" height="8" fill="#00cccc"/><rect x="24" y="42" width="6" height="8" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/></svg></div>
+        <!-- CPO - Sarah 黄 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="14" y="2" width="12" height="4" fill="#e9c46a"/><rect x="12" y="14" width="16" height="8" fill="#e9c46a"/><rect x="10" y="22" width="20" height="14" fill="#d4a017"/><rect x="12" y="24" width="4" height="10" fill="#f5d0a9"/><rect x="24" y="24" width="4" height="10" fill="#f5d0a9"/><rect x="10" y="36" width="6" height="10" fill="#00cccc"/><rect x="24" y="36" width="6" height="10" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/></svg></div>
+        <!-- SEC - David 黑金 -->
+        <div class="agent"><svg viewBox="0 0 40 55"><rect x="14" y="4" width="12" height="10" fill="#f5d0a9"/><rect x="12" y="2" width="16" height="4" fill="#111"/><rect x="10" y="14" width="20" height="8" fill="#111"/><rect x="8" y="22" width="24" height="14" fill="#1a1a1a"/><rect x="10" y="24" width="4" height="10" fill="#f5d0a9"/><rect x="26" y="24" width="4" height="10" fill="#f5d0a9"/><rect x="10" y="36" width="6" height="10" fill="#00cccc"/><rect x="24" y="36" width="6" height="10" fill="#00cccc"/><rect x="16" y="6" width="2" height="2" fill="#000"/><rect x="22" y="6" width="2" height="2" fill="#000"/><rect x="28" y="30" width="4" height="4" fill="#d4af37"/></svg></div>
       </div>
-      
+
       <div class="desc">AI company with autonomous agents.</div>
-
-    <div style="text-align:center;margin:15px 0">
-    </div>
-
-    
-    <div class="menu" style="margin-bottom:20px">
-      <a href="/products" class="menu-btn gold">PRODUCTS</a>
-      <a href="/persona/" class="menu-btn">PERSONA</a>
-      <a href="/innervoice/" class="menu-btn">VOICE</a>
-      <a href="/socrates/" class="menu-btn">SOCRATES</a>
-    </div>
-    <div class="menu" style="margin-bottom:20px">
-      <a href="/tools.html" class="menu-btn">TOOLS</a>
-      <a href="/noesis/" class="menu-btn">NOESIS</a>
-      <a href="/office/" class="menu-btn">OFFICE</a>
-      <a href="/dashboard/" class="menu-btn">DASHBOARD</a>
-    </div>
-    <div class="menu" style="margin-bottom:20px">
-      <a href="/demo/" class="menu-btn">DEMO</a>
-      <a href="/team.html" class="menu-btn">TEAM</a>
-      <!-- ABOUT removed -->
-    </div>
-    <div style="text-align:center;margin:15px 0">
-      <a href="/register/" class="menu-btn" style="background:var(--gold);color:var(--bg);padding:12px 30px;font-size:11px">JOIN US</a>
-    </div>
-
-    <div class="quote">"We don't give answers.<br>We help you find your own."</div>
-    </div>
-  </div>
-    <!-- HUD -->
-<div class="hud">
-  <div class="hud-item"><span class="hud-label">SYS:</span><span class="hud-value">HOME v1.0</span></div>
-  <div class="hud-item"><span class="hud-label">STATUS:</span><span class="hud-value">ONLINE</span></div>
-</div>
-</body>
-</html>
