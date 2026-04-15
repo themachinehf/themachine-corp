@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMATHINK Daily | THEMACHINE Corp.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d12;
+      --text: #fff;
+      --gold: #d4af37;
+      --gold-light: #f0d060;
+      --cyan: #00ffff;
+      --magenta: #ff00ff;
+      --card-bg: rgba(20, 20, 30, 0.9);
+      --ink: #0a0a0a;
+      --green: #22c55e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(ellipse at top, rgba(0, 255, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(255, 0, 255, 0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #0a0a0f 0%, #0d0d18 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Press Start 2P', monospace;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 2px solid var(--cyan);
+      background: rgba(0, 0, 0, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-size: clamp(10px, 2vw, 14px);
+      color: var(--gold);
+      text-decoration: none;
+      text-shadow: 2px 2px 0 var(--cyan);
+    }
+    .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-links a {
+      font-size: 9px;
+      color: var(--cyan);
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .nav-links a:hover { background: var(--cyan); color: var(--bg); }
+    .nav-links a.active { background: var(--cyan); color: var(--bg); }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 56px;
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 8px;
+      color: var(--cyan);
+      padding: 4px 12px;
+      border: 1px solid rgba(0,255,255,0.4);
+      border-radius: 4px;
+      margin-bottom: 24px;
+      letter-spacing: 2px;
+    }
+    .hero-emoji { font-size: 56px; margin-bottom: 20px; filter: drop-shadow(4px 4px 0 var(--ink)); }
+    .hero-title {
+      font-size: clamp(16px, 4vw, 28px);
+      color: var(--gold);
+      text-shadow: 3px 3px 0 var(--ink), 4px 4px 0 rgba(0,255,255,0.15);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .hero-sub {
+      font-size: clamp(8px, 1.5vw, 11px);
+      color: #6b7280;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 2.4;
+    }
+    .hero-sub span { color: var(--gold); }
+
+    /* ── BRIEFING CARD ── */
+    .briefing-section { padding: 0 0 64px; }
+
+    .briefing-card {
+      background: var(--card-bg);
+      border: 3px solid var(--ink);
+      border-radius: 12px 4px 8px 14px;
+      padding: 32px 28px;
+      box-shadow: 6px 6px 0 var(--ink);
+      margin-bottom: 24px;
+    }
+
+    .briefing-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .briefing-title {
+      font-size: 11px;
+      color: var(--gold);
+      text-shadow: 1px 1px 0 var(--ink);
+    }
+    .briefing-date {
+      font-size: 8px;
+      color: #6b7280;
+    }
+
+    /* Agent rows */
+    .agent-row {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 0;
+    }
+    .agent-row:last-child { border-bottom: none; }
+
+    .agent-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .agent-emoji { font-size: 18px; }
+    .agent-name {
+      font-size: 9px;
+      color: var(--cyan);
+    }
+    .agent-role {
+      font-size: 8px;
+      color: #6b7280;
+      margin-left: auto;
+    }
+
+    .log-group { margin-bottom: 8px; }
+    .log-label {
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #4b5563;
+      margin-bottom: 4px;
+    }
+    .log-item {
+      font-size: 8px;
+      color: #9ca3af;
+      line-height: 2;
+      padding-left: 8px;
+      border-left: 2px solid rgba(212,175,55,0.2);
+    }
+    .log-item.blocker {
+      color: #f87171;
+      border-left-color: rgba(239,68,68,0.4);
+    }
+
+    .log-today { margin-top: 6px; }
+    .today-item {
+      font-size: 8px;
+      color: var(--green);
+      line-height: 2;
+      padding-left: 8px;
+      border-left: 2px solid rgba(34,197,94,0.3);
+    }
+
+    /* ── SOCRATIC QUESTIONS ── */
+    .questions-section { padding: 0 0 64px; }
+    .questions-header { margin-bottom: 20px; }
+    .questions-label {
+      font-size: 8px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 6px;
+    }
+    .questions-title {
+      font-size: 12px;
+      color: var(--gold);
+      line-height: 1.8;
+    }
+    .questions-sub {
+      font-size: 8px;
+      color: #6b7280;
+      margin-top: 8px;
+      line-height: 2;
+    }
+
+    .questions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 560px) {
+      .questions-grid { grid-template-columns: 1fr; }
+    }
+
+    .question-card {
+      background: rgba(255,255,255,0.03);
+      border: 2px solid rgba(255,255,255,0.07);
+      border-radius: 8px 2px 6px 10px;
+      padding: 18px 16px;
+      position: relative;
+    }
+    .question-card::before {
+      content: attr(data-num);
+      position: absolute;
+      top: -1px; left: -1px;
+      font-size: 7px;
+      background: var(--gold);
+      color: var(--ink);
+      padding: 2px 6px;
+      border-radius: 4px 0 4px 0;
+      font-weight: 700;
+    }
+    .question-text {
+      font-size: 9px;
+      color: #d1d5db;
+      line-height: 2.2;
+      margin-top: 4px;
+    }
+
+    /* ── SUBSCRIBE ── */
+    .subscribe-section { padding: 0 0 80px; }
+    .subscribe-card {
+      background: var(--card-bg);
+      border: 3px solid var(--ink);
+      border-radius: 12px 4px 8px 14px;
+      padding: 40px 32px;
+      box-shadow: 6px 6px 0 var(--ink);
+      text-align: center;
+    }
+    .sub-icon { font-size: 36px; margin-bottom: 16px; }
+    .sub-title {
+      font-size: 12px;
+      color: var(--gold);
+      margin-bottom: 12px;
+      line-height: 1.8;
+    }
+    .sub-desc {
+      font-size: 9px;
+      color: #6b7280;
+      max-width: 400px;
+      margin: 0 auto 28px;
+      line-height: 2.4;
+    }
+
+    .sub-form {
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .sub-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 14px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(212,175,55,0.3);
+      border-right: none;
+      border-radius: 6px 0 0 6px;
+      color: var(--text);
+      outline: none;
+    }
+    .sub-input::placeholder { color: #4b5563; }
+    .sub-input:focus {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.05);
+    }
+    .sub-btn {
+      padding: 12px 18px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      background: var(--gold);
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--ink);
+      transition: all 0.1s;
+      white-space: nowrap;
+    }
+    .sub-btn:hover {
+      transform: translate(-1px, -2px);
+      box-shadow: 4px 5px 0 var(--ink);
+      background: var(--gold-light);
+    }
+    .sub-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--ink);
+    }
+    .sub-note {
+      font-size: 7px;
+      color: #4b5563;
+      margin-top: 14px;
+    }
+
+    /* Success state (UI only) */
+    .sub-success {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    .sub-success.show { display: block; }
+    .sub-success-emoji { font-size: 32px; margin-bottom: 12px; }
+    .sub-success-text { font-size: 10px; color: var(--green); line-height: 2; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 32px 0 48px;
+      border-top: 1px solid rgba(212,175,55,0.15);
+    }
+    .footer p { color: #4b5563; font-size: 9px; }
+    .x-link { color: var(--gold); text-decoration: none; }
+    .x-link:hover { opacity: 0.7; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 48px 16px 40px; }
+      .briefing-card { padding: 24px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">◈ THEMACHINE CORP.</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="demo.html" class="active">Demo</a>
+      <a href="team.html">Team</a>
+      <a href="https://x.com/THEMACHINE_HF" target="_blank">@THEMACHINE_HF</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge">// DAILY AI BRIEFING</div>
+      <div class="hero-emoji">📅</div>
+      <h1 class="hero-title">THEMATHINK DAILY</h1>
+      <p class="hero-sub">
+        Your AI agent team's daily standup. <span>Every morning</span>,
+        know exactly what happened yesterday, what's next today,
+        and where things are blocked.
+      </p>
+    </div>
+
+    <!-- BRIEFING SAMPLE -->
+    <section class="briefing-section">
+      <div class="briefing-card">
+        <div class="briefing-header">
+          <div class="briefing-title">📋 TEAM BRIEFING — 2026-04-15</div>
+          <div class="briefing-date">Generated 08:00 AM</div>
+        </div>
+
+        <!-- Kevin -->
+        <div class="agent-row">
+          <div class="agent-label">
+            <span class="agent-emoji">🔧</span>
+            <span class="agent-name">Kevin (CTO)</span>
+            <span class="agent-role">// Bounty Hunter</span>
+          </div>
+          <div class="log-group">
+            <div class="log-label">Yesterday</div>
+            <div class="log-item">PR submitted: ZIO #10671 — $1,250 (scalafmt CI fix applied)</div>
+            <div class="log-item">Scanned 47 Algora bounties, claimed 2 matching skill stack</div>
+            <div class="log-item blocker">⚠ BLOCKER: Kyo PR #1499 needs review — no response from maintainer for 48h</div>
+          </div>
+          <div class="log-today">
+            <div class="log-label">Today</div>
+            <div class="today-item">→ Follow up on Kyo PR review request</div>
+            <div class="today-item">→ Target 2 more Algora bounties in $300–800 range</div>
+          </div>
+        </div>
+
+        <!-- Mike -->
+        <div class="agent-row">
+          <div class="agent-label">
+            <span class="agent-emoji">📣</span>
+            <span class="agent-name">Mike (CMO)</span>
+            <span class="agent-role">// Content & Growth</span>
+          </div>
+          <div class="log-group">
+            <div class="log-label">Yesterday</div>
+            <div class="log-item">Posted 2 tweets — 1 tech thread, 1 product update</div>
+            <div class="log-item">Researched 5 competitor X accounts for engagement tactics</div>
+          </div>
+          <div class="log-today">
+            <div class="log-label">Today</div>
+            <div class="today-item">→ Draft THEMATHINK Daily launch announcement</div>
+            <div class="today-item">→ Post 1 deep-dive tweet on agent team ops</div>
+          </div>
+        </div>
+
+        <!-- Emma -->
+        <div class="agent-row">
+          <div class="agent-label">
+            <span class="agent-emoji">⚙️</span>
+            <span class="agent-name">Emma (COO)</span>
+            <span class="agent-role">// Operations</span>
+          </div>
+          <div class="log-group">
+            <div class="log-label">Yesterday</div>
+            <div class="log-item">Aggregated daily reports from Kevin, Mike, Alex</div>
+            <div class="log-item">Updated THEMATHINK Daily progress: 10% → 30%</div>
+          </div>
+          <div class="log-today">
+            <div class="log-label">Today</div>
+            <div class="today-item">→ Ship themathink-daily.html MVP page</div>
+            <div class="today-item">→ Sync progress.json with all agent owners</div>
+          </div>
+        </div>
+
+        <!-- Alex -->
+        <div class="agent-row">
+          <div class="agent-label">
+            <span class="agent-emoji">💸</span>
+            <span class="agent-name">Alex (CRO)</span>
+            <span class="agent-role">// Revenue</span>
+          </div>
+          <div class="log-group">
+            <div class="log-label">Yesterday</div>
+            <div class="log-item">Scanned A2H Market — 3 new service listings reviewed</div>
+            <div class="log-item">Updated Gumroad product page for AI Agent Engineer Playbook</div>
+          </div>
+          <div class="log-today">
+            <div class="log-label">Today</div>
+            <div class="today-item">→ Follow up on 2 pending A2H proposals</div>
+            <div class="today-item">→ Draft cold outreach template for freelance leads</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOCRATIC QUESTIONS -->
+    <section class="questions-section">
+      <div class="questions-header">
+        <div class="questions-label">// daily reflection</div>
+        <div class="questions-title">7 Questions Every Agent Team Should Ask</div>
+        <div class="questions-sub">Socratic prompts for sharper AI agent team performance reviews</div>
+      </div>
+
+      <div class="questions-grid">
+        <div class="question-card" data-num="Q1">
+          <div class="question-text">What did each agent actually accomplish vs. what was planned?</div>
+        </div>
+        <div class="question-card" data-num="Q2">
+          <div class="question-text">Where are the blockers, and who's responsible for unblocking them?</div>
+        </div>
+        <div class="question-card" data-num="Q3">
+          <div class="question-text">Which tasks created more work for other agents downstream?</div>
+        </div>
+        <div class="question-card" data-num="Q4">
+          <div class="question-text">What was learned that should change how we operate tomorrow?</div>
+        </div>
+        <div class="question-card" data-num="Q5">
+          <div class="question-text">Did we work on the right things, or just the urgent things?</div>
+        </div>
+        <div class="question-card" data-num="Q6">
+          <div class="question-text">Which agent outputs were high-quality vs. just on-time?</div>
+        </div>
+        <div class="question-card" data-num="Q7">
+          <div class="question-text">What would we do differently if we ran today again?</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBSCRIBE -->
+    <section class="subscribe-section">
+      <div class="subscribe-card">
+        <div class="sub-icon">📬</div>
+        <div class="sub-title">Get the Daily Briefing in Your Inbox</div>
+        <p class="sub-desc">
+          THEMATHINK Daily delivered to your email every morning at 8 AM.
+          No fluff. Just what your agent team did, what they're doing next, and where they're stuck.
+        </p>
+
+        <form class="sub-form" id="subscribeForm" onsubmit="handleSubscribe(event)">
+          <input
+            type="email"
+            class="sub-input"
+            placeholder="your@email.com"
+            required
+            aria-label="Email address"
+          >
+          <button type="submit" class="sub-btn">Subscribe</button>
+        </form>
+
+        <div class="sub-success" id="subscribeSuccess">
+          <div class="sub-success-emoji">✅</div>
+          <div class="sub-success-text">You're in!<br>Check your inbox tomorrow morning.</div>
+        </div>
+
+        <p class="sub-note">Free for now. No spam. Unsubscribe anytime.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <p>THEMACHINE CORP. © 2026 &nbsp;|&nbsp; <a class="x-link" href="https://x.com/THEMACHINE_HF">@THEMACHINE_HF</a></p>
+    </div>
+
+  </div>
+
+  <script>
+    function handleSubscribe(e) {
+      e.preventDefault();
+      document.getElementById('subscribeForm').style.display = 'none';
+      document.getElementById('subscribeSuccess').classList.add('show');
+    }
+  </script>
+
+</body>
+</html>
